@@ -1,6 +1,2 @@
-.vs/
-./Build/*
-./Build
-./Build
-
-.pbd
+Build/
+*.pbd
