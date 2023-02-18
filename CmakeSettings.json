@@ -1,0 +1,46 @@
+{
+  "configurations": [
+    {
+      "name": "Android-ARM",
+      "generator": "Ninja",
+      "toolset": "clang",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "-v",
+      "ctestCommandArgs": "",
+      "variables": [
+        {
+          "name": "CMAKE_SYSTEM_NAME",
+          "value": "Android"
+        },
+        {
+          "name": "CMAKE_SYSTEM_VERSION",
+          "value": "29"
+        },
+        {
+          "name": "CMAKE_ANDROID_ARCH_ABI",
+          "value": "armeabi-v7a"
+        },
+        {
+          "name": "CMAKE_ANDROID_NDK",
+          "value": "D:/Android/NDK"
+        },
+        {
+          "name": "CMAKE_ANDROID_STL_TYPE",
+          "value": "c++_static"
+        },
+        {
+          "name": "ANDROID_TOOLCHAIN",
+          "value": "clang"
+        },
+        {
+          "name": "ANDROID_ABI",
+          "value": "armeabi-v7a"
+        },
+        {
+          "name": "ANDROID_NATIVE_API_LEVEL",
+          "value": "29"
+        }
+      ]
+    }
+  ]
+}

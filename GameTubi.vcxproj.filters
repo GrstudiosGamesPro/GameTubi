@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{c1482bae-00a4-431b-a7da-2e0ff8815e4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\EngineWindow">
+      <UniqueIdentifier>{49c02e73-2e51-4b00-a8ce-1b9c138d8af9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Components">
+      <UniqueIdentifier>{181654fa-de97-4871-a713-dcdd0a740b23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Components\Textures">
+      <UniqueIdentifier>{b930e9e1-2a39-4d17-b074-230ffef2819e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Components\GameObject">
+      <UniqueIdentifier>{8ce6e3f5-9625-4e2c-8d72-92d635e8252a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Mathf">
+      <UniqueIdentifier>{3f77ed38-35c0-435b-a332-e80139660827}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Components\Scene">
+      <UniqueIdentifier>{032f4826-c110-4377-b4d5-dbae89ec09ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\ImGui">
+      <UniqueIdentifier>{b0522743-5aea-4dd8-b58d-1aa81b2ac7d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Components\ImGui">
+      <UniqueIdentifier>{a8418b9a-c974-4112-baee-20ab5d4070cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Components\LUA">
+      <UniqueIdentifier>{fcfa2566-b312-45b0-b645-078d9aec8dab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Components\InputSystem">
+      <UniqueIdentifier>{ed98fb9a-0ed7-44f4-8646-4eb93e2c6759}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GameTubi.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Window.cpp">
+      <Filter>Engine\EngineWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Components\TextureManager.cpp">
+      <Filter>Engine\Components\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Components\Mathf\Vector2.cpp">
+      <Filter>Engine\Mathf</Filter>
+    </ClCompile>
+    <ClCompile Include="Complementos\include\IMGUI\imgui.cpp">
+      <Filter>Engine\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Complementos\include\IMGUI\imgui_demo.cpp">
+      <Filter>Engine\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Complementos\include\IMGUI\imgui_draw.cpp">
+      <Filter>Engine\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Complementos\include\IMGUI\imgui_impl_sdl2.cpp">
+      <Filter>Engine\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Complementos\include\IMGUI\imgui_impl_sdlrenderer.cpp">
+      <Filter>Engine\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Complementos\include\IMGUI\imgui_tables.cpp">
+      <Filter>Engine\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Complementos\include\IMGUI\imgui_widgets.cpp">
+      <Filter>Engine\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Components\SceneManager\ManagerScene.cpp">
+      <Filter>Engine\Components\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Components\SceneManager\Scene.cpp">
+      <Filter>Engine\Components\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Components\LUA\LuaRunner.cpp">
+      <Filter>Engine\Components\LUA</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Components\Object.cpp">
+      <Filter>Engine\Components\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Components\InputSystem\InputSystem.cpp">
+      <Filter>Engine\Components\InputSystem</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Engine\Window.h">
+      <Filter>Engine\EngineWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\TextureManager.h">
+      <Filter>Engine\Components\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\Mathf\Vector2.h">
+      <Filter>Engine\Mathf</Filter>
+    </ClInclude>
+    <ClInclude Include="Complementos\include\IMGUI\imconfig.h">
+      <Filter>Engine\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Complementos\include\IMGUI\imgui.h">
+      <Filter>Engine\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Complementos\include\IMGUI\imgui_impl_sdl2.h">
+      <Filter>Engine\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Complementos\include\IMGUI\imgui_impl_sdlrenderer.h">
+      <Filter>Engine\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Complementos\include\IMGUI\imgui_internal.h">
+      <Filter>Engine\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Complementos\include\IMGUI\imstb_rectpack.h">
+      <Filter>Engine\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Complementos\include\IMGUI\imstb_textedit.h">
+      <Filter>Engine\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Complementos\include\IMGUI\imstb_truetype.h">
+      <Filter>Engine\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\Implementaciones\ImGuiImplement.h">
+      <Filter>Engine\Components\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\SceneManager\Scene.h">
+      <Filter>Engine\Components\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\SceneManager\ManagerScene.h">
+      <Filter>Engine\Components\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\LUA\LuaRunner.h">
+      <Filter>Engine\Components\LUA</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\Object.h">
+      <Filter>Engine\Components\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\InputSystem\InputSystem.h">
+      <Filter>Engine\Components\InputSystem</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
