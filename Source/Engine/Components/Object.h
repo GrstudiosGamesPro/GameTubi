@@ -20,6 +20,7 @@ private:
 	SDL_Rect srcRect, destRect;
 	lua_State* m_PTRLuaState = nullptr;
 	bool m_luaOK = false;
+
 public:
 	b2Body* body;
 	b2PolygonShape* dynamicBox;
@@ -42,7 +43,7 @@ public:
 	bool useGravity = false;
 	float density = 1.0f;
 	float friction = 0.3f;
-	
+	string ObjectID = "____________________________";
 
 	Object();
 
@@ -58,7 +59,10 @@ public:
 	void CompileLua();
 	void UpdateCollisions();
 	void CreateBody();
-	void UpdateCollisionState ();
+	void Save ();
+	void Load ();
+	Object GetSelf();
+	void EndObject();
 
 	SDL_Texture* GetTexture();
 	string GetName();

@@ -1,3 +1,29 @@
-﻿  LINK : no se encontró D:\GameEngines\GameTubi\GameTubi\Build\GameTubi.exe o no lo generó el último vínculo incremental; ejecutando vínculo completo
-LINK : warning LNK4098: la biblioteca predeterminada'LIBCMT' entra en conflicto con otras bibliotecas; use la biblioteca /NODEFAULTLIB:biblioteca
-  GameTubi.vcxproj -> D:\GameEngines\GameTubi\GameTubi\Build\GameTubi.exe
+﻿  Window.cpp
+D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\SceneManager\ManagerScene.h(2,10): warning C4067: símbolos (token) inesperados después de la directiva del preprocesador; se esperaba una nueva línea
+D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\SceneManager\ManagerScene.h(3,10): warning C4067: símbolos (token) inesperados después de la directiva del preprocesador; se esperaba una nueva línea
+D:\MotoresDeJuegos\GameTubi\Complementos\include\Box2D\b2_collision.h(38,21): warning C4099: 'b2PolygonShape': nombre de tipo visto anteriormente usando 'struct' ahora se ve usando 'class'
+D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Object.h(10,8): message : vea la declaración de 'b2PolygonShape'
+D:\MotoresDeJuegos\GameTubi\Complementos\include\Box2D\b2_polygon_shape.h(34,29): warning C4099: 'b2PolygonShape': nombre de tipo visto anteriormente usando 'struct' ahora se ve usando 'class'
+D:\MotoresDeJuegos\GameTubi\Complementos\include\Box2D\b2_polygon_shape.h(34,14): message : vea la declaración de 'b2PolygonShape'
+D:\MotoresDeJuegos\GameTubi\Complementos\include\Box2D\b2_body.h(129,1): warning C4099: 'b2Body': nombre de tipo visto anteriormente usando 'struct' ahora se ve usando 'class'
+D:\MotoresDeJuegos\GameTubi\Complementos\include\Box2D\b2_body.h(128,14): message : vea la declaración de 'b2Body'
+D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\SceneManager\Scene.h(11,14): warning C4099: 'b2Draw': nombre de tipo visto anteriormente usando 'class' ahora se ve usando 'struct'
+D:\MotoresDeJuegos\GameTubi\Complementos\include\Box2D\b2_joint.h(30,7): message : vea la declaración de 'b2Draw'
+D:\MotoresDeJuegos\GameTubi\Source\Engine\Window.cpp(174,28): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+D:\MotoresDeJuegos\GameTubi\Source\Engine\Window.cpp(175,28): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+D:\MotoresDeJuegos\GameTubi\Source\Engine\Window.cpp(223,20): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+D:\MotoresDeJuegos\GameTubi\Source\Engine\Window.cpp(225,18): warning C4244: 'inicializando': conversión de 'float' a 'int'; posible pérdida de datos
+D:\MotoresDeJuegos\GameTubi\Source\Engine\Window.cpp(226,18): warning C4244: 'inicializando': conversión de 'float' a 'int'; posible pérdida de datos
+D:\MotoresDeJuegos\GameTubi\Source\Engine\Window.cpp(229,18): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+D:\MotoresDeJuegos\GameTubi\Source\Engine\Window.cpp(230,18): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+D:\MotoresDeJuegos\GameTubi\Source\Engine\Window.cpp(338,29): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+D:\MotoresDeJuegos\GameTubi\Source\Engine\Window.cpp(339,29): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+  GameTubi.vcxproj -> D:\MotoresDeJuegos\GameTubi\Build\GameTubi.exe
+  D:\MotoresDeJuegos\GameTubi\BuildSource\ogg.dll
+  D:\MotoresDeJuegos\GameTubi\BuildSource\SDL2.dll
+  D:\MotoresDeJuegos\GameTubi\BuildSource\SDL2_image.dll
+  D:\MotoresDeJuegos\GameTubi\BuildSource\SDL_mixer.dll
+  D:\MotoresDeJuegos\GameTubi\BuildSource\smpeg.dll
+  D:\MotoresDeJuegos\GameTubi\BuildSource\vorbis.dll
+  D:\MotoresDeJuegos\GameTubi\BuildSource\vorbisfile.dll
+  7 archivo(s) copiado(s)

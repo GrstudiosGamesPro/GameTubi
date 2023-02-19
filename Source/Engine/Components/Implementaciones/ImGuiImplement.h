@@ -70,10 +70,19 @@ private:
 
 			if (ImGui::BeginMenu("File")) {
 				if (ImGui::MenuItem("Save")) {
-
+					ManagerScene::GetInstance()->GetCurrentScene()->SaveScene();
 				}
 				ImGui::EndMenu();
 			}
+
+			if (ImGui::BeginMenu("Build")) {
+				if (ImGui::MenuItem("Compile Windows")) {
+					ViewEngineSettings = true;
+				}
+
+				ImGui::EndMenu();
+			}
+
 
 			if (ImGui::BeginMenu("Settings")) {
 				if (ImGui::MenuItem("Editor")) {
@@ -274,12 +283,23 @@ private:
 
 
 
-
 		ImGui::PushID (6433);
 
 		if (ViewWorldSettings) {
 			if (ImGui::Begin ("World Settings")) {
 				b2Vec2 Gravity = ManagerScene::GetInstance()->GetCurrentScene()->GravityWorld->GetGravity();
+
+				char TexturePath[100];
+				strcpy_s(TexturePath, ManagerScene::GetInstance()->GetCurrentScene()->TexturePath.c_str());
+				ImGui::InputText("Background: ", TexturePath, 100, ImGuiInputTextFlags_AutoSelectAll);
+
+				ImGui::Image(TextureManager::LoadTexture(TexturePath), ImVec2(128, 128));
+				ManagerScene::GetInstance()->GetCurrentScene()->TexturePath = (std::string)TexturePath;
+
+				if (ImGui::Button("Save Sprites")) {
+					ManagerScene::GetInstance()->GetCurrentScene()->TexturePath = TexturePath;
+					ManagerScene::GetInstance()->GetCurrentScene()->SetNewBackground();
+				}
 
 				float GravityScaleGet[2]{
 					ManagerScene::GetInstance()->GetCurrentScene()->GravityWorld->GetGravity().x,
@@ -318,13 +338,13 @@ private:
 
 		if (CodeEditor) {
 			char str_hold[2048] = "";
-
-
-
 			ImGuiInputTextFlags flags = ImGuiInputTextFlags_CtrlEnterForNewLine;
 
 			ImGui::SetNextWindowSize(ImVec2(800, 650));
 			if (ImGui::Begin("Script Editor", NULL, ImGuiWindowFlags_NoResize)) {
+				if (ImGui::Button("Close")) {
+					CodeEditor = false;
+				}
 				ImGui::Text("Press (CTRL + Enter) for jump line");
 
 				ImVec2 Size;
@@ -340,19 +360,15 @@ private:
 				}
 				ImGui::End();
 			}
-
-			
 		}
 
 		if (InputSystem) {
-
 			if (ImGui::Begin("Input Manager")) {
 				if (ImGui::Button("Create Axis")) {
 					InputSystem::GetInstance()->SetNewInput("Test", "w", "1", "-1");
 				}
 
 				for (int i = 0; i < InputSystem::GetInstance()->inputs.size(); i++) {
-
 					ImGui::PushID(i);
 					char _Name[128];
 					strcpy_s(_Name, InputSystem::GetInstance()->inputs[i].Name.c_str());
@@ -389,5 +405,9 @@ private:
 
 			ImGui::End();
 		}
+
+
+
+
 	}
 };

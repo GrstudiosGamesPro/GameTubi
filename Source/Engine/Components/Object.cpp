@@ -1,7 +1,9 @@
 #include "Object.h"
 #include "box2d.h"
 #include "SceneManager/ManagerScene.h"
+#include "SaveSystem/SaveData.h"
 
+SaveData DataSavedLoad = SaveData();
 
 Object::Object() {
 	
@@ -19,12 +21,8 @@ void Object::Start() {
 	srcRect.h = height;
 	destRect.w = width * ScaleX;
 	destRect.h = height * ScaleY;
-
-	if (text != nullptr) {
-		std::cout << "Textura cargada con exito: " << endl;
-	}
-
 	CreateBody();
+	body->SetTransform(b2Vec2(pos.x, pos.y), 0);
 }
 
 void Object::Update() {
@@ -118,7 +116,6 @@ void Object::UpdateCollisions() {
 	float boxHeight = (float)texHeight * scaleY / (float)height / 2.0f;
 
 	body->DestroyFixture(body->GetFixtureList());
-	printf("%g %g %g %g\n", float(width), float(ScaleBoxX), float(height), float(ScaleBoxY));
 	dynamicBox->SetAsBox (float(width) * boxWidth / width, float(height) * boxHeight / height, localCenter, 0);
 	fixtureDef->shape = dynamicBox;
 	body->CreateFixture(fixtureDef);	
@@ -136,10 +133,8 @@ void Object::SetName (string _name) {
 }
 
 
-void Object::SetPosition (float x, float y) {
-	if (body != nullptr) {
-		body->SetTransform(b2Vec2(x, y), 0);
-	}
+void Object::SetPosition(float x, float y) {
+	body->SetTransform(b2Vec2((float)x, (float)y), 0);
 }
 
 Vector2 Object::GetPosition() {
@@ -154,7 +149,6 @@ Vector2 Object::GetPosition() {
 void Object::Draw() {
 	if (isActive) {
 		TextureManager::Draw(text, srcRect, Angle, destRect);
-		
 
 		b2Vec2 position = body->GetPosition();
 		float angle = body->GetAngle();
@@ -221,21 +215,29 @@ void Object::Draw() {
 		SDL_RenderDrawLines(Window::renderer, points, 5);
 
 		SDL_SetRenderDrawColor(Window::renderer, r, g, b, a);*/
+
 	}
 }
 
 void Object::SetNewTexture() {
 	text = TextureManager::LoadTexture(TexturePath.c_str());
+	int textureWidth, textureHeight;
+	SDL_QueryTexture(TextureManager::LoadTexture(TexturePath.c_str()), nullptr, nullptr, &textureWidth, &textureHeight);
 	TexturePath = TexturePath.c_str();
+	srcRect.w = textureWidth;
+	srcRect.h = textureHeight;
+	destRect.w = textureWidth * ScaleX;
+	destRect.h = textureHeight * ScaleY;
+	width = textureHeight;
+	height = textureHeight;
 }
 
-Object::~Object() {
-	lua_close (m_PTRLuaState);
-	SDL_DestroyTexture (text);
-}
 
 void Object::InputSystem() {
 	
+}
+
+Object::~Object() {
 }
 
 SDL_Texture* Object::GetTexture() {
@@ -249,6 +251,7 @@ SDL_Rect* Object::GetRectDEST() {
 SDL_Rect* Object::GetRectSRC() {
 	return &srcRect;
 }
+
 
 void Object::CompileLua() {
 	m_PTRLuaState = luaL_newstate();
@@ -280,5 +283,11 @@ void Object::CompileLua() {
 				}
 			}
 		}
+	}
+}
+
+void Object::EndObject() {
+	if (m_PTRLuaState != nullptr) {
+		lua_close(m_PTRLuaState);
 	}
 }

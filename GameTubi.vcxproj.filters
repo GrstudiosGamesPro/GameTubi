@@ -34,6 +34,12 @@
     <Filter Include="Engine\Components\InputSystem">
       <UniqueIdentifier>{ed98fb9a-0ed7-44f4-8646-4eb93e2c6759}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Components\UIBuilder">
+      <UniqueIdentifier>{68df85c8-c7ea-416c-9ba5-a673eeadd069}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Components\SaveSystem">
+      <UniqueIdentifier>{ed2d51dc-7a5d-4d85-a414-017bf08dcca4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameTubi.cpp">
@@ -83,6 +89,12 @@
     </ClCompile>
     <ClCompile Include="Source\Engine\Components\InputSystem\InputSystem.cpp">
       <Filter>Engine\Components\InputSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Components\UIBuilder\UIBuilder.cpp">
+      <Filter>Engine\Components\UIBuilder</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Components\SaveSystem\SaveData.cpp">
+      <Filter>Engine\Components\SaveSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -136,6 +148,12 @@
     </ClInclude>
     <ClInclude Include="Source\Engine\Components\InputSystem\InputSystem.h">
       <Filter>Engine\Components\InputSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\UIBuilder\UIBuilder.h">
+      <Filter>Engine\Components\UIBuilder</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\SaveSystem\SaveData.h">
+      <Filter>Engine\Components\SaveSystem</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

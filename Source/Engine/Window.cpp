@@ -27,6 +27,12 @@ bool done = false;
 bool DragginObject = false;
 
 
+int camera_x = 0;
+int camera_y = 0;
+SDL_Rect camera = { camera_x, camera_y, Width, Height };
+
+
+
 Window::Window(){
 
 }
@@ -46,7 +52,6 @@ void Window::StartWindow(const char* title, int xpos, int ypos, int width, int h
 		window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
 		
 		cout << "Sub sistema inicializado con exito..." << endl;
-		cout << "MAMA HUEVOOOOOO..." << endl;
 
 		if (window != nullptr) {
 			cout << "Ventana inicializada..." << endl;
@@ -96,6 +101,12 @@ void Window::handleEvents() {
 			isRunning = false;
 		break;
 
+		case SDL_MOUSEMOTION:
+
+			camera_x += event.motion.xrel;
+			camera_y += event.motion.yrel;
+			break;
+
 		default:
 		break;
 	}
@@ -119,9 +130,12 @@ void Window::OnUpdate() {
 
 }
 
+
 void Window::OnRender() {
 	SDL_RenderClear(renderer);
 	SDL_SetRenderDrawColor(renderer, 25, 25, 25, 255);
+	SDL_RenderCopy(Window::renderer, ManagerScene::GetInstance()->GetCurrentScene()->backgroundTexture, NULL, NULL);
+
 #pragma region Render IMGUI AND OBJECTS
 
 
@@ -271,7 +285,66 @@ void Window::OnRender() {
 		}
 	*/
 
+	/*
+
+	SDL_Rect renderRect = { 0, 0, Width, Height };
+	SDL_RenderSetClipRect(renderer, &renderRect);
+
+	// Establecer la distancia de renderizado de la cámara
+	int cameraFar = 10; // Aumentar este valor para aumentar la distancia de renderizado
+	SDL_Rect cameraRect = { cameraX - Width / 2, cameraY - Height / 2, Width, Height };
+	cameraRect.x -= cameraFar;
+	cameraRect.y -= cameraFar;
+	cameraRect.w += cameraFar * 2;
+	cameraRect.h += cameraFar * 2;
+
+	SDL_RenderSetClipRect (renderer, &cameraRect);
+
+	for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size(); i++) {
+		if (ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->GetRectDEST()->x > cameraX - Width / 2 - cameraFar &&
+			ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->GetRectDEST()->x < cameraX + Width / 2 + cameraFar &&
+			ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->GetRectDEST()->y > cameraY - Height / 2 - cameraFar &&
+			ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->GetRectDEST()->y < cameraY + Height / 2 + cameraFar) {
+			SDL_Rect objectRect = { ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->GetRectDEST()->x - ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->GetRectDEST()->w / 2 - cameraX + Width / 2, ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->GetRectDEST()->y - ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->GetRectDEST()->h / 2 - cameraY + Height / 2, ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->GetRectDEST()->w, ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->GetRectDEST()->h};
+			//SDL_RenderCopy(renderer, ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->GetTexture(), nullptr, &objectRect);
+		}
+	}
+	SDL_RenderSetClipRect(renderer, nullptr);
+
+	*/
+
+
+	std::cout << camera_x << endl;
+
+	// Asegurarse de que la cámara no se salga de los límites de la escena
+	if (camera_x < 0)
+	{
+		camera_x = 0;
+	}
+	if (camera_y < 0)
+	{
+		camera_y = 0;
+	}
+	if (camera_x > Width - camera.w)
+	{
+		camera_x = 1000 - camera.w;
+	}
+	if (camera_y > Height - camera.h)
+	{
+		camera_y = 1000 - camera.h;
+	}
+
+	// Actualizar la posición de la cámara
+	camera.x = (float)camera_x * 0.1f;
+	camera.y = (float)camera_y * 0.1f;
+
+	for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size(); i++)
+	{
+		//ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->SetPosition (ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->GetPosition().x - camera_x, ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->GetPosition().y - camera_y);
+	}
+
 	imgui.GetRenderDrawData();
+	//SDL_RenderSetViewport(renderer, &camera);
 	SDL_RenderPresent	(renderer);
 }
 
