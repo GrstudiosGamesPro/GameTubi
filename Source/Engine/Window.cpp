@@ -18,6 +18,7 @@ SDL_Event event;
 ImGuiImplement imgui = ImGuiImplement();
 
 int Width, Height;
+int Window::CAMERA_MAX_VEL = 25;
 SDL_Surface* tempSurface;
 SDL_Texture* tex;
 SDL_Surface* tempSurface2;
@@ -28,7 +29,6 @@ bool DragginObject = false;
 SDL_Rect Window::camera = { 0, 0, Width, Height };
 int cameraVelX = 0;
 int cameraVelY = 0;
-const int CAMERA_MAX_VEL = 25;
 bool DragginMouse;
 bool DragginMouseX;
 
@@ -82,7 +82,6 @@ void Window::StartWindow(const char* title, int xpos, int ypos, int width, int h
 	Width = width;
 	Height = height;
 
-
 	for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size(); i++) {
 		ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->Start();
 	}
@@ -101,13 +100,7 @@ void Window::handleEvents() {
 		isRunning = false;
 		break;
 
-	case SDL_KEYDOWN:
-		// Verificar si se presionó la rueda del ratón
-		if (event.button.button == SDL_SCANCODE_LCTRL)
-		{
-		}
-		break;
-
+	default:
 		break;
 	}
 }
@@ -193,27 +186,31 @@ void Window::OnUpdate() {
 		if (relX != 0 && relY != 0) {
 			camera.x -= dx;
 			camera.y -= dy;
-
-			printf ("Position Camera: %d | &d \n", dx, dy);
 		}
 	}
 
-
 	SDL_GL_SwapWindow(window);
-
 }
 
 
 void Window::OnRender() {
-	SDL_RenderClear(renderer);
-	SDL_SetRenderDrawColor(renderer, 25, 25, 25, 255);
-	SDL_Rect* BackgroundPosition = new SDL_Rect();
+	if (ManagerScene::GetInstance()->GetCurrentScene()->UseFullScreen) {
+		SDL_RenderClear(renderer);
+		SDL_SetRenderDrawColor(renderer, 25, 25, 25, 255);
 
-	BackgroundPosition->x -= camera.x;
-	BackgroundPosition->y -= camera.y;
-	BackgroundPosition->w = 100;
-	BackgroundPosition->h = 100;
-	SDL_RenderCopy(Window::renderer, ManagerScene::GetInstance()->GetCurrentScene()->backgroundTexture, NULL, BackgroundPosition);
+		SDL_RenderCopy(Window::renderer, ManagerScene::GetInstance()->GetCurrentScene()->backgroundTexture, NULL, NULL);
+	}
+	else {
+		SDL_RenderClear(renderer);
+		SDL_SetRenderDrawColor(renderer, 25, 25, 25, 255);
+		SDL_Rect* BackgroundPosition = new SDL_Rect();
+
+		BackgroundPosition->x -= camera.x;
+		BackgroundPosition->y -= camera.y;
+		BackgroundPosition->w = 100;
+		BackgroundPosition->h = 100;
+		SDL_RenderCopy(Window::renderer, ManagerScene::GetInstance()->GetCurrentScene()->backgroundTexture, NULL, BackgroundPosition);
+	}
 
 #pragma region Render IMGUI AND OBJECTS
 

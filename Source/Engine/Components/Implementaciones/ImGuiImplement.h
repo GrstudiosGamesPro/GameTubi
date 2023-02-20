@@ -271,6 +271,9 @@ private:
 				ImGui::DragInt("Grid Size: ", &GetGridSize);
 				wnd->GridSize = GetGridSize;
 
+				int* MoveSpeed = &Window::CAMERA_MAX_VEL;
+				ImGui::InputInt ("Camera Speed: ", MoveSpeed, 1);
+				Window::CAMERA_MAX_VEL = *MoveSpeed;
 
 				if (ImGui::Button("Close")) {
 					ViewEngineSettings = false;
@@ -295,6 +298,10 @@ private:
 
 				ImGui::Image(TextureManager::LoadTexture(TexturePath), ImVec2(128, 128));
 				ManagerScene::GetInstance()->GetCurrentScene()->TexturePath = (std::string)TexturePath;
+
+				bool UseFullBG = ManagerScene::GetInstance()->GetCurrentScene()->UseFullScreen;
+				ImGui::Checkbox("BG Fullscreen: ", &UseFullBG);
+				ManagerScene::GetInstance()->GetCurrentScene()->UseFullScreen = UseFullBG;
 
 				if (ImGui::Button("Save Sprites")) {
 					ManagerScene::GetInstance()->GetCurrentScene()->TexturePath = TexturePath;

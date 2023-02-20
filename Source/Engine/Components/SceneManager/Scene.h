@@ -20,6 +20,7 @@ public:
 	std::vector<Object*> ObjectsInScene;
 	b2World* GravityWorld;
 	string SceneName = "SampleScene";
+	bool UseFullScreen = false;
 
 	void OnStartScene() {
 		background = IMG_Load(TexturePath.c_str());

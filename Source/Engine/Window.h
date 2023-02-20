@@ -28,6 +28,7 @@ public:
 	static SDL_Rect camera;
 	static float Sensibilidad;
 	int GridSize;
+	static int CAMERA_MAX_VEL;
 
 private:
 	int count;
