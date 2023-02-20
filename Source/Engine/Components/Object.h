@@ -20,6 +20,7 @@ private:
 	SDL_Rect srcRect, destRect;
 	lua_State* m_PTRLuaState = nullptr;
 	bool m_luaOK = false;
+	float NewPosX, NewPosY;
 
 public:
 	b2Body* body;
@@ -43,6 +44,7 @@ public:
 	bool useGravity = false;
 	float density = 1.0f;
 	float friction = 0.3f;
+	float RectTextureX, RectTextureY;
 	string ObjectID = "____________________________";
 
 	Object();

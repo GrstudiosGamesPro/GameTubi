@@ -27,12 +27,7 @@ void Object::Start() {
 
 void Object::Update() {
 	if (isActive) {
-		InputSystem();
-
-		pos.x = body->GetPosition().x;
-		pos.y = body->GetPosition().y;
-
-		
+		InputSystem();		
 		b2Vec2 center = body->GetWorldCenter();
 		int textureWidth = width;
 		int textureHeight = height;
@@ -51,11 +46,17 @@ void Object::Update() {
 		textureX = centerX - textureWidth / 2;
 		textureY = centerY - textureHeight / 2;
 
-		destRect.x = textureX;
-		destRect.y = textureY;
+		RectTextureX = textureX;
+		RectTextureY = textureY;
+
+		destRect.x = textureX - Window::camera.x;
+		destRect.y = textureY - Window::camera.y;
 
 		destRect.w =  width  * ScaleX;
 		destRect.h =  height * ScaleY;
+
+		pos.x = body->GetPosition().x;
+		pos.y = body->GetPosition().y;
 
 		body->SetTransform(b2Vec2(pos.x, pos.y), 0);
 
@@ -150,7 +151,6 @@ void Object::Draw() {
 	if (isActive) {
 		TextureManager::Draw(text, srcRect, Angle, destRect);
 
-		b2Vec2 position = body->GetPosition();
 		float angle = body->GetAngle();
 		b2PolygonShape* shape = (b2PolygonShape*)body->GetFixtureList()->GetShape();
 		b2Vec2 vertices[b2_maxPolygonVertices];
@@ -162,8 +162,8 @@ void Object::Draw() {
 		// Convertir los vértices de Box2D a píxeles
 		int pixelVertices[b2_maxPolygonVertices * 2];
 		for (int i = 0; i < shape->m_count; i++) {
-			pixelVertices[i * 2] = (int)(vertices[i].x * 32);
-			pixelVertices[i * 2 + 1] = (int)(vertices[i].y * 32);
+			pixelVertices[i * 2] = (int)(vertices[i].x * 32 - Window::camera.x);
+			pixelVertices[i * 2 + 1] = (int)(vertices[i].y * 32 - Window::camera.y);
 		}
 
 		// Dibujar el cuadrado en SDL

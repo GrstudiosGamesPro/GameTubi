@@ -52,7 +52,6 @@ public:
 			}
 		}
 	}
-
 	void SetupNewObject () {
 		Object* newOBJ = new Object();
 		newOBJ->TexturePath = "Assets/Sprites/idle.gif";
@@ -60,6 +59,7 @@ public:
 		newOBJ->SetNewTexture();
 		ObjectsInScene.push_back (newOBJ);
 	}
+
 
 
 	void SaveScene () {

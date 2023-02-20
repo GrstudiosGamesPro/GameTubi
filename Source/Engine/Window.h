@@ -25,6 +25,8 @@ public:
 	
 	static SDL_Renderer* renderer;
 	static SDL_Event events;
+	static SDL_Rect camera;
+	static float Sensibilidad;
 	int GridSize;
 
 private:

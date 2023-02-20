@@ -25,12 +25,12 @@ SDL_Texture* tex2;
 Object* CurrentObjectSelect;
 bool done = false;
 bool DragginObject = false;
-
-
-int camera_x = 0;
-int camera_y = 0;
-SDL_Rect camera = { camera_x, camera_y, Width, Height };
-
+SDL_Rect Window::camera = { 0, 0, Width, Height };
+int cameraVelX = 0;
+int cameraVelY = 0;
+const int CAMERA_MAX_VEL = 25;
+bool DragginMouse;
+bool DragginMouseX;
 
 
 Window::Window(){
@@ -97,17 +97,17 @@ void Window::handleEvents() {
 	SDL_PollEvent(&event);
 
 	switch (event.type) {
-		case SDL_QUIT:
-			isRunning = false;
+	case SDL_QUIT:
+		isRunning = false;
 		break;
 
-		case SDL_MOUSEMOTION:
+	case SDL_KEYDOWN:
+		// Verificar si se presionó la rueda del ratón
+		if (event.button.button == SDL_SCANCODE_LCTRL)
+		{
+		}
+		break;
 
-			camera_x += event.motion.xrel;
-			camera_y += event.motion.yrel;
-			break;
-
-		default:
 		break;
 	}
 }
@@ -126,6 +126,79 @@ void Window::OnUpdate() {
 		ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->Update();
 	}
 
+	if (event.type == SDL_KEYDOWN) {
+		if (event.button.button == SDL_SCANCODE_LCTRL) {
+			DragginMouse = true;
+			std::cout << "Arrastrando" << endl;
+		}
+	}
+
+	if (event.type == SDL_KEYUP) {
+		if (event.button.button == SDL_SCANCODE_LCTRL) {
+			DragginMouse = false;
+			std::cout << "Arrastrado cancelado" << endl;
+		}
+	}
+
+	if (event.type == SDL_MOUSEBUTTONDOWN) {
+		if (event.button.button == SDL_BUTTON_LEFT) {
+			DragginMouseX = true;
+			std::cout << "Arrastrando" << endl;
+		}
+	}
+
+	if (event.type == SDL_MOUSEBUTTONUP) {
+		if (event.button.button == SDL_BUTTON_LEFT) {
+			DragginMouseX = false;
+			std::cout << "Arrastrado cancelado" << endl;
+		}
+	}
+
+
+	int x = event.motion.x;
+	int y = event.motion.y;
+
+	int dx = event.motion.xrel;
+	int dy = event.motion.yrel;
+
+	int relX, relY;
+	Uint32 mouseState = SDL_GetRelativeMouseState(&relX, &relY);
+
+	int w, h;
+	SDL_GetWindowSize(window, &w, &h);
+
+	float ppiX = static_cast<float>(w) / static_cast<float>(relX);
+	float ppiY = static_cast<float>(h) / static_cast<float>(relY);
+
+
+
+	if (DragginMouse && DragginMouseX) {
+		if (dx >= CAMERA_MAX_VEL) {
+			dx = CAMERA_MAX_VEL;
+		}
+
+		if (dx <= -CAMERA_MAX_VEL) {
+			dx = -CAMERA_MAX_VEL;
+		}
+
+		if (dy >= CAMERA_MAX_VEL) {
+			dy = CAMERA_MAX_VEL;
+		}
+
+		if (dy <= -CAMERA_MAX_VEL) {
+			dy = -CAMERA_MAX_VEL;
+		}
+
+
+		if (relX != 0 && relY != 0) {
+			camera.x -= dx;
+			camera.y -= dy;
+
+			printf ("Position Camera: %d | &d \n", dx, dy);
+		}
+	}
+
+
 	SDL_GL_SwapWindow(window);
 
 }
@@ -134,7 +207,13 @@ void Window::OnUpdate() {
 void Window::OnRender() {
 	SDL_RenderClear(renderer);
 	SDL_SetRenderDrawColor(renderer, 25, 25, 25, 255);
-	SDL_RenderCopy(Window::renderer, ManagerScene::GetInstance()->GetCurrentScene()->backgroundTexture, NULL, NULL);
+	SDL_Rect* BackgroundPosition = new SDL_Rect();
+
+	BackgroundPosition->x -= camera.x;
+	BackgroundPosition->y -= camera.y;
+	BackgroundPosition->w = 100;
+	BackgroundPosition->h = 100;
+	SDL_RenderCopy(Window::renderer, ManagerScene::GetInstance()->GetCurrentScene()->backgroundTexture, NULL, BackgroundPosition);
 
 #pragma region Render IMGUI AND OBJECTS
 
@@ -313,38 +392,11 @@ void Window::OnRender() {
 
 	*/
 
+	SDL_Rect screenRect = { 0, 0, Width, Height };
+	SDL_Rect cameraRect = { camera.x, camera.y, camera.w, camera.h };
 
-	std::cout << camera_x << endl;
-
-	// Asegurarse de que la cámara no se salga de los límites de la escena
-	if (camera_x < 0)
-	{
-		camera_x = 0;
-	}
-	if (camera_y < 0)
-	{
-		camera_y = 0;
-	}
-	if (camera_x > Width - camera.w)
-	{
-		camera_x = 1000 - camera.w;
-	}
-	if (camera_y > Height - camera.h)
-	{
-		camera_y = 1000 - camera.h;
-	}
-
-	// Actualizar la posición de la cámara
-	camera.x = (float)camera_x * 0.1f;
-	camera.y = (float)camera_y * 0.1f;
-
-	for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size(); i++)
-	{
-		//ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->SetPosition (ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->GetPosition().x - camera_x, ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->GetPosition().y - camera_y);
-	}
-
+	SDL_RenderSetClipRect(renderer, &screenRect);
 	imgui.GetRenderDrawData();
-	//SDL_RenderSetViewport(renderer, &camera);
 	SDL_RenderPresent	(renderer);
 }
 
