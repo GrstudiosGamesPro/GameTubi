@@ -2,7 +2,6 @@
 #include "../Window.h"
 #include "SDL.h"
 #include "Mathf/Vector2.h"
-#include "lua.hpp"
 
 using namespace std;
 
@@ -11,14 +10,12 @@ struct b2PolygonShape;
 struct b2BodyDef;
 struct b2FixtureDef;
 
-
 class Object
 {
 private:
 	static SDL_Event events;
 	SDL_Texture* text;
 	SDL_Rect srcRect, destRect;
-	lua_State* m_PTRLuaState = nullptr;
 	bool m_luaOK = false;
 	float NewPosX, NewPosY;
 
@@ -30,7 +27,7 @@ public:
 	Vector2 pos;
 	string name = "Game Object";
 	std::string TexturePath;
-	std::string Script = "io.write ('NEW LUA SCRIPT')\n\n\n\n\n function OnStart ()\n\n--EXECUTE ON START THE GAME\n\n\nend\n\n\n\n\n\n\n\n function OnUpdate ()\n\n--THIS EXECUTE IN LOOP \n\n\nend";
+	std::string Script = "function OnStart ()\n\n--EXECUTE ON START THE GAME\n\n\nend\n\n\n\n\n\n\n\nfunction OnUpdate ()\n\n--THIS EXECUTE IN LOOP \n\n\nend";
 	string tag;
 	int height = 32;
 	int width = 32;
@@ -71,17 +68,20 @@ public:
 
 	SDL_Rect* GetRectSRC();
 	SDL_Rect* GetRectDEST();
+	void SetNewScale (float x, float y);
+	Vector2 GetScale ();
+	void SetActive (bool t);
+
+	void SetScaleBox(float x, float y);
+	Vector2 GetScaleBox ();
+	void SetDensityBox  (float x);
+	float GetDensityBox ();
+
+	void SetFrictionBox(float x);
+	float GetFrictionBox();
+	void AddForce (float x, float y);
+	Object* GetObject();
+	void CallLua (string scr);
 
 	~Object();
-
-	//REGISTRAR FUNCIONES DE LUA
-	int GetObjectName(lua_State* L) {
-		char nameGet[512];
-
-		strcpy_s(nameGet, name.c_str());
-
-		std::string myString(nameGet);
-		lua_pushstring(L, myString.c_str());
-		return 1;
-	}
 };

@@ -1,3 +1,4 @@
 Build/
 *.pbd
 .vs/
+.GameBuild/

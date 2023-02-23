@@ -1,28 +1,31 @@
+//HOLA
 #include "Object.h"
 #include "box2d.h"
 #include "SceneManager/ManagerScene.h"
 #include "SaveSystem/SaveData.h"
+#include "sol/sol.hpp"
+#include "Object/ObjectManager.h"
 
-SaveData DataSavedLoad = SaveData();
+static ObjectManager* OBJManager;
 
 Object::Object() {
-	
+	std::cout << "Objeto creado" << endl;
+	Start();
 }
 
  
 void Object::Start() {
 	text = TextureManager::LoadTexture("Assets/Sprites/landingoutline.png");
 	TexturePath = "Assets/Sprites/landingoutline.png";
-
-
 	srcRect.x = srcRect.y = 0;
 
 	srcRect.w = width;
 	srcRect.h = height;
 	destRect.w = width * ScaleX;
 	destRect.h = height * ScaleY;
-	CreateBody();
+	Object::CreateBody();
 	body->SetTransform(b2Vec2(pos.x, pos.y), 0);
+	OBJManager = new ObjectManager();
 }
 
 void Object::Update() {
@@ -41,6 +44,7 @@ void Object::Update() {
 
 		float centerX = body->GetPosition().x * 32;
 		float centerY = body->GetPosition().y * 32;
+
 		textureWidth = width * ScaleX;
 		textureHeight = height * ScaleY;
 		textureX = centerX - textureWidth / 2;
@@ -58,10 +62,10 @@ void Object::Update() {
 		pos.x = body->GetPosition().x;
 		pos.y = body->GetPosition().y;
 
-		body->SetTransform(b2Vec2(pos.x, pos.y), 0);
 
 		if (useGravity && body != nullptr) 
 		{
+			body->SetAwake (true);
 			body->SetType(b2_dynamicBody);
 		}
 		else {
@@ -111,7 +115,8 @@ void Object::UpdateCollisions() {
 	// Factor de escala
 	float scaleX = (float)ScaleBoxX;
 	float scaleY = (float)ScaleBoxY;
-
+	fixtureDef->density = density;
+	fixtureDef->friction = friction;
 	// Tamaño de la caja de colisión
 	float boxWidth = (float)texWidth * scaleX / (float)width / 2.0f;
 	float boxHeight = (float)texHeight * scaleY / (float)height / 2.0f;
@@ -120,7 +125,6 @@ void Object::UpdateCollisions() {
 	dynamicBox->SetAsBox (float(width) * boxWidth / width, float(height) * boxHeight / height, localCenter, 0);
 	fixtureDef->shape = dynamicBox;
 	body->CreateFixture(fixtureDef);	
-	ManagerScene::GetInstance()->GetCurrentScene()->GravityWorld->Dump();
 }
 
 
@@ -141,7 +145,7 @@ void Object::SetPosition(float x, float y) {
 Vector2 Object::GetPosition() {
 	
 	if (body != nullptr) {
-		return Vector2(body->GetPosition().x, body->GetPosition().y);
+		return Vector2(pos.x, pos.y);
 	}
 
 	return Vector2(body->GetPosition().x, body->GetPosition().y);
@@ -238,6 +242,7 @@ void Object::InputSystem() {
 }
 
 Object::~Object() {
+
 }
 
 SDL_Texture* Object::GetTexture() {
@@ -253,41 +258,153 @@ SDL_Rect* Object::GetRectSRC() {
 }
 
 
-void Object::CompileLua() {
-	m_PTRLuaState = luaL_newstate();
-
-	if (m_PTRLuaState) {
-		luaL_openlibs (m_PTRLuaState);
-
-		char SCRP[512];
-
-		strcpy_s (SCRP, Script.c_str());
-
-		if (luaL_loadstring (m_PTRLuaState, SCRP) != LUA_OK) {
-			std::cout << "Error on compile lua: " << lua_tostring (m_PTRLuaState, -1) << endl;
-		}
-		else {
-			if (lua_pcall (m_PTRLuaState, 0, 0, 0) != LUA_OK) {
-
-			}
-
-			if (lua_getglobal(m_PTRLuaState, "OnStart") == LUA_TFUNCTION) {
-				if (lua_pcall(m_PTRLuaState, 0, 1, 0) == LUA_OK) {
-
-				}
-			}
-
-			if (lua_getglobal(m_PTRLuaState, "OnUpdate") == LUA_TFUNCTION) {
-				if (lua_pcall(m_PTRLuaState, 0, 1, 0) == LUA_OK) {
-
-				}
-			}
-		}
-	}
+void Object::SetNewScale (float x, float y) {
+	ScaleX = x;
+	ScaleY = y;
 }
 
+Vector2 Object::GetScale() {
+	return Vector2 (ScaleX, ScaleY);
+}
+
+
 void Object::EndObject() {
-	if (m_PTRLuaState != nullptr) {
-		lua_close(m_PTRLuaState);
+
+}
+
+
+void Object::CompileLua() {
+	Object::CallLua (Script);
+}
+
+void Object::SetActive (bool t) {
+	isActive = t;
+}
+
+void Object::SetScaleBox (float x, float y) {
+	ScaleBoxX = x;
+	ScaleBoxY = x;
+	UpdateCollisions();
+}
+
+Vector2 Object::GetScaleBox () {
+	return Vector2 (ScaleBoxX, ScaleBoxY);
+}
+
+void Object::SetDensityBox (float x) {
+	density = x;
+	UpdateCollisions();
+}
+
+float Object::GetDensityBox() {
+	return density;
+}
+
+void Object::SetFrictionBox(float x) {
+	friction = x;
+	UpdateCollisions();
+}
+
+float Object::GetFrictionBox() {
+	return friction;
+}
+
+void Object::AddForce (float x, float y) {
+	body->ApplyForce (b2Vec2 (x, y), body->GetPosition(), true);
+	std::cout << "Aplicando fuerza a " << name << endl;
+}
+
+Object* Object::GetObject() {
+	return this;
+}
+
+
+void Object::CallLua(string ScriptToRun) {
+	sol::state lua;
+	std::string codigo_lua = ScriptToRun;
+
+	lua.set_function("printF", [](sol::variadic_args args) {
+		std::cout << "";
+	for (auto arg : args) {
+		std::cout << arg.as<float>() << " ";
+	}
+	std::cout << std::endl;
+		});
+
+	lua.set_function("printI", [](sol::variadic_args args) {
+		std::cout << "";
+	for (auto arg : args) {
+		std::cout << arg.as<int>() << " ";
+	}
+	std::cout << std::endl;
+		});
+
+	lua.set_function("printSTR", [](sol::variadic_args args) {
+		std::cout << "";
+	for (auto arg : args) {
+		std::cout << arg.as<string>() << " ";
+	}
+	std::cout << std::endl;
+		});
+
+	lua.set_function("printB", [](sol::variadic_args args) {
+		std::cout << "";
+	for (auto arg : args) {
+		std::cout << arg.as<bool>() << " ";
+	}
+	std::cout << std::endl;
+		});
+
+
+	lua.new_usertype<Vector2>("Vector2", sol::constructors<Vector2(float, float)>(),
+		"x", &Vector2::x,
+		"y", &Vector2::y);
+
+	lua["Vector2"]["new"] = [](float x, float y) {
+		return Vector2(x, y);
+	};
+
+	lua["self"] = sol::make_object(lua.lua_state(), this);
+	lua.new_usertype<Object>("Object",
+		"SetPosition", &Object::SetPosition,
+		"GetPosition", &Object::GetPosition,
+		"Name", &Object::name,
+		"GetName", &Object::GetName,
+		"GetScale", &Object::GetScale,
+		"SetNewScale", &Object::SetNewScale,
+		"SetActive", &Object::SetActive,
+		"SetScaleBox", &Object::SetScaleBox,
+		"GetScaleBox", &Object::GetScaleBox,
+		"SetDensityBox", &Object::SetDensityBox,
+		"GetDensityBox", &Object::GetDensityBox,
+		"SetFrictionBox", &Object::SetFrictionBox,
+		"GetFrictionBox", &Object::GetFrictionBox,
+		"AddForce", &Object::AddForce,
+		"UseGravity", &Object::useGravity
+		);
+
+
+	if (ManagerScene::GetInstance() != nullptr) {
+		lua.new_usertype<ManagerScene>("Scene");
+		lua["Scene"]["LoadScene"] = [](string SceneName) { ManagerScene::GetInstance()->GetCurrentScene()->LoadScene(SceneName);  };
+	}
+
+	lua["Object"]["new"] = []() { return ManagerScene::GetInstance()->GetCurrentScene()->SetupNewObject(); };
+	lua["Object"]["FindObjectPerName"] = [](string FindName) {return OBJManager->FindObjectPerName(FindName); };
+
+	int result = luaL_loadstring(lua.lua_state(), ScriptToRun.c_str());
+
+	if (result == LUA_OK) {
+		result = lua_pcall(lua.lua_state(), 0, LUA_MULTRET, 0);
+		if (result != LUA_OK) {
+			std::string error = lua_tostring(lua.lua_state(), -1);
+			std::cout << "Error: " << error << std::endl;
+			lua_pop(lua.lua_state(), 1);
+		}
+	}
+	else {
+		std::string error = lua_tostring(lua.lua_state(), -1);
+		std::cout << "Error: " << error << std::endl;
+		lua_pop(lua.lua_state(), 1);
 	}
 }

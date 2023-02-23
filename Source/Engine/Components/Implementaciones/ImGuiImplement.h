@@ -8,8 +8,8 @@
 #include <tchar.h>
 #include "../Object.h"
 #include "../InputSystem/InputSystem.h"
+#include "../../WindowsCompiler/WindowsCompiler.h"
 
-using namespace std;
 
 class ImGuiImplement {
 public:
@@ -65,6 +65,7 @@ private:
 
 	void DrawUI() {
 
+	
 
 		if (ImGui::BeginMainMenuBar()) {
 
@@ -77,7 +78,8 @@ private:
 
 			if (ImGui::BeginMenu("Build")) {
 				if (ImGui::MenuItem("Compile Windows")) {
-					ViewEngineSettings = true;
+					WindowsCompiler CompileData = WindowsCompiler();
+					CompileData.CompileGame();
 				}
 
 				ImGui::EndMenu();
@@ -349,6 +351,7 @@ private:
 
 			ImGui::SetNextWindowSize(ImVec2(800, 650));
 			if (ImGui::Begin("Script Editor", NULL, ImGuiWindowFlags_NoResize)) {
+				ImGui::Text (SelectObject->name.c_str());
 				if (ImGui::Button("Close")) {
 					CodeEditor = false;
 				}
@@ -412,9 +415,5 @@ private:
 
 			ImGui::End();
 		}
-
-
-
-
 	}
 };

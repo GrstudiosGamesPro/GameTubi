@@ -20,4 +20,6 @@ public:
 	static ManagerScene* GetInstance();
 
 	Scene* GetCurrentScene();
+
+	Scene* LoadScene (string SceneName);
 };

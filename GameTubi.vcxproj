@@ -24,6 +24,7 @@
     <ProjectGuid>{8da2092a-a9aa-4b7d-9d62-1ea46dea2e7b}</ProjectGuid>
     <RootNamespace>GameTubi</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>GameTubi_Engine</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -82,7 +83,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Complementos\include\SDL2;$(SolutionDir)Complementos\include\SDL2_IMAGE\;$(SolutionDir)Complementos\include\audeo\;$(SolutionDir)Complementos\include\Box2D\;$(SolutionDir)Complementos\include\IMGUI\;$(SolutionDir)Complementos\include\LUA\;$(SolutionDir)Complementos\include\SDL2_MIXER\;$(SolutionDir)Complementos\include\json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Complementos\include\SDL2;$(SolutionDir)Complementos\include\SDL2_IMAGE\;$(SolutionDir)Complementos\include\audeo\;$(SolutionDir)Complementos\include\Box2D\;$(SolutionDir)Complementos\include\IMGUI\;$(SolutionDir)Complementos\include\LUA\;$(SolutionDir)Complementos\include\SDL2_MIXER\;$(SolutionDir)Complementos\include\json;$(SolutionDir)Complementos\include\sol\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -117,14 +118,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Complementos\include\SDL2;$(SolutionDir)Complementos\include\SDL2_IMAGE\;$(SolutionDir)Complementos\include\audeo\;$(SolutionDir)Complementos\include\Box2D\;$(SolutionDir)Complementos\include\IMGUI\;$(SolutionDir)Complementos\include\LUA\;$(SolutionDir)Complementos\include\SDL2_MIXER\;$(SolutionDir)Complementos\include\json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Complementos\include\SDL2;$(SolutionDir)Complementos\include\SDL2_IMAGE\;$(SolutionDir)Complementos\include\audeo\;$(SolutionDir)Complementos\include\Box2D\;$(SolutionDir)Complementos\include\IMGUI\;$(SolutionDir)Complementos\include\LUA\;$(SolutionDir)Complementos\include\SDL2_MIXER\;$(SolutionDir)Complementos\include\json;$(SolutionDir)Complementos\include\sol\;$(SolutionDir)Complementos\include\IRRKlang\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Complementos\lib\SDL2\x64\;$(SolutionDir)Complementos\lib\SDL2_IMAGE\x64\;$(SolutionDir)Complementos\lib\Box2D\;$(SolutionDir)Complementos\lib\LUA\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;box2d.lib;lua54.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Complementos\lib\SDL2\x64\;$(SolutionDir)Complementos\lib\SDL2_IMAGE\x64\;$(SolutionDir)Complementos\lib\Box2D\;$(SolutionDir)Complementos\lib\LUA\;$(SolutionDir)Complementos\lib\IRRKlang\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;box2d.lib;lua54.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /s /y "$(ProjectDir)BuildSource\*" "$(TargetDir)"</Command>
@@ -159,12 +160,14 @@
     <ClCompile Include="Source\Engine\Components\LUA\LuaRunner.cpp" />
     <ClCompile Include="Source\Engine\Components\Mathf\Vector2.cpp" />
     <ClCompile Include="Source\Engine\Components\Object.cpp" />
+    <ClCompile Include="Source\Engine\Components\Object\ObjectManager.cpp" />
     <ClCompile Include="Source\Engine\Components\SaveSystem\SaveData.cpp" />
     <ClCompile Include="Source\Engine\Components\SceneManager\ManagerScene.cpp" />
     <ClCompile Include="Source\Engine\Components\SceneManager\Scene.cpp" />
     <ClCompile Include="Source\Engine\Components\TextureManager.cpp" />
     <ClCompile Include="Source\Engine\Components\UIBuilder\UIBuilder.cpp" />
     <ClCompile Include="Source\Engine\Window.cpp" />
+    <ClCompile Include="Source\Engine\WindowsCompiler\WindowsCompiler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Complementos\include\IMGUI\imconfig.h" />
@@ -180,12 +183,14 @@
     <ClInclude Include="Source\Engine\Components\LUA\LuaRunner.h" />
     <ClInclude Include="Source\Engine\Components\Mathf\Vector2.h" />
     <ClInclude Include="Source\Engine\Components\Object.h" />
+    <ClInclude Include="Source\Engine\Components\Object\ObjectManager.h" />
     <ClInclude Include="Source\Engine\Components\SaveSystem\SaveData.h" />
     <ClInclude Include="Source\Engine\Components\SceneManager\ManagerScene.h" />
     <ClInclude Include="Source\Engine\Components\SceneManager\Scene.h" />
     <ClInclude Include="Source\Engine\Components\TextureManager.h" />
     <ClInclude Include="Source\Engine\Components\UIBuilder\UIBuilder.h" />
     <ClInclude Include="Source\Engine\Window.h" />
+    <ClInclude Include="Source\Engine\WindowsCompiler\WindowsCompiler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

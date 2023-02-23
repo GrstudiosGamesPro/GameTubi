@@ -47,8 +47,8 @@ void SaveData::Save() {
             Object obj = *ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i];
 
             ObjectsValues["ObjectName"] = obj.GetName();
-            ObjectsValues["PosX"] = obj.GetPosition().x;
-            ObjectsValues["PosY"] = obj.GetPosition().y;
+            ObjectsValues["PosX"] = obj.pos.x;
+            ObjectsValues["PosY"] = obj.pos.y;
 
             ObjectsValues["ScaleX"] = obj.ScaleX;
             ObjectsValues["ScaleY"] = obj.ScaleY;
@@ -75,6 +75,9 @@ void SaveData::Save() {
         string BackgroundPath = ManagerScene::GetInstance()->GetCurrentScene()->TexturePath;
         ObjectData["BackgroundPath"] = BackgroundPath;
 
+        bool FullScreen = ManagerScene::GetInstance()->GetCurrentScene()->UseFullScreen;
+        ObjectData["BGFullScreen"] = FullScreen;
+
         outdata.open("Assets/SaveData/" + ManagerScene::GetInstance()->GetCurrentScene()->SceneName + ".Scene");
         outdata << ObjectData;
 
@@ -86,15 +89,28 @@ void SaveData::Save() {
 }
 
 
-void SaveData::Load() {
-    std::ifstream file("Assets/SaveData/SampleScene.Scene");
+void SaveData::Load (string PathScene) {
+    if (ManagerScene::GetInstance()->GetCurrentScene()->GravityWorld != nullptr && ManagerScene::GetInstance()->GetCurrentScene()->GravityWorld->GetBodyCount() > 0) {
+        ManagerScene::GetInstance()->GetCurrentScene()->GravityWorld = nullptr;
+        //ManagerScene::GetInstance()->GetCurrentScene()->UnLoadAllBodys();
 
+        for (int i = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size() - 1; i >= 0; i--) {
+            //ManagerScene::GetInstance()->GetCurrentScene()->GravityWorld->DestroyBody (ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->body);
+            ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.erase(ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.begin() + i);
+        }
+        ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.clear();
+        ManagerScene::GetInstance()->GetCurrentScene()->CreateGravity();
+    }
+
+    std::ifstream file (PathScene);
+    std::cout << "Loading Path: " << PathScene;
     if (file) {
         json data;
         file >> data;
 
         std::string nombre = (string)data["SceneName"];
         ManagerScene::GetInstance()->GetCurrentScene()->TexturePath = (string)data["BackgroundPath"];
+        ManagerScene::GetInstance()->GetCurrentScene()->UseFullScreen = (bool)data["BGFullScreen"];
         ManagerScene::GetInstance()->GetCurrentScene()->SetNewBackground();
         nlohmann::json ObjectsArray = data["Objetos"];
 
@@ -105,7 +121,6 @@ void SaveData::Load() {
             OBJ->pos.x = (float)ObjectsArray[i]["PosX"];
             OBJ->pos.y = (float)ObjectsArray[i]["PosY"];
             OBJ->Script = (string)ObjectsArray[i]["Scripting"];
-            OBJ->Start();
 
             OBJ->SetName(ObjectsArray[i]["ObjectName"]);
 

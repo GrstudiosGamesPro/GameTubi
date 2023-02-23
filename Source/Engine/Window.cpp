@@ -7,8 +7,12 @@
 #include <vector>
 #include <iostream>
 #include <cstdlib>
+#include "irrKlang.h"
+#include <fstream>
+
 
 using namespace std;
+using namespace irrklang;
 
 SDL_Renderer* Window::renderer = nullptr;
 
@@ -40,7 +44,11 @@ Window::Window(){
 
 void Window::StartWindow(const char* title, int xpos, int ypos, int width, int height, bool fullscreen) {
 #pragma region Start Engine
-
+	ISoundEngine* engine = createIrrKlangDevice();
+	if (!engine) {
+		std::cout << "Failed to create mp3" << endl;
+	}
+	engine->play2D("Assets/Audio/test.mp3", false);
 
 	int flags = 0;
 
@@ -100,9 +108,59 @@ void Window::handleEvents() {
 		isRunning = false;
 		break;
 
+	case SDL_DROPFILE:
+		Window::LoadFile (event.drop.file);
+		break;
+
 	default:
 		break;
 	}
+}
+
+void Window::LoadFile(string path) {
+	std::filesystem::path patha(path);
+
+	std::string source_path = path;
+	std::string dest_path = "Assets/Sprites/" + patha.filename().string();
+
+	std::ifstream source_file(source_path, std::ios::binary);
+
+	// verificar si la apertura del archivo de origen fue exitosa
+	if (!source_file.is_open()) {
+		std::cerr << "No se pudo abrir el archivo de origen" << std::endl;
+	}
+
+	// abrir el archivo de destino en modo binario
+	std::ofstream dest_file(dest_path, std::ios::binary);
+
+	// verificar si la apertura del archivo de destino fue exitosa
+	if (!dest_file.is_open()) {
+		std::cerr << "No se pudo abrir el archivo de destino" << std::endl;
+	}
+
+	// determinar el tamaño del archivo de origen
+	source_file.seekg(0, std::ios::end);
+	std::streamsize size = source_file.tellg();
+	source_file.seekg(0, std::ios::beg);
+
+	// reservar un buffer de tamaño suficiente para el archivo
+	std::vector<char> buffer(size);
+
+	// leer todo el archivo en el buffer
+	if (!source_file.read(buffer.data(), size)) {
+		std::cerr << "No se pudo leer el archivo de origen" << std::endl;
+	}
+
+	// escribir todo el buffer en el archivo de destino
+	if (!dest_file.write(buffer.data(), size)) {
+		std::cerr << "No se pudo escribir el archivo de destino" << std::endl;
+	}
+
+	// cerrar los archivos
+	source_file.close();
+	dest_file.close();
+
+	std::cout << "El archivo ha sido copiado correctamente" << std::endl;
 }
 
 void Window::OnUpdate() {
@@ -122,28 +180,24 @@ void Window::OnUpdate() {
 	if (event.type == SDL_KEYDOWN) {
 		if (event.button.button == SDL_SCANCODE_LCTRL) {
 			DragginMouse = true;
-			std::cout << "Arrastrando" << endl;
 		}
 	}
 
 	if (event.type == SDL_KEYUP) {
 		if (event.button.button == SDL_SCANCODE_LCTRL) {
 			DragginMouse = false;
-			std::cout << "Arrastrado cancelado" << endl;
 		}
 	}
 
 	if (event.type == SDL_MOUSEBUTTONDOWN) {
 		if (event.button.button == SDL_BUTTON_LEFT) {
 			DragginMouseX = true;
-			std::cout << "Arrastrando" << endl;
 		}
 	}
 
 	if (event.type == SDL_MOUSEBUTTONUP) {
 		if (event.button.button == SDL_BUTTON_LEFT) {
 			DragginMouseX = false;
-			std::cout << "Arrastrado cancelado" << endl;
 		}
 	}
 
@@ -162,8 +216,6 @@ void Window::OnUpdate() {
 
 	float ppiX = static_cast<float>(w) / static_cast<float>(relX);
 	float ppiY = static_cast<float>(h) / static_cast<float>(relY);
-
-
 
 	if (DragginMouse && DragginMouseX) {
 		if (dx >= CAMERA_MAX_VEL) {
@@ -302,9 +354,7 @@ void Window::OnRender() {
 			int distanceY = obj2->pos.y;
 
 
-			obj2->pos.x = distanceX;
-			obj2->pos.y = distanceY;
-
+			//obj2->SetPosition (distanceX, distanceY);
 		}
 	}
 

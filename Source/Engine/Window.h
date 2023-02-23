@@ -6,6 +6,8 @@
 #include "Components/TextureManager.h"
 #include <iostream>
 
+using namespace std;
+
 class Window
 {
 public:
@@ -29,6 +31,7 @@ public:
 	static float Sensibilidad;
 	int GridSize;
 	static int CAMERA_MAX_VEL;
+	void LoadFile (string path);
 
 private:
 	int count;

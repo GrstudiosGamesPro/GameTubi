@@ -4,9 +4,6 @@
     <Filter Include="Engine">
       <UniqueIdentifier>{c1482bae-00a4-431b-a7da-2e0ff8815e4b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\EngineWindow">
-      <UniqueIdentifier>{49c02e73-2e51-4b00-a8ce-1b9c138d8af9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Components">
       <UniqueIdentifier>{181654fa-de97-4871-a713-dcdd0a740b23}</UniqueIdentifier>
     </Filter>
@@ -39,6 +36,15 @@
     </Filter>
     <Filter Include="Engine\Components\SaveSystem">
       <UniqueIdentifier>{ed2d51dc-7a5d-4d85-a414-017bf08dcca4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Compiler">
+      <UniqueIdentifier>{04dd8e88-02e7-4e4c-be4c-9e11bb6f5fc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Compiler\WindowCompiler">
+      <UniqueIdentifier>{7140e5ec-1037-4861-8d4b-747b206e5d91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\EngineWindow">
+      <UniqueIdentifier>{49c02e73-2e51-4b00-a8ce-1b9c138d8af9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +101,12 @@
     </ClCompile>
     <ClCompile Include="Source\Engine\Components\SaveSystem\SaveData.cpp">
       <Filter>Engine\Components\SaveSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\WindowsCompiler\WindowsCompiler.cpp">
+      <Filter>Engine\Compiler\WindowCompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Components\Object\ObjectManager.cpp">
+      <Filter>Engine\Components\GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +166,12 @@
     </ClInclude>
     <ClInclude Include="Source\Engine\Components\SaveSystem\SaveData.h">
       <Filter>Engine\Components\SaveSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\WindowsCompiler\WindowsCompiler.h">
+      <Filter>Engine\Compiler\WindowCompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\Object\ObjectManager.h">
+      <Filter>Engine\Components\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
