@@ -26,6 +26,8 @@ void Object::Start() {
 	Object::CreateBody();
 	body->SetTransform(b2Vec2(pos.x, pos.y), 0);
 	OBJManager = new ObjectManager();
+	source = new AudioSource();
+	source->Start();
 }
 
 void Object::Update() {
@@ -76,6 +78,7 @@ void Object::Update() {
 
 
 void Object::CreateBody() {
+
 	if (ManagerScene::GetInstance()->GetCurrentScene()->GravityWorld != nullptr) {
 		if (dynamicBox == nullptr) {
 			dynamicBox = new b2PolygonShape();
@@ -154,6 +157,7 @@ Vector2 Object::GetPosition() {
 void Object::Draw() {
 	if (isActive) {
 		TextureManager::Draw(text, srcRect, Angle, destRect);
+		source->Draw(destRect.x, destRect.y);
 
 		float angle = body->GetAngle();
 		b2PolygonShape* shape = (b2PolygonShape*)body->GetFixtureList()->GetShape();
@@ -392,6 +396,14 @@ void Object::CallLua(string ScriptToRun) {
 	lua["Object"]["new"] = []() { return ManagerScene::GetInstance()->GetCurrentScene()->SetupNewObject(); };
 	lua["Object"]["FindObjectPerName"] = [](string FindName) {return OBJManager->FindObjectPerName(FindName); };
 
+	lua.new_usertype<AudioSource>("Audio");
+	lua["Audio"]["Play"] = []() {  };
+
+	sol::usertype<AudioSource> miTipo = lua.new_usertype<AudioSource>("Audio",
+		"Play", &AudioSource::Play
+	);
+	lua["AudioSource"] = source;
+
 	int result = luaL_loadstring(lua.lua_state(), ScriptToRun.c_str());
 
 	if (result == LUA_OK) {
@@ -407,4 +419,8 @@ void Object::CallLua(string ScriptToRun) {
 		std::cout << "Error: " << error << std::endl;
 		lua_pop(lua.lua_state(), 1);
 	}
+}
+
+void miFuncion(int a, int b) {
+	// Hacer algo aquí con los parámetros a y b
 }

@@ -2,6 +2,7 @@
 #include "../Window.h"
 #include "SDL.h"
 #include "Mathf/Vector2.h"
+#include "AudioSource/AudioSource.h"
 
 using namespace std;
 
@@ -23,6 +24,7 @@ public:
 	b2Body* body;
 	b2PolygonShape* dynamicBox;
 	b2FixtureDef* fixtureDef;
+	AudioSource* source;
 
 	Vector2 pos;
 	string name = "Game Object";

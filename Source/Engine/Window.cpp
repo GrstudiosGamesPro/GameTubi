@@ -7,12 +7,10 @@
 #include <vector>
 #include <iostream>
 #include <cstdlib>
-#include "irrKlang.h"
 #include <fstream>
 
 
 using namespace std;
-using namespace irrklang;
 
 SDL_Renderer* Window::renderer = nullptr;
 
@@ -44,12 +42,6 @@ Window::Window(){
 
 void Window::StartWindow(const char* title, int xpos, int ypos, int width, int height, bool fullscreen) {
 #pragma region Start Engine
-	ISoundEngine* engine = createIrrKlangDevice();
-	if (!engine) {
-		std::cout << "Failed to create mp3" << endl;
-	}
-	engine->play2D("Assets/Audio/test.mp3", false);
-
 	int flags = 0;
 
 	if (fullscreen) {

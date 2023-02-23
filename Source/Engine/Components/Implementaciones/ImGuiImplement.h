@@ -222,7 +222,7 @@ private:
 				ImGui::PushID (3423);
 				ImGui::Text ("Collisions");
 				bool UseCollisions = SelectObject->useGravity;
-				ImGui::Checkbox ("Active: ", &UseCollisions);
+				ImGui::Checkbox ("Gravity: ", &UseCollisions);
 				SelectObject->useGravity = UseCollisions;
 				ImGui::Spacing();
 

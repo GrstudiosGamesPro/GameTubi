@@ -46,6 +46,15 @@
     <Filter Include="Engine\EngineWindow">
       <UniqueIdentifier>{49c02e73-2e51-4b00-a8ce-1b9c138d8af9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Components\Audio">
+      <UniqueIdentifier>{930f3ac1-8890-4dbf-977b-ca4fea154679}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Components\Gizmos">
+      <UniqueIdentifier>{aa3850ba-8072-4bdf-8dfd-82b6799d6f91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Components\ECS">
+      <UniqueIdentifier>{c4e8a1fb-8584-4fbd-864d-a03ab8448602}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameTubi.cpp">
@@ -107,6 +116,15 @@
     </ClCompile>
     <ClCompile Include="Source\Engine\Components\Object\ObjectManager.cpp">
       <Filter>Engine\Components\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Components\AudioSource\AudioSource.cpp">
+      <Filter>Engine\Components\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Components\Gizmos\GizmoDrawer.cpp">
+      <Filter>Engine\Components\Gizmos</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Components\ECS\ECS.cpp">
+      <Filter>Engine\Components\ECS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +190,15 @@
     </ClInclude>
     <ClInclude Include="Source\Engine\Components\Object\ObjectManager.h">
       <Filter>Engine\Components\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\AudioSource\AudioSource.h">
+      <Filter>Engine\Components\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\Gizmos\GizmoDrawer.h">
+      <Filter>Engine\Components\Gizmos</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\ECS\ECS.h">
+      <Filter>Engine\Components\ECS</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
