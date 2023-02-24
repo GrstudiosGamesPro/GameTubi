@@ -5,6 +5,7 @@
 #include "box2d.h"
 #include "b2_draw.h"
 #include "../SaveSystem/SaveData.h"
+#include "../AudioSource/AudioSource.h"
 
 using namespace std;
 
@@ -19,6 +20,7 @@ public:
 	std::string TexturePath = "Assets/Sprites/Background.png";
 
 	std::vector<Object*> ObjectsInScene;
+	std::vector<AudioSource*> Audio;
 	b2World* GravityWorld;
 	string SceneName = "SampleScene";
 	bool UseFullScreen = false;
@@ -60,6 +62,14 @@ public:
 		ObjectsInScene.push_back (newOBJ);
 
 		return newOBJ;
+	}
+
+	AudioSource* SetupNewAudio() {
+		AudioSource* NewAudio = new AudioSource();
+		NewAudio->Name = "Audio Source";
+		NewAudio->Start();
+		Audio.push_back (NewAudio);
+		return NewAudio;
 	}
 
 	void UnLoadAllBodys() {

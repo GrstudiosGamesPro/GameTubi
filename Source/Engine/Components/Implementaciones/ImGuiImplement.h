@@ -9,6 +9,7 @@
 #include "../Object.h"
 #include "../InputSystem/InputSystem.h"
 #include "../../WindowsCompiler/WindowsCompiler.h"
+#include "../AudioSource/AudioSource.h"
 
 
 class ImGuiImplement {
@@ -16,6 +17,7 @@ public:
 	Window* wnd;
 	SDL_Texture* texture;
 	Object* SelectObject;
+	AudioSource* CurrentAudioSourceSelect;
 
 	void SetupOnStart(SDL_Window* window, SDL_Renderer* renderer) {
 		IMGUI_CHECKVERSION();
@@ -110,43 +112,99 @@ private:
 
 		if (ImGui::Begin("Hierarchy")) {
 
-			for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size(); i++) {
-				ImGui::PushID(i);
+			if (ImGui::TreeNode ("Workspace")) {
+				for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size(); i++) {
+					ImGui::PushID(i);
 
-				if (!ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->isActive) {
-					string InactiveName = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->name + " (Inactive)";
+					if (!ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->isActive) {
+						string InactiveName = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->name + " (Inactive)";
 
-					if (ImGui::Button(InactiveName.c_str())) {
-						if (SelectObject == ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]) {
-							SelectObject = nullptr;
-						}
-						else {
-							SelectObject = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i];
+						if (ImGui::Button(InactiveName.c_str())) {
+							if (SelectObject == ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]) {
+								SelectObject = nullptr;
+							}
+							else {
+								SelectObject = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i];
+							}
 						}
 					}
-				}
-				else {
-					if (ImGui::Button(ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->name.c_str())) {
-						if (SelectObject == ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]) {
-							SelectObject = nullptr;
-						}
-						else {
-							SelectObject = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i];
+					else {
+						if (ImGui::Button(ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->name.c_str())) {
+							if (SelectObject == ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]) {
+								SelectObject = nullptr;
+							}
+							else {
+								SelectObject = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i];
+							}
 						}
 					}
+					ImGui::PopID();
 				}
-				ImGui::PopID();
+				ImGui::TreePop();
 			}
 
+
+			if (ImGui::TreeNode ("Audio")) {
+
+				for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->Audio.size(); i++) {
+					ImGui::PushID(i);
+					if (ImGui::Button (ManagerScene::GetInstance()->GetCurrentScene()->Audio[i]->Name.c_str())) {
+						if (CurrentAudioSourceSelect == ManagerScene::GetInstance()->GetCurrentScene()->Audio[i]) {
+							CurrentAudioSourceSelect = nullptr;
+						}
+						else {
+							CurrentAudioSourceSelect = ManagerScene::GetInstance()->GetCurrentScene()->Audio[i];
+						}
+					}
+					ImGui::PopID();
+				}
+
+				ImGui::TreePop();
+			}
 			ImGui::End();
 		}
 
+
+		if (CurrentAudioSourceSelect != nullptr) {
+			if (ImGui::Begin ("Audio Setting")) {
+				char name[128];
+				strcpy_s(name, CurrentAudioSourceSelect->Name.c_str());
+				ImGui::InputText ("Name Audio", name, ImGuiInputTextFlags_AutoSelectAll);
+				CurrentAudioSourceSelect->Name = (string)name;
+
+				float GetPosSD[2]{
+					CurrentAudioSourceSelect->Position.x,
+					CurrentAudioSourceSelect->Position.y,
+				};
+
+				ImGui::DragFloat2("Position: ", GetPosSD, 0.01f);
+
+				CurrentAudioSourceSelect->Position.x = GetPosSD[0];
+				CurrentAudioSourceSelect->Position.y = GetPosSD[1];
+
+				ImGui::Spacing();
+				ImGui::Spacing();
+
+				char AudioName[128];
+				strcpy_s(AudioName, CurrentAudioSourceSelect->AudioPath.c_str());
+				ImGui::InputText ("Audio Name", AudioName, ImGuiInputTextFlags_AutoSelectAll);
+				CurrentAudioSourceSelect->AudioPath = (string)AudioName;
+
+				if (ImGui::Button ("Play Test")) {
+					CurrentAudioSourceSelect->Play();
+				}
+
+				if (ImGui::Button ("Stop Test")) {
+					CurrentAudioSourceSelect->Stop();
+				}
+				ImGui::End();
+			}
+		}
 
 
 		if (SelectObject != nullptr) {
 			if (ImGui::Begin("Inspector")) {
 				ImGui::PushID(34233);
-
 				bool IsActive = SelectObject->isActive;
 				ImGui::Checkbox("Is Active", &IsActive);
 				SelectObject->isActive = IsActive;
@@ -338,6 +396,10 @@ private:
 					if (ImGui::MenuItem("Game Object")) {
 						ManagerScene::GetInstance()->GetCurrentScene()->SetupNewObject();
 					}
+
+					if (ImGui::MenuItem("Audio Source")) {
+						ManagerScene::GetInstance()->GetCurrentScene()->SetupNewAudio();
+					}
 					ImGui::EndMenu();
 				}
 
@@ -350,7 +412,7 @@ private:
 			ImGuiInputTextFlags flags = ImGuiInputTextFlags_CtrlEnterForNewLine;
 
 			ImGui::SetNextWindowSize(ImVec2(800, 650));
-			if (ImGui::Begin("Script Editor", NULL, ImGuiWindowFlags_NoResize)) {
+			if (ImGui::Begin("Script Editor", NULL, ImGuiWindowFlags_NoResize | ImGuiInputTextFlags_EnterReturnsTrue)) {
 				ImGui::Text (SelectObject->name.c_str());
 				if (ImGui::Button("Close")) {
 					CodeEditor = false;

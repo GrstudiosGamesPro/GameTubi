@@ -21,8 +21,15 @@ public:
 	}
 
 	void Draw (float posX, float posY) {
-		SDL_SetTextureAlphaMod(texture, 128);
-		SDL_Rect dest_rect = { posX, posY, 32, 32 };
+
+		float centerX = posX * 32;
+		float centerY = posY * 32;
+
+		float textureX = centerX - 32 / 2 - Window::camera.x;
+		float textureY = centerY - 32 / 2 - Window::camera.y;
+
+		SDL_SetTextureAlphaMod(texture, 230);
+		SDL_Rect dest_rect = { textureX, textureY, 32, 32 };
 		SDL_RenderCopy(Window::renderer, texture, NULL, &dest_rect);
 	}
 };

@@ -41,6 +41,7 @@ void SaveData::Save() {
 
         ofstream outdata;
         json Objects = json::array();
+        json ObjectsAudio = json::array();
 
         for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size(); i++) {
             json ObjectsValues;
@@ -67,6 +68,18 @@ void SaveData::Save() {
             Objects.push_back(ObjectsValues);
         }
 
+        for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->Audio.size(); i++) {
+            json AudioValue;
+            AudioSource* source = ManagerScene::GetInstance()->GetCurrentScene()->Audio[i];
+
+            AudioValue["Name"] = source->Name;
+            AudioValue["AudioPath"] = source->AudioPath;
+            AudioValue["PosX"] = source->Position.x;
+            AudioValue["PosY"] = source->Position.y;
+            ObjectsAudio.push_back (AudioValue);
+        }
+
+        ObjectData["AudioSources"] = ObjectsAudio;
         ObjectData["Objetos"] = Objects;
 
         string SceneGettedName = ManagerScene::GetInstance()->GetCurrentScene()->SceneName;
@@ -100,6 +113,11 @@ void SaveData::Load (string PathScene) {
         }
         ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.clear();
         ManagerScene::GetInstance()->GetCurrentScene()->CreateGravity();
+
+        for (int i = ManagerScene::GetInstance()->GetCurrentScene()->Audio.size() - 1; i >= 0; i--) {
+            ManagerScene::GetInstance()->GetCurrentScene()->Audio[i]->Stop();
+            ManagerScene::GetInstance()->GetCurrentScene()->Audio.erase (ManagerScene::GetInstance()->GetCurrentScene()->Audio.begin() + i);
+        }
     }
 
     std::ifstream file (PathScene);
@@ -113,6 +131,7 @@ void SaveData::Load (string PathScene) {
         ManagerScene::GetInstance()->GetCurrentScene()->UseFullScreen = (bool)data["BGFullScreen"];
         ManagerScene::GetInstance()->GetCurrentScene()->SetNewBackground();
         nlohmann::json ObjectsArray = data["Objetos"];
+        nlohmann::json ObjectsAudioArray = data["AudioSources"];
 
 
         for (int i = 0; i < ObjectsArray.size(); i++) {
@@ -120,6 +139,7 @@ void SaveData::Load (string PathScene) {
             Object* OBJ = new Object();
             OBJ->pos.x = (float)ObjectsArray[i]["PosX"];
             OBJ->pos.y = (float)ObjectsArray[i]["PosY"];
+            OBJ->Start();
             OBJ->Script = (string)ObjectsArray[i]["Scripting"];
 
             OBJ->SetName(ObjectsArray[i]["ObjectName"]);
@@ -138,7 +158,17 @@ void SaveData::Load (string PathScene) {
             OBJ->useGravity = (bool)ObjectsArray[i]["ColisionActive"];
             OBJ->density = (float)ObjectsArray[i]["Density"];
             OBJ->friction = (float)ObjectsArray[i]["Friction"];
+            OBJ->UpdateCollisions();
             ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.push_back(OBJ);
+        }
+
+        for (int i = 0; i < ObjectsAudioArray.size(); i++) {
+            AudioSource* newSource = new AudioSource();
+            newSource->Name = (string)ObjectsAudioArray[i]["Name"];
+            newSource->AudioPath = (string)ObjectsAudioArray[i]["AudioPath"];
+            newSource->Position.x = (float)ObjectsAudioArray[i]["PosX"];
+            newSource->Position.y = (float)ObjectsAudioArray[i]["PosY"];
+            ManagerScene::GetInstance()->GetCurrentScene()->Audio.push_back (newSource);
         }
 
         file.close();

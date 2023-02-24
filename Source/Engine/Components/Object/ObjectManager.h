@@ -1,5 +1,6 @@
 #pragma once
 #include "../SceneManager/ManagerScene.h"
+#include "../AudioSource/AudioSource.h"
 #include <iostream>
 
 class ObjectManager
@@ -13,6 +14,15 @@ public:
 			}
 		}
 
+		return nullptr;
+	}
+
+	AudioSource* FindAudioSourcePerName (string SourceName) {
+		for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->Audio.size(); i++) {
+			if (ManagerScene::GetInstance()->GetCurrentScene()->Audio[i]->Name == SourceName) {
+				return ManagerScene::GetInstance()->GetCurrentScene()->Audio[i];
+			}
+		}
 		return nullptr;
 	}
 };

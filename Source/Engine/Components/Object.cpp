@@ -10,7 +10,6 @@ static ObjectManager* OBJManager;
 
 Object::Object() {
 	std::cout << "Objeto creado" << endl;
-	Start();
 }
 
  
@@ -63,6 +62,7 @@ void Object::Update() {
 
 		pos.x = body->GetPosition().x;
 		pos.y = body->GetPosition().y;
+		Angle = body->GetAngle();
 
 
 		if (useGravity && body != nullptr) 
@@ -157,7 +157,6 @@ Vector2 Object::GetPosition() {
 void Object::Draw() {
 	if (isActive) {
 		TextureManager::Draw(text, srcRect, Angle, destRect);
-		source->Draw(destRect.x, destRect.y);
 
 		float angle = body->GetAngle();
 		b2PolygonShape* shape = (b2PolygonShape*)body->GetFixtureList()->GetShape();
@@ -396,12 +395,16 @@ void Object::CallLua(string ScriptToRun) {
 	lua["Object"]["new"] = []() { return ManagerScene::GetInstance()->GetCurrentScene()->SetupNewObject(); };
 	lua["Object"]["FindObjectPerName"] = [](string FindName) {return OBJManager->FindObjectPerName(FindName); };
 
-	lua.new_usertype<AudioSource>("Audio");
-	lua["Audio"]["Play"] = []() {  };
-
-	sol::usertype<AudioSource> miTipo = lua.new_usertype<AudioSource>("Audio",
-		"Play", &AudioSource::Play
+	sol::usertype<AudioSource> miTipo = lua.new_usertype<AudioSource>("AudioSource",
+		"Play", &AudioSource::Play,
+		"Stop", &AudioSource::Stop,
+		"SetVolumen", &AudioSource::SetVolume,
+		"GetVolumen", &AudioSource::GetVolumen,
+		"PlayPerName", &AudioSource::PlayClipPerName,
+		"SetPosition", &AudioSource::SetPosition
 	);
+
+	lua["AudioSource"]["FindSourcePerName"] = [](string FindName) {return OBJManager->FindAudioSourcePerName(FindName); };
 	lua["AudioSource"] = source;
 
 	int result = luaL_loadstring(lua.lua_state(), ScriptToRun.c_str());
@@ -419,8 +422,4 @@ void Object::CallLua(string ScriptToRun) {
 		std::cout << "Error: " << error << std::endl;
 		lua_pop(lua.lua_state(), 1);
 	}
-}
-
-void miFuncion(int a, int b) {
-	// Hacer algo aquí con los parámetros a y b
 }

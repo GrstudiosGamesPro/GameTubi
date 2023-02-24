@@ -4,10 +4,12 @@
 #include "Components/Object.h"
 #include "Components/SceneManager/Scene.h"
 #include "Components/SceneManager/ManagerScene.h"
+#include "Components/AudioSource/AudioSource.h"
 #include <vector>
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
+#include "SDL_image.h"
 
 
 using namespace std;
@@ -84,6 +86,10 @@ void Window::StartWindow(const char* title, int xpos, int ypos, int width, int h
 
 	for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size(); i++) {
 		ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->Start();
+	}
+
+	for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->Audio.size(); i++) {
+		ManagerScene::GetInstance()->GetCurrentScene()->Audio[i]->Start();
 	}
 #pragma endregion
 }
@@ -281,6 +287,10 @@ void Window::OnRender() {
 
 	for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size(); i++) {
 		ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->Draw();
+	}
+
+	for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->Audio.size(); i++) {
+		ManagerScene::GetInstance()->GetCurrentScene()->Audio[i]->Draw ();
 	}
 
 	imgui.RenderUI (event);
