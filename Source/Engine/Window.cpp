@@ -277,7 +277,6 @@ void Window::OnRender() {
 			SDL_RenderDrawLine(renderer, 0, y, Width, y);
 		}
 
-		// Draw vertical lines
 		for (int x = 0; x < Width; x += grd)
 		{
 			SDL_RenderDrawLine(renderer, x, 0, x, Height);
@@ -356,7 +355,7 @@ void Window::OnRender() {
 			int distanceY = obj2->pos.y;
 
 
-			//obj2->SetPosition (distanceX, distanceY);
+			obj2->SetPosition (distanceX, distanceY);
 		}
 	}
 

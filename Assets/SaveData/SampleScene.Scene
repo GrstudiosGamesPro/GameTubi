@@ -1,1 +1,58 @@
-{"AudioSources":[{"AudioPath":"Test","Name":"tester","PosX":25.1200008392334,"PosY":25.0}],"BGFullScreen":true,"BackgroundPath":"Assets/Sprites/Background.png","Objetos":[{"ColisionActive":false,"Density":1.0,"Friction":0.30000001192092896,"ObjectName":"Player","PosX":13.233321189880371,"PosY":9.255316734313965,"ScaleBoxX":5.0,"ScaleBoxY":5.0,"ScaleX":8.020000457763672,"ScaleY":6.630000114440918,"Scripting":"local t = AudioSource.FindSourcePerName (\"tester\");","SpritePath":"Assets/Sprites/landingoutline.png"},{"ColisionActive":false,"Density":1.0,"Friction":0.30000001192092896,"ObjectName":"Floor","PosX":11.559842109680176,"PosY":24.6964168548584,"ScaleBoxX":25.0,"ScaleBoxY":1.0,"ScaleX":1.0,"ScaleY":1.0,"Scripting":"function OnStart ()\n\n--EXECUTE ON START THE GAME\n\n\nend\n\n\n\n\n\n\n\nfunction OnUpdate ()\n\n--THIS EXECUTE IN LOOP \n\n\nend","SpritePath":"Assets/Sprites/landingoutline.png"}],"SceneName":"SampleScene"}
+{
+    "AudioSources": [
+        {
+            "AudioPath": "",
+            "Name": "Audio Source",
+            "PosX": 9.010000228881836,
+            "PosY": 8.4399995803833
+        }
+    ],
+    "BGFullScreen": true,
+    "BackgroundPath": "Assets/Sprites/Background.png",
+    "CompileScene": false,
+    "Objetos": [
+        {
+            "ColisionActive": false,
+            "Density": 1.0,
+            "Friction": 0.30000001192092896,
+            "ObjectName": "Game Object",
+            "PosX": 25.0,
+            "PosY": 25.0,
+            "ScaleBoxX": 1.0,
+            "ScaleBoxY": 1.0,
+            "ScaleX": 1.0,
+            "ScaleY": 1.0,
+            "Scripting": "function OnStart ()\n\n--EXECUTE ON START THE GAME\n\n\nend\n\n\n\n\n\n\n\nfunction OnUpdate ()\n\n--THIS EXECUTE IN LOOP \n\n\nend",
+            "SpritePath": "Assets/Sprites/landingoutline.png"
+        },
+        {
+            "ColisionActive": false,
+            "Density": 1.0,
+            "Friction": 0.30000001192092896,
+            "ObjectName": "Game Object",
+            "PosX": 7.0,
+            "PosY": 8.0,
+            "ScaleBoxX": 1.0,
+            "ScaleBoxY": 1.0,
+            "ScaleX": 1.0,
+            "ScaleY": 1.0,
+            "Scripting": "function OnStart ()\n\n--EXECUTE ON START THE GAME\n\n\nend\n\n\n\n\n\n\n\nfunction OnUpdate ()\n\n--THIS EXECUTE IN LOOP \n\n\nend",
+            "SpritePath": "Assets/Sprites/landingoutline.png"
+        },
+        {
+            "ColisionActive": false,
+            "Density": 1.0,
+            "Friction": 0.30000001192092896,
+            "ObjectName": "Game Object",
+            "PosX": 5.0,
+            "PosY": 5.0,
+            "ScaleBoxX": 1.0,
+            "ScaleBoxY": 1.0,
+            "ScaleX": 1.0,
+            "ScaleY": 1.0,
+            "Scripting": "function OnStart ()\n\n--EXECUTE ON START THE GAME\n\n\nend\n\n\n\n\n\n\n\nfunction OnUpdate ()\n\n--THIS EXECUTE IN LOOP \n\n\nend",
+            "SpritePath": "Assets/Sprites/landingoutline.png"
+        }
+    ],
+    "SceneName": "SampleScene"
+}

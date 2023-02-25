@@ -90,9 +90,13 @@ void SaveData::Save() {
 
         bool FullScreen = ManagerScene::GetInstance()->GetCurrentScene()->UseFullScreen;
         ObjectData["BGFullScreen"] = FullScreen;
+        
+        
+        bool CompileScene = ManagerScene::GetInstance()->GetCurrentScene()->CompileScene;
+        ObjectData["CompileScene"] = CompileScene;
 
         outdata.open("Assets/SaveData/" + ManagerScene::GetInstance()->GetCurrentScene()->SceneName + ".Scene");
-        outdata << ObjectData;
+        outdata << ObjectData.dump (4);
 
         if (!outdata) {
             cerr << "Error: file could not be opened" << endl;
@@ -129,6 +133,7 @@ void SaveData::Load (string PathScene) {
         std::string nombre = (string)data["SceneName"];
         ManagerScene::GetInstance()->GetCurrentScene()->TexturePath = (string)data["BackgroundPath"];
         ManagerScene::GetInstance()->GetCurrentScene()->UseFullScreen = (bool)data["BGFullScreen"];
+        ManagerScene::GetInstance()->GetCurrentScene()->CompileScene = (bool)data["CompileScene"];
         ManagerScene::GetInstance()->GetCurrentScene()->SetNewBackground();
         nlohmann::json ObjectsArray = data["Objetos"];
         nlohmann::json ObjectsAudioArray = data["AudioSources"];
@@ -139,7 +144,6 @@ void SaveData::Load (string PathScene) {
             Object* OBJ = new Object();
             OBJ->pos.x = (float)ObjectsArray[i]["PosX"];
             OBJ->pos.y = (float)ObjectsArray[i]["PosY"];
-            OBJ->Start();
             OBJ->Script = (string)ObjectsArray[i]["Scripting"];
 
             OBJ->SetName(ObjectsArray[i]["ObjectName"]);
@@ -158,7 +162,6 @@ void SaveData::Load (string PathScene) {
             OBJ->useGravity = (bool)ObjectsArray[i]["ColisionActive"];
             OBJ->density = (float)ObjectsArray[i]["Density"];
             OBJ->friction = (float)ObjectsArray[i]["Friction"];
-            OBJ->UpdateCollisions();
             ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.push_back(OBJ);
         }
 
@@ -168,6 +171,7 @@ void SaveData::Load (string PathScene) {
             newSource->AudioPath = (string)ObjectsAudioArray[i]["AudioPath"];
             newSource->Position.x = (float)ObjectsAudioArray[i]["PosX"];
             newSource->Position.y = (float)ObjectsAudioArray[i]["PosY"];
+            newSource->Start();
             ManagerScene::GetInstance()->GetCurrentScene()->Audio.push_back (newSource);
         }
 
