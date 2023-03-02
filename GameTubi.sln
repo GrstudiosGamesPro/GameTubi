@@ -7,20 +7,25 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameTubi_Engine", "GameTubi
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|ARM = Debug|ARM
 		Debug|ARM64 = Debug|ARM64
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
 		Release|ARM = Release|ARM
 		Release|ARM64 = Release|ARM64
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
+		Window|Any CPU = Window|Any CPU
 		Window|ARM = Window|ARM
 		Window|ARM64 = Window|ARM64
 		Window|x64 = Window|x64
 		Window|x86 = Window|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8DA2092A-A9AA-4B7D-9D62-1EA46DEA2E7B}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{8DA2092A-A9AA-4B7D-9D62-1EA46DEA2E7B}.Debug|Any CPU.Build.0 = Debug|x64
 		{8DA2092A-A9AA-4B7D-9D62-1EA46DEA2E7B}.Debug|ARM.ActiveCfg = Debug|x64
 		{8DA2092A-A9AA-4B7D-9D62-1EA46DEA2E7B}.Debug|ARM.Build.0 = Debug|x64
 		{8DA2092A-A9AA-4B7D-9D62-1EA46DEA2E7B}.Debug|ARM64.ActiveCfg = Debug|x64
@@ -29,6 +34,8 @@ Global
 		{8DA2092A-A9AA-4B7D-9D62-1EA46DEA2E7B}.Debug|x64.Build.0 = Debug|x64
 		{8DA2092A-A9AA-4B7D-9D62-1EA46DEA2E7B}.Debug|x86.ActiveCfg = Debug|Win32
 		{8DA2092A-A9AA-4B7D-9D62-1EA46DEA2E7B}.Debug|x86.Build.0 = Debug|Win32
+		{8DA2092A-A9AA-4B7D-9D62-1EA46DEA2E7B}.Release|Any CPU.ActiveCfg = Release|x64
+		{8DA2092A-A9AA-4B7D-9D62-1EA46DEA2E7B}.Release|Any CPU.Build.0 = Release|x64
 		{8DA2092A-A9AA-4B7D-9D62-1EA46DEA2E7B}.Release|ARM.ActiveCfg = Release|x64
 		{8DA2092A-A9AA-4B7D-9D62-1EA46DEA2E7B}.Release|ARM.Build.0 = Release|x64
 		{8DA2092A-A9AA-4B7D-9D62-1EA46DEA2E7B}.Release|ARM64.ActiveCfg = Release|x64
@@ -37,6 +44,8 @@ Global
 		{8DA2092A-A9AA-4B7D-9D62-1EA46DEA2E7B}.Release|x64.Build.0 = Release|x64
 		{8DA2092A-A9AA-4B7D-9D62-1EA46DEA2E7B}.Release|x86.ActiveCfg = Release|Win32
 		{8DA2092A-A9AA-4B7D-9D62-1EA46DEA2E7B}.Release|x86.Build.0 = Release|Win32
+		{8DA2092A-A9AA-4B7D-9D62-1EA46DEA2E7B}.Window|Any CPU.ActiveCfg = Window|x64
+		{8DA2092A-A9AA-4B7D-9D62-1EA46DEA2E7B}.Window|Any CPU.Build.0 = Window|x64
 		{8DA2092A-A9AA-4B7D-9D62-1EA46DEA2E7B}.Window|ARM.ActiveCfg = Window|x64
 		{8DA2092A-A9AA-4B7D-9D62-1EA46DEA2E7B}.Window|ARM.Build.0 = Window|x64
 		{8DA2092A-A9AA-4B7D-9D62-1EA46DEA2E7B}.Window|ARM64.ActiveCfg = Window|x64

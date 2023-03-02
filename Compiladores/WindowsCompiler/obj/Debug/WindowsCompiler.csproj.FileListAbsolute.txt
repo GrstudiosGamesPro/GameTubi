@@ -1,0 +1,11 @@
+D:\MotoresDeJuegos\GameTubi\Compiladores\WindowsCompiler\bin\Debug\WindowsCompiler.exe.config
+D:\MotoresDeJuegos\GameTubi\Compiladores\WindowsCompiler\bin\Debug\WindowsCompiler.exe
+D:\MotoresDeJuegos\GameTubi\Compiladores\WindowsCompiler\bin\Debug\WindowsCompiler.pdb
+D:\MotoresDeJuegos\GameTubi\Compiladores\WindowsCompiler\obj\Debug\WindowsCompiler.csproj.AssemblyReference.cache
+D:\MotoresDeJuegos\GameTubi\Compiladores\WindowsCompiler\obj\Debug\WindowsCompiler.csproj.SuggestedBindingRedirects.cache
+D:\MotoresDeJuegos\GameTubi\Compiladores\WindowsCompiler\obj\Debug\WindowsCompiler.csproj.CoreCompileInputs.cache
+D:\MotoresDeJuegos\GameTubi\Compiladores\WindowsCompiler\obj\Debug\WindowsCompiler.exe
+D:\MotoresDeJuegos\GameTubi\Compiladores\WindowsCompiler\obj\Debug\WindowsCompiler.pdb
+D:\MotoresDeJuegos\GameTubi\Compiladores\WindowsCompiler\Build\WindowsCompiler.exe.config
+D:\MotoresDeJuegos\GameTubi\Compiladores\WindowsCompiler\Build\WindowsCompiler.exe
+D:\MotoresDeJuegos\GameTubi\Compiladores\WindowsCompiler\Build\WindowsCompiler.pdb

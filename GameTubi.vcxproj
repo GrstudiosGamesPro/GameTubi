@@ -233,6 +233,7 @@
     <ClCompile Include="Complementos\include\IMGUI\imgui_tables.cpp" />
     <ClCompile Include="Complementos\include\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="GameTubi.cpp" />
+    <ClCompile Include="Source\Engine\Components\Animator\AnimatorSprite.cpp" />
     <ClCompile Include="Source\Engine\Components\AudioSource\AudioSource.cpp" />
     <ClCompile Include="Source\Engine\Components\ECS\ECS.cpp" />
     <ClCompile Include="Source\Engine\Components\Gizmos\GizmoDrawer.cpp" />
@@ -258,6 +259,7 @@
     <ClInclude Include="Complementos\include\IMGUI\imstb_rectpack.h" />
     <ClInclude Include="Complementos\include\IMGUI\imstb_textedit.h" />
     <ClInclude Include="Complementos\include\IMGUI\imstb_truetype.h" />
+    <ClInclude Include="Source\Engine\Components\Animator\AnimatorSprite.h" />
     <ClInclude Include="Source\Engine\Components\AudioSource\AudioSource.h" />
     <ClInclude Include="Source\Engine\Components\ECS\ECS.h" />
     <ClInclude Include="Source\Engine\Components\Gizmos\GizmoDrawer.h" />

@@ -3,8 +3,10 @@
 #include "SDL.h"
 #include "Mathf/Vector2.h"
 #include "AudioSource/AudioSource.h"
+#include "sol/sol.hpp"
 
 using namespace std;
+using namespace sol;
 
 struct b2Body;
 struct b2PolygonShape;
@@ -25,7 +27,9 @@ public:
 	b2PolygonShape* dynamicBox;
 	b2FixtureDef* fixtureDef;
 	AudioSource* source;
+	sol::state lua;
 
+	bool LuaCompiled;
 	Vector2 pos;
 	string name = "Game Object";
 	std::string TexturePath;

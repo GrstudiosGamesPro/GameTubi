@@ -3,19 +3,18 @@
 #include "box2d.h"
 #include "SceneManager/ManagerScene.h"
 #include "SaveSystem/SaveData.h"
-#include "sol/sol.hpp"
 #include "Object/ObjectManager.h"
 
 static ObjectManager* OBJManager;
 
-Object::Object() {
+Object::Object () {
 	std::cout << "Objeto creado" << endl;
 }
 
  
 void Object::Start() {
-	text = TextureManager::LoadTexture("Assets/Sprites/landingoutline.png");
-	TexturePath = "Assets/Sprites/landingoutline.png";
+	text = TextureManager::LoadTexture("Assets/Sprites/idle.gif");
+	TexturePath = "Assets/Sprites/idle.gif";
 	srcRect.x = srcRect.y = 0;
 
 	srcRect.w = width;
@@ -72,6 +71,10 @@ void Object::Update() {
 		}
 		else {
 			body->SetType (b2_staticBody);
+		}
+
+		if (LuaCompiled) {
+			lua["Tick"]();
 		}
 	}
 }
@@ -323,7 +326,6 @@ Object* Object::GetObject() {
 
 
 void Object::CallLua(string ScriptToRun) {
-	sol::state lua;
 	std::string codigo_lua = ScriptToRun;
 
 	lua.set_function("printF", [](sol::variadic_args args) {
@@ -415,11 +417,17 @@ void Object::CallLua(string ScriptToRun) {
 			std::string error = lua_tostring(lua.lua_state(), -1);
 			std::cout << "Error: " << error << std::endl;
 			lua_pop(lua.lua_state(), 1);
+			LuaCompiled = false;
+		}
+		else {
+			LuaCompiled = true;
+			std::cout << "Lua compiled " << endl;
 		}
 	}
 	else {
 		std::string error = lua_tostring(lua.lua_state(), -1);
 		std::cout << "Error: " << error << std::endl;
 		lua_pop(lua.lua_state(), 1);
+		std::cout << "Lua error on compiled " << endl;
 	}
 }

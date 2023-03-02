@@ -2,6 +2,7 @@
 #include <direct.h>
 #include <iostream>
 #include <filesystem>
+#include <cstdlib>
 
 using namespace std;
 
@@ -9,6 +10,8 @@ class WindowsCompiler
 {
 public:
 	void CompileGame() {
+        //std::cout << system("dotnet build D:/MotoresDeJuegos/GameTubi/Compiladores/WindowsCompiler/WindowsCompiler.csproj --configuration Debug --output D:/MotoresDeJuegos/GameTubi/Compiladores/WindowsCompiler/Build/ --resource D:/MotoresDeJuegos/GameTubi/Assets/Audio/test.mp3") << endl;
+
         std::string GamePathBuild = "GameBuild";
         int resultado = _mkdir(GamePathBuild.c_str());
 

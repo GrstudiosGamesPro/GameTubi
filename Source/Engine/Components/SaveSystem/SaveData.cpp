@@ -45,7 +45,7 @@ void SaveData::Save() {
 
         for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size(); i++) {
             json ObjectsValues;
-            Object obj = *ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i];
+            Object& obj = *ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i];
 
             ObjectsValues["ObjectName"] = obj.GetName();
             ObjectsValues["PosX"] = obj.pos.x;

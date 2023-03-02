@@ -66,6 +66,7 @@ public:
 	bool CodeEditor;
 	bool InputSystem;
 	bool BuildSettings;
+	bool AnimatorWindows;
 
 	ImVec2 MousePosition;
 
@@ -117,6 +118,14 @@ private:
 			ImGui::EndMainMenuBar();
 		}
 
+
+		if (AnimatorWindows) {
+			if (ImGui::Begin ("Animator")) {
+
+
+				ImGui::End();
+			}
+		}
 
 
 		ImGui::PushID (252334);
@@ -340,6 +349,7 @@ private:
 						SelectObject->TexturePath = TexturePath;
 						SelectObject->SetNewTexture();
 					}
+
 					ImGui::PopID();
 
 					ImGui::Spacing();

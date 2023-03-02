@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <SelectedDevice>Pixel_3a_API_33_x86_64</SelectedDevice>
+    <SelectedPlatformGroup>Emulator</SelectedPlatformGroup>
+    <ActiveDebugProfile>Pixel_3a_API_33_x86_64 %28Android 13.0 - API 33%29</ActiveDebugProfile>
+    <DefaultDevice>Pixel_3a_API_33_x86_64</DefaultDevice>
+  </PropertyGroup>
+</Project>
