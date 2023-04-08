@@ -4,6 +4,8 @@
 #include "Mathf/Vector2.h"
 #include "AudioSource/AudioSource.h"
 #include "sol/sol.hpp"
+#include "box2d.h"
+#include "InputSystem/InputSystem.h"
 
 using namespace std;
 using namespace sol;
@@ -17,12 +19,12 @@ class Object
 {
 private:
 	static SDL_Event events;
-	SDL_Texture* text;
 	SDL_Rect srcRect, destRect;
 	bool m_luaOK = false;
 	float NewPosX, NewPosY;
 
 public:
+	SDL_Texture* text;
 	b2Body* body;
 	b2PolygonShape* dynamicBox;
 	b2FixtureDef* fixtureDef;
@@ -33,7 +35,7 @@ public:
 	Vector2 pos;
 	string name = "Game Object";
 	std::string TexturePath;
-	std::string Script = "function OnStart ()\n\n--EXECUTE ON START THE GAME\n\n\nend\n\n\n\n\n\n\n\nfunction OnUpdate ()\n\n--THIS EXECUTE IN LOOP \n\n\nend";
+	std::string Script = "function Start ()\n\n--EXECUTE ON START THE GAME\n\n\nend\n\n\n\n\n\n\n\nfunction Tick ()\n\n--THIS EXECUTE IN LOOP \n\n\nend";
 	string tag;
 	int height = 32;
 	int width = 32;
@@ -48,6 +50,11 @@ public:
 	float density = 1.0f;
 	float friction = 0.3f;
 	float RectTextureX, RectTextureY;
+	bool IsStatic;
+	bool DenieCreateAudioSource;
+	bool DenieCreateObjectManager;
+	bool DenieCompileLua;
+
 	string ObjectID = "____________________________";
 
 	Object();
@@ -60,10 +67,10 @@ public:
 	void SetPosition (float x, float y);
 	void SetName   (string name);
 	void SetNewTexture();
-	void InputSystem();
 	void CompileLua();
 	void UpdateCollisions();
 	void CreateBody();
+	void Cleanup();
 	void Save ();
 	void Load ();
 	Object GetSelf();
@@ -88,6 +95,10 @@ public:
 	void AddForce (float x, float y);
 	Object* GetObject();
 	void CallLua (string scr);
+	void CreateFunctionsLua(sol::state& lua, Object& obj);
+	bool AlreadyFunctionsRegister;
+	bool m_IsStatic();
+
 
 	~Object();
 };

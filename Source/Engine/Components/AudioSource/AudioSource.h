@@ -58,4 +58,10 @@ public:
 	float GetVolumen() {
 		return engine->getSoundVolume();
 	}
+
+
+	~AudioSource() {
+		delete (drawer);
+		delete (engine);
+	}
 };

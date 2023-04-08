@@ -25,9 +25,6 @@
     <Filter Include="Engine\Components\ImGui">
       <UniqueIdentifier>{a8418b9a-c974-4112-baee-20ab5d4070cc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Components\LUA">
-      <UniqueIdentifier>{fcfa2566-b312-45b0-b645-078d9aec8dab}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Components\InputSystem">
       <UniqueIdentifier>{ed98fb9a-0ed7-44f4-8646-4eb93e2c6759}</UniqueIdentifier>
     </Filter>
@@ -49,14 +46,23 @@
     <Filter Include="Engine\Components\Audio">
       <UniqueIdentifier>{930f3ac1-8890-4dbf-977b-ca4fea154679}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Components\Gizmos">
-      <UniqueIdentifier>{aa3850ba-8072-4bdf-8dfd-82b6799d6f91}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Components\ECS">
       <UniqueIdentifier>{c4e8a1fb-8584-4fbd-864d-a03ab8448602}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Components\Animator">
       <UniqueIdentifier>{f1ad949e-856e-4556-b359-e3d408f3c91a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Components\Console">
+      <UniqueIdentifier>{dd480cc8-473a-4658-8718-4019346ec08b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Components\ParticlesSystem">
+      <UniqueIdentifier>{e1c04284-d366-4c17-92fe-e1681dff9a15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Components\Lua">
+      <UniqueIdentifier>{08b4faea-8014-40cc-a00e-074144a7ea3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Components\ImGui\Gizmos">
+      <UniqueIdentifier>{aa3850ba-8072-4bdf-8dfd-82b6799d6f91}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -99,9 +105,6 @@
     <ClCompile Include="Source\Engine\Components\SceneManager\Scene.cpp">
       <Filter>Engine\Components\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Components\LUA\LuaRunner.cpp">
-      <Filter>Engine\Components\LUA</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Engine\Components\Object.cpp">
       <Filter>Engine\Components\GameObject</Filter>
     </ClCompile>
@@ -124,7 +127,7 @@
       <Filter>Engine\Components\Audio</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Components\Gizmos\GizmoDrawer.cpp">
-      <Filter>Engine\Components\Gizmos</Filter>
+      <Filter>Engine\Components\ImGui\Gizmos</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Components\ECS\ECS.cpp">
       <Filter>Engine\Components\ECS</Filter>
@@ -132,6 +135,22 @@
     <ClCompile Include="Source\Engine\Components\Animator\AnimatorSprite.cpp">
       <Filter>Engine\Components\Animator</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\Components\Console\ConsoleManager.cpp">
+      <Filter>Engine\Components\Console</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Components\ParticlesSystem\ParticlesSystem.cpp">
+      <Filter>Engine\Components\ParticlesSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Components\Mathf\GMathf.cpp">
+      <Filter>Engine\Mathf</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Components\LUA\Lua.cpp">
+      <Filter>Engine\Components\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Components\ImGui\AssetsImGui.cpp">
+      <Filter>Engine\Components\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Components\ParticlesSystem\Particle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Engine\Window.h">
@@ -176,9 +195,6 @@
     <ClInclude Include="Source\Engine\Components\SceneManager\ManagerScene.h">
       <Filter>Engine\Components\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Components\LUA\LuaRunner.h">
-      <Filter>Engine\Components\LUA</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Engine\Components\Object.h">
       <Filter>Engine\Components\GameObject</Filter>
     </ClInclude>
@@ -201,7 +217,7 @@
       <Filter>Engine\Components\Audio</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Components\Gizmos\GizmoDrawer.h">
-      <Filter>Engine\Components\Gizmos</Filter>
+      <Filter>Engine\Components\ImGui\Gizmos</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Components\ECS\ECS.h">
       <Filter>Engine\Components\ECS</Filter>
@@ -209,5 +225,21 @@
     <ClInclude Include="Source\Engine\Components\Animator\AnimatorSprite.h">
       <Filter>Engine\Components\Animator</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Engine\Components\Console\ConsoleManager.h">
+      <Filter>Engine\Components\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\ParticlesSystem\ParticlesSystem.h">
+      <Filter>Engine\Components\ParticlesSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\Mathf\GMathf.h">
+      <Filter>Engine\Mathf</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\LUA\Lua.h">
+      <Filter>Engine\Components\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\ImGui\AssetsImGui.h">
+      <Filter>Engine\Components\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\ParticlesSystem\Particle.h" />
   </ItemGroup>
 </Project>

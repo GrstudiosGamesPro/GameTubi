@@ -22,5 +22,6 @@ public:
     static SaveData* GetInstance();
 
     void Save();
+    void SaveEngineData();
     void Load (string PathScene);
 };

@@ -6,6 +6,7 @@
 #include "b2_draw.h"
 #include "../SaveSystem/SaveData.h"
 #include "../AudioSource/AudioSource.h"
+#include "../ParticlesSystem/ParticlesSystem.h"
 
 using namespace std;
 
@@ -21,6 +22,8 @@ public:
 
 	std::vector<Object*> ObjectsInScene;
 	std::vector<AudioSource*> Audio;
+	std::vector<ParticlesSystem*> Particles;
+
 	b2World* GravityWorld;
 	string SceneName = "SampleScene";
 	bool UseFullScreen = false;
@@ -55,6 +58,18 @@ public:
 		}
 	}
 
+
+	void DestroyObject(Object* ObjectToDestroy) {
+		if (ObjectToDestroy != nullptr) {
+			auto it = std::find_if(ObjectsInScene.begin(), ObjectsInScene.end(), std::bind(std::equal_to<Object*>(), std::placeholders::_1, ObjectToDestroy));
+			if (it != ObjectsInScene.end()) {
+				ObjectsInScene.erase(it);
+				//delete ObjectToDestroy;
+			}
+		}
+	}
+
+
 	Object* SetupNewObject () {
 		Object* newOBJ = new Object();
 		newOBJ->TexturePath = "Assets/Sprites/idle.gif";
@@ -65,12 +80,29 @@ public:
 		return newOBJ;
 	}
 
+	ParticlesSystem* SetupNewParticleSystem (ParticlesSystem* Particle = nullptr) {
+		if (Particle == nullptr) {
+			ParticlesSystem* newPart = new ParticlesSystem();
+			newPart->Name = "Particle System";
+			newPart->Start();
+
+			Particles.push_back(newPart);
+			return newPart;
+		}
+
+		return nullptr;
+	}
+
 	AudioSource* SetupNewAudio() {
 		AudioSource* NewAudio = new AudioSource();
 		NewAudio->Name = "Audio Source";
 		NewAudio->Start();
 		Audio.push_back (NewAudio);
 		return NewAudio;
+	}
+
+	void DeleteBody (b2Body* body) {
+		GravityWorld->DestroyBody (body);
 	}
 
 	void UnLoadAllBodys() {

@@ -5,11 +5,14 @@
 #include "Components/SceneManager/Scene.h"
 #include "Components/SceneManager/ManagerScene.h"
 #include "Components/AudioSource/AudioSource.h"
+#include "Components/ParticlesSystem/ParticlesSystem.h"
+#include "Components/Animator/AnimatorSprite.h"
 #include <vector>
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
 #include "SDL_image.h"
+
 
 
 using namespace std;
@@ -51,8 +54,7 @@ void Window::StartWindow(const char* title, int xpos, int ypos, int width, int h
 	}
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
-		window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
-		
+		window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_RESIZABLE);
 		cout << "Sub sistema inicializado con exito..." << endl;
 
 		if (window != nullptr) {
@@ -91,6 +93,10 @@ void Window::StartWindow(const char* title, int xpos, int ypos, int width, int h
 	for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->Audio.size(); i++) {
 		ManagerScene::GetInstance()->GetCurrentScene()->Audio[i]->Start();
 	}
+
+	for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->Particles.size(); i++) {
+		ManagerScene::GetInstance()->GetCurrentScene()->Particles[i]->Start();
+	}
 #pragma endregion
 }
 
@@ -100,6 +106,7 @@ bool Window::running() {
 
 void Window::handleEvents() {
 	SDL_PollEvent(&event);
+	InputSystem::GetInstance()->KeyEvent = (&event);
 
 	switch (event.type) {
 	case SDL_QUIT:
@@ -110,12 +117,31 @@ void Window::handleEvents() {
 		Window::LoadFile (event.drop.file);
 		break;
 
+	case SDL_WINDOWEVENT:
+		switch (event.window.event)
+		{
+		case SDL_WINDOWEVENT_SIZE_CHANGED:
+			// Manejar el cambio de tamaño de la ventana
+			SDL_RenderPresent(renderer);
+			break;
+		case SDL_WINDOWEVENT_MAXIMIZED:
+			// Manejar la maximización de la ventana
+			std::cout << ("Ventana maximizada") << endl;
+			break;
+		case SDL_WINDOWEVENT_MINIMIZED:
+			// Manejar la minimización de la ventana
+			std::cout << ("Ventana minimizada") << endl;
+			break;
+		}
+		break;
+
 	default:
 		break;
 	}
 }
 
 void Window::LoadFile(string path) {
+	/*
 	std::filesystem::path patha(path);
 
 	std::string source_path = path;
@@ -159,6 +185,7 @@ void Window::LoadFile(string path) {
 	dest_file.close();
 
 	std::cout << "El archivo ha sido copiado correctamente" << std::endl;
+	*/
 }
 
 void Window::OnUpdate() {
@@ -198,6 +225,8 @@ void Window::OnUpdate() {
 			DragginMouseX = false;
 		}
 	}
+
+
 
 
 	int x = event.motion.x;
@@ -241,6 +270,10 @@ void Window::OnUpdate() {
 
 	SDL_GL_SwapWindow(window);
 }
+
+
+bool isDragging = true;
+
 
 
 void Window::OnRender() {
@@ -292,6 +325,10 @@ void Window::OnRender() {
 		ManagerScene::GetInstance()->GetCurrentScene()->Audio[i]->Draw ();
 	}
 
+	for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->Particles.size(); i++) {
+		ManagerScene::GetInstance()->GetCurrentScene()->Particles[i]->Draw();
+	}
+
 	imgui.RenderUI (event);
 
 	if (event.type == SDL_MOUSEBUTTONDOWN)
@@ -307,7 +344,8 @@ void Window::OnRender() {
 		}
 	}
 
-	int mouseX = 0; // Mover declaración e inicialización aquí
+	/*
+	int mouseX = 0;
 	int mouseY = 0;
 
 	if (event.type == SDL_MOUSEBUTTONDOWN)
@@ -327,10 +365,8 @@ void Window::OnRender() {
 		}
 	}
 
-	if (!DragginObject) {
-		CurrentObjectSelect = nullptr;
-	}
 
+	
 	if (DragginObject) {
 		for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size(); i++) {
 			Object* obj = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i];
@@ -345,8 +381,8 @@ void Window::OnRender() {
 			}
 		}
 
-		if (CurrentObjectSelect != nullptr) {
-			Object* obj2 = CurrentObjectSelect;
+		if (ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[0] != nullptr) {
+			Object* obj2 = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[0];
 			SDL_QueryTexture(obj2->GetTexture(), NULL, NULL, &obj2->GetRectDEST()->w, &obj2->GetRectDEST()->h);
 
 			float distancia = sqrt(pow(mouseX - obj2->pos.x, 2) + pow(mouseY - obj2->pos.y, 2));
@@ -358,7 +394,8 @@ void Window::OnRender() {
 			obj2->SetPosition (distanceX, distanceY);
 		}
 	}
-
+	
+	*/
 
 	if (event.type == SDL_MOUSEBUTTONUP)
 	{

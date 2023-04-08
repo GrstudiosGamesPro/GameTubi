@@ -1,37 +1,76 @@
-﻿  Object.cpp
-D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Gizmos\GizmoDrawer.h(32,26): warning C4838: la conversión de 'float' en 'int' requiere una conversión de restricción
-D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Gizmos\GizmoDrawer.h(32,26): warning C4244: 'inicializando': conversión de 'float' a 'int'; posible pérdida de datos
-D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Gizmos\GizmoDrawer.h(32,36): warning C4838: la conversión de 'float' en 'int' requiere una conversión de restricción
-D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Gizmos\GizmoDrawer.h(32,36): warning C4244: 'inicializando': conversión de 'float' a 'int'; posible pérdida de datos
-D:\MotoresDeJuegos\GameTubi\Complementos\include\Box2D\b2_collision.h(38,21): warning C4099: 'b2PolygonShape': nombre de tipo visto anteriormente usando 'struct' ahora se ve usando 'class'
-D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Object.h(12,8): message : vea la declaración de 'b2PolygonShape'
-D:\MotoresDeJuegos\GameTubi\Complementos\include\Box2D\b2_polygon_shape.h(34,29): warning C4099: 'b2PolygonShape': nombre de tipo visto anteriormente usando 'struct' ahora se ve usando 'class'
-D:\MotoresDeJuegos\GameTubi\Complementos\include\Box2D\b2_polygon_shape.h(34,14): message : vea la declaración de 'b2PolygonShape'
-D:\MotoresDeJuegos\GameTubi\Complementos\include\Box2D\b2_body.h(129,1): warning C4099: 'b2Body': nombre de tipo visto anteriormente usando 'struct' ahora se ve usando 'class'
-D:\MotoresDeJuegos\GameTubi\Complementos\include\Box2D\b2_body.h(128,14): message : vea la declaración de 'b2Body'
-D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\SceneManager\ManagerScene.h(2,10): warning C4067: símbolos (token) inesperados después de la directiva del preprocesador; se esperaba una nueva línea
-D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\SceneManager\ManagerScene.h(3,10): warning C4067: símbolos (token) inesperados después de la directiva del preprocesador; se esperaba una nueva línea
-D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\SceneManager\Scene.h(12,14): warning C4099: 'b2Draw': nombre de tipo visto anteriormente usando 'class' ahora se ve usando 'struct'
-D:\MotoresDeJuegos\GameTubi\Complementos\include\Box2D\b2_joint.h(30,7): message : vea la declaración de 'b2Draw'
-D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Object.cpp(22,21): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
-D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Object.cpp(23,22): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
-D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Object.cpp(48,24): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
-D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Object.cpp(49,26): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
-D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Object.cpp(56,25): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
-D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Object.cpp(57,25): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
-D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Object.cpp(59,24): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
-D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Object.cpp(60,24): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
-D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Object.cpp(239,28): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
-D:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Object.cpp(240,29): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
-  GameTubi.vcxproj -> D:\MotoresDeJuegos\GameTubi\Build\GameTubi_Engine.exe
-  D:\MotoresDeJuegos\GameTubi\BuildSource\ikpFlac.dll
-  D:\MotoresDeJuegos\GameTubi\BuildSource\ikpMP3.dll
-  D:\MotoresDeJuegos\GameTubi\BuildSource\irrKlang.dll
-  D:\MotoresDeJuegos\GameTubi\BuildSource\ogg.dll
-  D:\MotoresDeJuegos\GameTubi\BuildSource\SDL2.dll
-  D:\MotoresDeJuegos\GameTubi\BuildSource\SDL2_image.dll
-  D:\MotoresDeJuegos\GameTubi\BuildSource\SDL_mixer.dll
-  D:\MotoresDeJuegos\GameTubi\BuildSource\smpeg.dll
-  D:\MotoresDeJuegos\GameTubi\BuildSource\vorbis.dll
-  D:\MotoresDeJuegos\GameTubi\BuildSource\vorbisfile.dll
+﻿  SaveData.cpp
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Gizmos\GizmoDrawer.h(32,26): warning C4838: la conversión de 'float' en 'int' requiere una conversión de restricción
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Gizmos\GizmoDrawer.h(32,26): warning C4244: 'inicializando': conversión de 'float' a 'int'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Gizmos\GizmoDrawer.h(32,36): warning C4838: la conversión de 'float' en 'int' requiere una conversión de restricción
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Gizmos\GizmoDrawer.h(32,36): warning C4244: 'inicializando': conversión de 'float' a 'int'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\SceneManager\ManagerScene.h(2,10): warning C4067: símbolos (token) inesperados después de la directiva del preprocesador; se esperaba una nueva línea
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\SceneManager\ManagerScene.h(3,10): warning C4067: símbolos (token) inesperados después de la directiva del preprocesador; se esperaba una nueva línea
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Object.h(13,14): warning C4099: 'b2Body': nombre de tipo visto anteriormente usando 'class' ahora se ve usando 'struct'
+E:\MotoresDeJuegos\GameTubi\Complementos\include\Box2D\b2_joint.h(29,7): message : vea la declaración de 'b2Body'
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Object.h(14,22): warning C4099: 'b2PolygonShape': nombre de tipo visto anteriormente usando 'class' ahora se ve usando 'struct'
+E:\MotoresDeJuegos\GameTubi\Complementos\include\Box2D\b2_polygon_shape.h(34,14): message : vea la declaración de 'b2PolygonShape'
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Mathf\GMathf.h(19,12): warning C4244: 'return': conversión de 'double' a 'float'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Mathf\GMathf.h(53,10): warning C4244: 'return': conversión de 'int' a 'float'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Mathf\GMathf.h(173,3): warning C4305: 'return': truncamiento de 'double' a 'float'
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\Particle.h(52,26): warning C4838: la conversión de 'float' en 'int' requiere una conversión de restricción
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\Particle.h(52,26): warning C4244: 'inicializando': conversión de 'float' a 'int'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\Particle.h(52,36): warning C4838: la conversión de 'float' en 'int' requiere una conversión de restricción
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\Particle.h(52,36): warning C4244: 'inicializando': conversión de 'float' a 'int'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\ParticlesSystem.h(23): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\ParticlesSystem.h(52,18): warning C4244: 'inicializando': conversión de 'float' a 'int'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\ParticlesSystem.h(53,18): warning C4244: 'inicializando': conversión de 'float' a 'int'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\ParticlesSystem.h(61,1): warning C4267: 'inicializando': conversión de 'size_t' a 'int'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\ParticlesSystem.h(59,19): warning C4101: 'y2': variable local sin referencia
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\ParticlesSystem.h(59,11): warning C4101: 'y1': variable local sin referencia
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\ParticlesSystem.h(59,7): warning C4101: 'x1': variable local sin referencia
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\ParticlesSystem.h(59,15): warning C4101: 'x2': variable local sin referencia
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\ParticlesSystem.h(105,40): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\SceneManager\Scene.h(13,14): warning C4099: 'b2Draw': nombre de tipo visto anteriormente usando 'class' ahora se ve usando 'struct'
+E:\MotoresDeJuegos\GameTubi\Complementos\include\Box2D\b2_joint.h(30,7): message : vea la declaración de 'b2Draw'
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\SaveSystem\SaveData.cpp(177,9): warning C4267: 'inicializando': conversión de 'size_t' a 'int'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\SaveSystem\SaveData.cpp(184,9): warning C4267: 'inicializando': conversión de 'size_t' a 'int'; posible pérdida de datos
+  Window.cpp
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\SceneManager\ManagerScene.h(2,10): warning C4067: símbolos (token) inesperados después de la directiva del preprocesador; se esperaba una nueva línea
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\SceneManager\ManagerScene.h(3,10): warning C4067: símbolos (token) inesperados después de la directiva del preprocesador; se esperaba una nueva línea
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Gizmos\GizmoDrawer.h(32,26): warning C4838: la conversión de 'float' en 'int' requiere una conversión de restricción
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Gizmos\GizmoDrawer.h(32,26): warning C4244: 'inicializando': conversión de 'float' a 'int'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Gizmos\GizmoDrawer.h(32,36): warning C4838: la conversión de 'float' en 'int' requiere una conversión de restricción
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Gizmos\GizmoDrawer.h(32,36): warning C4244: 'inicializando': conversión de 'float' a 'int'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Object.h(13,14): warning C4099: 'b2Body': nombre de tipo visto anteriormente usando 'class' ahora se ve usando 'struct'
+E:\MotoresDeJuegos\GameTubi\Complementos\include\Box2D\b2_joint.h(29,7): message : vea la declaración de 'b2Body'
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Object.h(14,22): warning C4099: 'b2PolygonShape': nombre de tipo visto anteriormente usando 'class' ahora se ve usando 'struct'
+E:\MotoresDeJuegos\GameTubi\Complementos\include\Box2D\b2_polygon_shape.h(34,14): message : vea la declaración de 'b2PolygonShape'
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Mathf\GMathf.h(19,12): warning C4244: 'return': conversión de 'double' a 'float'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Mathf\GMathf.h(53,10): warning C4244: 'return': conversión de 'int' a 'float'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Mathf\GMathf.h(173,3): warning C4305: 'return': truncamiento de 'double' a 'float'
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\Particle.h(52,26): warning C4838: la conversión de 'float' en 'int' requiere una conversión de restricción
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\Particle.h(52,26): warning C4244: 'inicializando': conversión de 'float' a 'int'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\Particle.h(52,36): warning C4838: la conversión de 'float' en 'int' requiere una conversión de restricción
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\Particle.h(52,36): warning C4244: 'inicializando': conversión de 'float' a 'int'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\ParticlesSystem.h(23): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\ParticlesSystem.h(52,18): warning C4244: 'inicializando': conversión de 'float' a 'int'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\ParticlesSystem.h(53,18): warning C4244: 'inicializando': conversión de 'float' a 'int'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\ParticlesSystem.h(61,1): warning C4267: 'inicializando': conversión de 'size_t' a 'int'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\ParticlesSystem.h(59,19): warning C4101: 'y2': variable local sin referencia
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\ParticlesSystem.h(59,11): warning C4101: 'y1': variable local sin referencia
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\ParticlesSystem.h(59,7): warning C4101: 'x1': variable local sin referencia
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\ParticlesSystem.h(59,15): warning C4101: 'x2': variable local sin referencia
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\ParticlesSystem\ParticlesSystem.h(105,40): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\SceneManager\Scene.h(13,14): warning C4099: 'b2Draw': nombre de tipo visto anteriormente usando 'class' ahora se ve usando 'struct'
+E:\MotoresDeJuegos\GameTubi\Complementos\include\Box2D\b2_joint.h(30,7): message : vea la declaración de 'b2Draw'
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Components\Implementaciones\ImGuiImplement.h(539,1): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Window.cpp(340,28): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+E:\MotoresDeJuegos\GameTubi\Source\Engine\Window.cpp(341,28): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+  Generando código...
+  GameTubi.vcxproj -> E:\MotoresDeJuegos\GameTubi\Build\GameTubi_Engine.exe
+  E:\MotoresDeJuegos\GameTubi\BuildSource\ikpFlac.dll
+  E:\MotoresDeJuegos\GameTubi\BuildSource\ikpMP3.dll
+  E:\MotoresDeJuegos\GameTubi\BuildSource\irrKlang.dll
+  E:\MotoresDeJuegos\GameTubi\BuildSource\ogg.dll
+  E:\MotoresDeJuegos\GameTubi\BuildSource\SDL2.dll
+  E:\MotoresDeJuegos\GameTubi\BuildSource\SDL2_image.dll
+  E:\MotoresDeJuegos\GameTubi\BuildSource\SDL_mixer.dll
+  E:\MotoresDeJuegos\GameTubi\BuildSource\smpeg.dll
+  E:\MotoresDeJuegos\GameTubi\BuildSource\vorbis.dll
+  E:\MotoresDeJuegos\GameTubi\BuildSource\vorbisfile.dll
   10 archivo(s) copiado(s)

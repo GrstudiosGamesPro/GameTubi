@@ -1,5 +1,5 @@
 #include "Vector2.h"
-
+#include <cmath>
 
 Vector2::Vector2() 
 {
@@ -75,6 +75,18 @@ Vector2& Vector2::operator/= (const Vector2& vec) {
 }
 
 
+float& Vector2::Distance (Vector2 B1, Vector2 B2) {
+
+	float dx = B2.x - B1.x;
+	float dy = B2.y - B1.y;
+
+	double d = sqrt(pow(dx, 2) + pow(dy, 2));
+	float F = (float)d;
+
+	return F;
+}
+
+
 Vector2& Vector2::operator* (const int& i) {
 	this->x *= i;
 	this->y *= i;
@@ -89,6 +101,7 @@ Vector2& Vector2::Zero() {
 
 	return *this;
 }
+
 
 
 std::ostream& operator<<(std::ostream& stream, const Vector2& vec)

@@ -1,5 +1,6 @@
 #include "SaveData.h"
 #include "../SceneManager/ManagerScene.h"
+#include "../InputSystem/InputSystem.h"
 #include "nlohmann/json.hpp"
 
 using json = nlohmann::json;
@@ -42,6 +43,7 @@ void SaveData::Save() {
         ofstream outdata;
         json Objects = json::array();
         json ObjectsAudio = json::array();
+        json AxisKey = json::array();
 
         for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size(); i++) {
             json ObjectsValues;
@@ -68,6 +70,7 @@ void SaveData::Save() {
             Objects.push_back(ObjectsValues);
         }
 
+
         for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->Audio.size(); i++) {
             json AudioValue;
             AudioSource* source = ManagerScene::GetInstance()->GetCurrentScene()->Audio[i];
@@ -79,7 +82,31 @@ void SaveData::Save() {
             ObjectsAudio.push_back (AudioValue);
         }
 
+        json ParticlesToSave = json::array();
+
+
+        for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->Particles.size(); i++) {
+            json ParticlesSystems;
+            ParticlesSystem* source = ManagerScene::GetInstance()->GetCurrentScene()->Particles[i];
+
+            ParticlesSystems["Name"] = source->Name;
+            ParticlesSystems["PosX"] = source->Position.x;
+            ParticlesSystems["PosY"] = source->Position.y;
+            ParticlesSystems["ParticleTexturePath"] = source->ParticlePath;
+            ParticlesSystems["ParticleTimeSpawn"] = source->SpawnTime;
+            ParticlesSystems["LifeTime"] = source->LifeTime;
+            ParticlesSystems["Speed"] = source->Speed;
+            ParticlesSystems["OffsetX"] = source->RotationXOffset;
+            ParticlesSystems["OffsetY"] = source->RotationYOffset;
+            ParticlesSystems["MaxRotation"] = source->MaxRotationDir;
+            ParticlesSystems["MinRotation"] = source->MinxRotationDir;
+            ParticlesSystems["MaxParticles"] = source->MaxParticles;
+            ParticlesToSave.push_back(ParticlesSystems);
+        }
+
+
         ObjectData["AudioSources"] = ObjectsAudio;
+        ObjectData["Particles"] = ParticlesToSave;
         ObjectData["Objetos"] = Objects;
 
         string SceneGettedName = ManagerScene::GetInstance()->GetCurrentScene()->SceneName;
@@ -95,8 +122,44 @@ void SaveData::Save() {
         bool CompileScene = ManagerScene::GetInstance()->GetCurrentScene()->CompileScene;
         ObjectData["CompileScene"] = CompileScene;
 
+
         outdata.open("Assets/SaveData/" + ManagerScene::GetInstance()->GetCurrentScene()->SceneName + ".Scene");
         outdata << ObjectData.dump (4);
+
+
+
+        if (!outdata) {
+            cerr << "Error: file could not be opened" << endl;
+            exit(1);
+        }
+    }
+
+    SaveEngineData();
+}
+
+
+void SaveData::SaveEngineData() {
+    if (InputSystem::GetInstance() != nullptr) {
+        json ObjectData;
+
+        ofstream outdata;
+        json AxisKey = json::array();
+
+        for (int i = 0; i < InputSystem::GetInstance()->inputs.size(); i++) {
+            json ObjectsValues;
+
+            ObjectsValues["AxisName"] = InputSystem::GetInstance()->inputs[i].Name;
+            ObjectsValues["Key"] = InputSystem::GetInstance()->inputs[i].Key;
+            ObjectsValues["NegateKey"] = InputSystem::GetInstance()->inputs[i].NegateKey;
+            ObjectsValues["Axis"] = InputSystem::GetInstance()->inputs[i].Axis;
+            ObjectsValues["NegateAxis"] = InputSystem::GetInstance()->inputs[i].NegateAxis;
+
+            AxisKey.push_back(ObjectsValues);
+        }
+        ObjectData["Inputs"] = AxisKey;
+
+        outdata.open("Assets/ProyectSettings/ProyectSettings.gmt");
+        outdata << ObjectData.dump(4);
 
         if (!outdata) {
             cerr << "Error: file could not be opened" << endl;
@@ -126,6 +189,7 @@ void SaveData::Load (string PathScene) {
 
     std::ifstream file (PathScene);
     std::cout << "Loading Path: " << PathScene;
+
     if (file) {
         json data;
         file >> data;
@@ -137,11 +201,13 @@ void SaveData::Load (string PathScene) {
         ManagerScene::GetInstance()->GetCurrentScene()->SetNewBackground();
         nlohmann::json ObjectsArray = data["Objetos"];
         nlohmann::json ObjectsAudioArray = data["AudioSources"];
+        nlohmann::json ParticlesArray = data["Particles"];
 
 
         for (int i = 0; i < ObjectsArray.size(); i++) {
 
             Object* OBJ = new Object();
+            OBJ->Start();
             OBJ->pos.x = (float)ObjectsArray[i]["PosX"];
             OBJ->pos.y = (float)ObjectsArray[i]["PosY"];
             OBJ->Script = (string)ObjectsArray[i]["Scripting"];
@@ -155,13 +221,13 @@ void SaveData::Load (string PathScene) {
             OBJ->ScaleBoxX = (float)ObjectsArray[i]["ScaleBoxX"];
             OBJ->ScaleBoxY = (float)ObjectsArray[i]["ScaleBoxY"];
 
-            OBJ->TexturePath = ObjectsArray[i]["SpritePath"];
-            OBJ->SetNewTexture();
-
-
             OBJ->useGravity = (bool)ObjectsArray[i]["ColisionActive"];
             OBJ->density = (float)ObjectsArray[i]["Density"];
             OBJ->friction = (float)ObjectsArray[i]["Friction"];
+
+            OBJ->TexturePath = (string)ObjectsArray[i]["SpritePath"];
+            std::cout << "Loaded Text Path: " << OBJ->TexturePath << endl;
+            OBJ->SetNewTexture();
             ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.push_back(OBJ);
         }
 
@@ -174,6 +240,26 @@ void SaveData::Load (string PathScene) {
             newSource->Start();
             ManagerScene::GetInstance()->GetCurrentScene()->Audio.push_back (newSource);
         }
+
+        for (int i = 0; i < ParticlesArray.size(); i++) {
+            ParticlesSystem* newSource = new ParticlesSystem();
+            newSource->Name = (string)ParticlesArray[i]["Name"];
+            newSource->Position.x = (float)ParticlesArray[i]["PosX"];
+            newSource->Position.y = (float)ParticlesArray[i]["PosY"];
+            newSource->ParticlePath = (string)ParticlesArray[i]["ParticleTexturePath"];
+            newSource->SpawnTime = (float)ParticlesArray[i]["ParticleTimeSpawn"];
+            newSource->LifeTime = (int)ParticlesArray[i]["LifeTime"];
+            newSource->Speed = (float)ParticlesArray[i]["Speed"];
+            newSource->RotationXOffset = (float)ParticlesArray[i]["OffsetX"];
+            newSource->RotationYOffset = (float)ParticlesArray[i]["OffsetY"];
+            newSource->MaxRotationDir = (float)ParticlesArray[i]["MaxRotation"];
+            newSource->MinxRotationDir = (float)ParticlesArray[i]["MinRotation"];
+            newSource->MaxParticles = (int)ParticlesArray[i]["MaxParticles"];
+
+            ManagerScene::GetInstance()->GetCurrentScene()->Particles.push_back (newSource);
+            //ManagerScene::GetInstance()->GetCurrentScene()->SetupNewParticleSystem (newSource);
+        }
+
 
         file.close();
     }

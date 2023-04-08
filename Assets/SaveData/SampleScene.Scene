@@ -1,57 +1,23 @@
 {
-    "AudioSources": [
-        {
-            "AudioPath": "",
-            "Name": "Audio Source",
-            "PosX": 9.010000228881836,
-            "PosY": 8.4399995803833
-        }
-    ],
+    "AudioSources": [],
     "BGFullScreen": true,
-    "BackgroundPath": "Assets/Sprites/Background.png",
-    "CompileScene": false,
-    "Objetos": [
+    "BackgroundPath": "Assets/Sprites/BG4.jpg",
+    "CompileScene": true,
+    "Objetos": [],
+    "Particles": [
         {
-            "ColisionActive": false,
-            "Density": 1.0,
-            "Friction": 0.30000001192092896,
-            "ObjectName": "Game Object",
-            "PosX": 25.0,
-            "PosY": 25.005556106567383,
-            "ScaleBoxX": 1.0,
-            "ScaleBoxY": 1.0,
-            "ScaleX": 1.0,
-            "ScaleY": 1.0,
-            "Scripting": "function OnStart ()\n\n--EXECUTE ON START THE GAME\n\n\nend\n\n\n\n\n\n\n\nfunction OnUpdate ()\n\n--THIS EXECUTE IN LOOP \n\n\nend",
-            "SpritePath": "Assets/Sprites/jumpoutline.png"
-        },
-        {
-            "ColisionActive": false,
-            "Density": 1.0,
-            "Friction": 0.30000001192092896,
-            "ObjectName": "Game Object",
-            "PosX": 7.0,
-            "PosY": 8.005555152893066,
-            "ScaleBoxX": 1.0,
-            "ScaleBoxY": 1.0,
-            "ScaleX": 1.0,
-            "ScaleY": 1.0,
-            "Scripting": "function OnStart ()\n\n--EXECUTE ON START THE GAME\n\n\nend\n\n\n\n\n\n\n\nfunction OnUpdate ()\n\n--THIS EXECUTE IN LOOP \n\n\nend",
-            "SpritePath": "Assets/Sprites/idle.gif"
-        },
-        {
-            "ColisionActive": false,
-            "Density": 1.0,
-            "Friction": 0.30000001192092896,
-            "ObjectName": "Game Object",
-            "PosX": 5.0,
-            "PosY": 5.0,
-            "ScaleBoxX": 1.0,
-            "ScaleBoxY": 1.0,
-            "ScaleX": 1.0,
-            "ScaleY": 1.0,
-            "Scripting": "function OnStart ()\n\n--EXECUTE ON START THE GAME\n\n\nend\n\n\n\n\n\n\n\nfunction OnUpdate ()\n\n--THIS EXECUTE IN LOOP \n\n\nend",
-            "SpritePath": "Assets/Sprites/idle.gif"
+            "LifeTime": 2,
+            "MaxParticles": 10,
+            "MaxRotation": 267.0,
+            "MinRotation": -267.0,
+            "Name": "Particle System",
+            "OffsetX": 0.0,
+            "OffsetY": 360.0,
+            "ParticleTexturePath": "Assets/Sprites/ParticleExample.png",
+            "ParticleTimeSpawn": 200.0,
+            "PosX": 8.720000267028809,
+            "PosY": 9.100000381469727,
+            "Speed": 0.01600000075995922
         }
     ],
     "SceneName": "SampleScene"

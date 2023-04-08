@@ -32,4 +32,8 @@ public:
 		SDL_Rect dest_rect = { textureX, textureY, 32, 32 };
 		SDL_RenderCopy(Window::renderer, texture, NULL, &dest_rect);
 	}
+
+	~GizmoDrawer() {
+		SDL_DestroyTexture(texture);
+	}
 };

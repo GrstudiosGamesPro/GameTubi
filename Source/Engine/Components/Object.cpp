@@ -4,6 +4,8 @@
 #include "SceneManager/ManagerScene.h"
 #include "SaveSystem/SaveData.h"
 #include "Object/ObjectManager.h"
+#include "Console/ConsoleManager.h"
+#include <any>
 
 static ObjectManager* OBJManager;
 
@@ -13,25 +15,46 @@ Object::Object () {
 
  
 void Object::Start() {
-	text = TextureManager::LoadTexture("Assets/Sprites/idle.gif");
-	TexturePath = "Assets/Sprites/idle.gif";
-	srcRect.x = srcRect.y = 0;
+	//text = TextureManager::LoadTexture("Assets/Sprites/idle.gif");
+	//TexturePath = "Assets/Sprites/idle.gif";
 
+	/*
+	srcRect.x = srcRect.y = 0;
 	srcRect.w = width;
 	srcRect.h = height;
 	destRect.w = width * ScaleX;
 	destRect.h = height * ScaleY;
+	*/
+
 	Object::CreateBody();
 	body->SetTransform(b2Vec2(pos.x, pos.y), 0);
-	OBJManager = new ObjectManager();
-	source = new AudioSource();
-	source->Start();
+
+	if (!DenieCreateObjectManager) {
+		OBJManager = new ObjectManager();
+	}
+
+	if (!DenieCreateAudioSource) {
+		source = new AudioSource();
+		source->Start();
+	}
+
+	body->SetType(b2_staticBody);
+
+	int textureWidth, textureHeight;
+	SDL_QueryTexture(text, nullptr, nullptr, &textureWidth, &textureHeight);
+	TexturePath = TexturePath.c_str();
+	srcRect.w = textureWidth;
+	srcRect.h = textureHeight;
+	destRect.w = textureWidth * ScaleX;
+	destRect.h = textureHeight * ScaleY;
+	width = textureHeight;
+	height = textureHeight;
 }
 
 void Object::Update() {
 	if (isActive) {
-		InputSystem();		
 		b2Vec2 center = body->GetWorldCenter();
+
 		int textureWidth = width;
 		int textureHeight = height;
 
@@ -53,30 +76,43 @@ void Object::Update() {
 		RectTextureX = textureX;
 		RectTextureY = textureY;
 
-		destRect.x = textureX - Window::camera.x;
-		destRect.y = textureY - Window::camera.y;
+		if (!IsStatic) {
+			if (useGravity && body != nullptr)
+			{
+				body->SetAwake(true);
+				body->SetType(b2_dynamicBody);
+			}
+			else {
+				if (body != nullptr) {
+					body->SetType(b2_staticBody);
+				}
+			}
 
-		destRect.w =  width  * ScaleX;
-		destRect.h =  height * ScaleY;
+			destRect.x = textureX - Window::camera.x;
+			destRect.y = textureY - Window::camera.y;
 
-		pos.x = body->GetPosition().x;
-		pos.y = body->GetPosition().y;
-		Angle = body->GetAngle();
+			destRect.w = width * ScaleX;
+			destRect.h = height * ScaleY;
 
-
-		if (useGravity && body != nullptr) 
-		{
-			body->SetAwake (true);
-			body->SetType(b2_dynamicBody);
+			pos.x = body->GetPosition().x;
+			pos.y = body->GetPosition().y;
+			Angle = body->GetAngle();
 		}
 		else {
-			body->SetType (b2_staticBody);
+			if (body != nullptr) {
+				body->SetType(b2_staticBody);
+			}
 		}
 
 		if (LuaCompiled) {
 			lua["Tick"]();
 		}
 	}
+}
+
+void Object::Cleanup() {
+	ManagerScene::GetInstance()->GetCurrentScene()->DeleteBody(this->body);
+	SDL_DestroyTexture (text);
 }
 
 
@@ -92,12 +128,11 @@ void Object::CreateBody() {
 
 		b2BodyDef bodyDef;
 
-		
 		bodyDef.type = b2_dynamicBody;
 		fixtureDef->shape = dynamicBox;
 		fixtureDef->density = density;
 		fixtureDef->friction = friction;
-		body = ManagerScene::GetInstance()->GetCurrentScene()->GravityWorld->CreateBody (&bodyDef);
+		body = ManagerScene::GetInstance()->GetCurrentScene()->GravityWorld->CreateBody(&bodyDef);
 
 		b2Vec2 localCenter(0.0f, 0.0f);
 		localCenter.Set(0, 0);
@@ -177,7 +212,7 @@ void Object::Draw() {
 		}
 
 		// Dibujar el cuadrado en SDL
-		SDL_SetRenderDrawColor(Window::renderer, 255, 0, 0, 255);
+		SDL_SetRenderDrawColor(Window::renderer, 255, 25, 0, 255);
 		for (int i = 0; i < shape->m_count; i++) {
 			int j = (i + 1) % shape->m_count;
 			SDL_RenderDrawLine(Window::renderer, pixelVertices[i * 2], pixelVertices[i * 2 + 1], pixelVertices[j * 2], pixelVertices[j * 2 + 1]);
@@ -230,6 +265,7 @@ void Object::Draw() {
 }
 
 void Object::SetNewTexture() {
+	SDL_DestroyTexture (text);
 	text = TextureManager::LoadTexture(TexturePath.c_str());
 	int textureWidth, textureHeight;
 	SDL_QueryTexture(TextureManager::LoadTexture(TexturePath.c_str()), nullptr, nullptr, &textureWidth, &textureHeight);
@@ -243,12 +279,14 @@ void Object::SetNewTexture() {
 }
 
 
-void Object::InputSystem() {
-	
-}
-
 Object::~Object() {
+	delete (&body);
+	delete (lua);
+	delete (this);
 
+	ManagerScene::GetInstance()->GetCurrentScene()->DeleteBody(this->body);
+
+	SDL_DestroyTexture(text);
 }
 
 SDL_Texture* Object::GetTexture() {
@@ -276,6 +314,10 @@ Vector2 Object::GetScale() {
 
 void Object::EndObject() {
 
+}
+
+bool Object::m_IsStatic (){
+	return IsStatic;
 }
 
 
@@ -317,7 +359,6 @@ float Object::GetFrictionBox() {
 
 void Object::AddForce (float x, float y) {
 	body->ApplyForce (b2Vec2 (x, y), body->GetPosition(), true);
-	std::cout << "Aplicando fuerza a " << name << endl;
 }
 
 Object* Object::GetObject() {
@@ -327,107 +368,150 @@ Object* Object::GetObject() {
 
 void Object::CallLua(string ScriptToRun) {
 	std::string codigo_lua = ScriptToRun;
+	if (!DenieCompileLua) {
+		if (!LuaCompiled) {
+			lua.set_function("printF", [](sol::variadic_args args) {
+				std::cout << "";
+				for (auto arg : args) {
+					std::cout << arg.as<float>() << " ";
+				}
+				std::cout << std::endl;
+				});
 
-	lua.set_function("printF", [](sol::variadic_args args) {
-		std::cout << "";
-	for (auto arg : args) {
-		std::cout << arg.as<float>() << " ";
-	}
-	std::cout << std::endl;
-		});
+			lua.set_function("printI", [](sol::variadic_args args) {
+				std::cout << "";
+				for (auto arg : args) {
+					std::cout << arg.as<int>() << " ";
+				}
+				std::cout << std::endl;
+				});
 
-	lua.set_function("printI", [](sol::variadic_args args) {
-		std::cout << "";
-	for (auto arg : args) {
-		std::cout << arg.as<int>() << " ";
-	}
-	std::cout << std::endl;
-		});
+			lua.set_function("printSTR", [](sol::variadic_args args) {
+				std::cout << "";
+				for (auto arg : args) {
+					std::cout << arg.as<string>() << " ";
+				}
+				std::cout << std::endl;
+				});
 
-	lua.set_function("printSTR", [](sol::variadic_args args) {
-		std::cout << "";
-	for (auto arg : args) {
-		std::cout << arg.as<string>() << " ";
-	}
-	std::cout << std::endl;
-		});
+			lua.set_function("printB", [](sol::variadic_args args) {
+				std::cout << "";
+				for (auto arg : args) {
+					std::cout << arg.as<bool>() << " ";
+				}
+				std::cout << std::endl;
+				});
 
-	lua.set_function("printB", [](sol::variadic_args args) {
-		std::cout << "";
-	for (auto arg : args) {
-		std::cout << arg.as<bool>() << " ";
-	}
-	std::cout << std::endl;
-		});
-
-
-	lua.new_usertype<Vector2>("Vector2", sol::constructors<Vector2(float, float)>(),
-		"x", &Vector2::x,
-		"y", &Vector2::y);
-
-	lua["Vector2"]["new"] = [](float x, float y) {
-		return Vector2(x, y);
-	};
-
-	lua["self"] = sol::make_object(lua.lua_state(), this);
-	lua.new_usertype<Object>("Object",
-		"SetPosition", &Object::SetPosition,
-		"GetPosition", &Object::GetPosition,
-		"Name", &Object::name,
-		"GetName", &Object::GetName,
-		"GetScale", &Object::GetScale,
-		"SetNewScale", &Object::SetNewScale,
-		"SetActive", &Object::SetActive,
-		"SetScaleBox", &Object::SetScaleBox,
-		"GetScaleBox", &Object::GetScaleBox,
-		"SetDensityBox", &Object::SetDensityBox,
-		"GetDensityBox", &Object::GetDensityBox,
-		"SetFrictionBox", &Object::SetFrictionBox,
-		"GetFrictionBox", &Object::GetFrictionBox,
-		"AddForce", &Object::AddForce,
-		"UseGravity", &Object::useGravity
-		);
+			lua.set_function("print", [](sol::variadic_args args) {
+				std::cout << "";
+				for (auto arg : args) {
+					ConsoleManager::GetInstance()->CreateLog(arg.as <string>());
+				}
+				std::cout << std::endl;
+				});
 
 
-	if (ManagerScene::GetInstance() != nullptr) {
-		lua.new_usertype<ManagerScene>("Scene");
-		lua["Scene"]["LoadScene"] = [](string SceneName) { ManagerScene::GetInstance()->GetCurrentScene()->LoadScene(SceneName);  };
-	}
+			lua.new_usertype<Vector2>("Vector2", sol::constructors<Vector2(float, float)>(),
+				"x", &Vector2::x,
+				"y", &Vector2::y);
 
-	lua["Object"]["new"] = []() { return ManagerScene::GetInstance()->GetCurrentScene()->SetupNewObject(); };
-	lua["Object"]["FindObjectPerName"] = [](string FindName) {return OBJManager->FindObjectPerName(FindName); };
 
-	sol::usertype<AudioSource> miTipo = lua.new_usertype<AudioSource>("AudioSource",
-		"Play", &AudioSource::Play,
-		"Stop", &AudioSource::Stop,
-		"SetVolumen", &AudioSource::SetVolume,
-		"GetVolumen", &AudioSource::GetVolumen,
-		"PlayPerName", &AudioSource::PlayClipPerName,
-		"SetPosition", &AudioSource::SetPosition
-	);
+			lua["Vector2"]["new"] = [](float x, float y) {
+				return Vector2(x, y);
+			};
 
-	lua["AudioSource"]["FindSourcePerName"] = [](string FindName) {return OBJManager->FindAudioSourcePerName(FindName); };
-	lua["AudioSource"] = source;
+			lua["tostring"] = [](any obj) {
+				if (obj.type() == typeid(string)) {
+					return std::any_cast<string> (obj);
+				}
 
-	int result = luaL_loadstring(lua.lua_state(), ScriptToRun.c_str());
+				if (obj.type() == typeid(int)) {
+					return to_string(std::any_cast<int> (obj));
+				}
 
-	if (result == LUA_OK) {
-		result = lua_pcall(lua.lua_state(), 0, LUA_MULTRET, 0);
-		if (result != LUA_OK) {
-			std::string error = lua_tostring(lua.lua_state(), -1);
-			std::cout << "Error: " << error << std::endl;
-			lua_pop(lua.lua_state(), 1);
-			LuaCompiled = false;
+				if (obj.type() == typeid(float)) {
+					return to_string(std::any_cast<float> (obj));
+				}
+			};
+
+
+			lua.new_usertype<Object>("Object",
+				"SetPosition", &Object::SetPosition,
+				"GetPosition", &Object::GetPosition,
+				"Name", &Object::name,
+				"GetName", &Object::GetName,
+				"GetScale", &Object::GetScale,
+				"SetNewScale", &Object::SetNewScale,
+				"SetActive", &Object::SetActive,
+				"SetScaleBox", &Object::SetScaleBox,
+				"GetScaleBox", &Object::GetScaleBox,
+				"SetDensityBox", &Object::SetDensityBox,
+				"GetDensityBox", &Object::GetDensityBox,
+				"SetFrictionBox", &Object::SetFrictionBox,
+				"GetFrictionBox", &Object::GetFrictionBox,
+				"AddForce", &Object::AddForce,
+				"UseGravity", &Object::useGravity
+			);
+
+			if (ManagerScene::GetInstance() != nullptr) {
+				lua.new_usertype<ManagerScene>("Scene");
+				lua["Scene"]["LoadScene"] = [](string SceneName) { ManagerScene::GetInstance()->GetCurrentScene()->LoadScene(SceneName);  };
+			}
+
+			lua["Object"]["new"] = []() { return ManagerScene::GetInstance()->GetCurrentScene()->SetupNewObject(); };
+			lua["Object"]["FindObjectPerName"] = [](string FindName) {return OBJManager->FindObjectPerName(FindName); };
+
+			if (!DenieCreateAudioSource) {
+				sol::usertype<AudioSource> miTipo = lua.new_usertype<AudioSource>("AudioSource",
+					"Play", &AudioSource::Play,
+					"Stop", &AudioSource::Stop,
+					"SetVolumen", &AudioSource::SetVolume,
+					"GetVolumen", &AudioSource::GetVolumen,
+					"PlayPerName", &AudioSource::PlayClipPerName,
+					"SetPosition", &AudioSource::SetPosition
+				);
+
+				lua["AudioSource"]["FindSourcePerName"] = [](string FindName) {return OBJManager->FindAudioSourcePerName(FindName); };
+				lua["AudioSource"] = source;
+			}
+
+
+
+			if (InputSystem::GetInstance() != nullptr) {
+				lua.set_function("OnKeyDown", [](const string& keyName) -> bool {
+					return InputSystem::GetInstance()->OnKeyDown(keyName);
+					});
+			}
+		}
+
+		int result = luaL_loadstring(lua.lua_state(), codigo_lua.c_str());
+		if (result == LUA_OK) {
+			if (!LuaCompiled) {
+				Object* OBJ = GetObject();
+				lua["self"] = sol::make_object(lua.lua_state(), OBJ);
+			}
+
+			result = lua_pcall(lua.lua_state(), 0, LUA_MULTRET, 0);
+			if (result != LUA_OK) {
+				std::string error = lua_tostring(lua.lua_state(), -1);
+				ConsoleManager::GetInstance()->CreateLog(error);
+				std::cout << "Error: " << error << std::endl;
+				lua_pop(lua.lua_state(), 1);
+				LuaCompiled = false;
+			}
+			else {
+				LuaCompiled = true;
+				std::cout << "Lua compiled " << endl;
+			}
 		}
 		else {
-			LuaCompiled = true;
-			std::cout << "Lua compiled " << endl;
+			std::string error = lua_tostring(lua.lua_state(), -1);
+			std::cout << "Error: " << error << std::endl;
+			ConsoleManager::GetInstance()->CreateLog(error);
+			lua_pop(lua.lua_state(), 1);
+
+			ConsoleManager::GetInstance()->CreateLog("Lua error on compiled ");
 		}
 	}
-	else {
-		std::string error = lua_tostring(lua.lua_state(), -1);
-		std::cout << "Error: " << error << std::endl;
-		lua_pop(lua.lua_state(), 1);
-		std::cout << "Lua error on compiled " << endl;
-	}
+
 }

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include "SDL.h"
 
 using namespace std;
 
@@ -16,11 +17,13 @@ public:
 	static void create();
 	static void release();
 	static InputSystem* GetInstance();
+	SDL_Event* KeyEvent;
 
 public:
 	struct Inputs {
 		string Name;
 		string Key;
+		string NegateKey;
 		string Axis;
 		string NegateAxis;
 	};
@@ -29,5 +32,7 @@ public:
 	vector<Inputs> inputs;
 
 public: 
-	void SetNewInput (string Name, string Key, string Axis, string NegateAxis);
+	void SetNewInput (string Name, string Key, string NegateKey, string Axis, string NegateAxis);
+	bool OnKeyDown   (string keyCode);
+	bool OnKeyUp     (string keyCode);
 };
