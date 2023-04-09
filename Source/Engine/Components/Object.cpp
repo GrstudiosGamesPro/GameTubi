@@ -1,4 +1,3 @@
-//HOLA
 #include "Object.h"
 #include "box2d.h"
 #include "SceneManager/ManagerScene.h"
@@ -96,7 +95,6 @@ void Object::Update() {
 
 			pos.x = body->GetPosition().x;
 			pos.y = body->GetPosition().y;
-			Angle = body->GetAngle();
 		}
 		else {
 			if (body != nullptr) {
@@ -106,6 +104,10 @@ void Object::Update() {
 
 		if (LuaCompiled) {
 			lua["Tick"]();
+		}
+
+		if (IsAnimation) {
+			//srcRect.x = srcRect.w * static_cast<int> ((SDL_GetTicks() / speed) % frames);
 		}
 	}
 }
@@ -144,7 +146,6 @@ void Object::CreateBody() {
 
 
 void Object::UpdateCollisions() {
-
 	float textureCenterX = width / 2.0f * ScaleBoxX;
 	float textureCenterY = height / 2.0f * ScaleBoxY;
 	b2Vec2 localCenter (0.0f, 0.0f);
@@ -175,7 +176,6 @@ string Object::GetName() {
 
 void Object::SetName (string _name) {
 	name = _name;
-
 }
 
 
@@ -194,11 +194,14 @@ Vector2 Object::GetPosition() {
 
 void Object::Draw() {
 	if (isActive) {
-		TextureManager::Draw(text, srcRect, Angle, destRect);
 
-		float angle = body->GetAngle();
+		if (ControlAngleBody) {
+			Angle = body->GetAngle();
+		}
+
 		b2PolygonShape* shape = (b2PolygonShape*)body->GetFixtureList()->GetShape();
 		b2Vec2 vertices[b2_maxPolygonVertices];
+		TextureManager::Draw(text, srcRect, Angle, destRect);
 
 		for (int i = 0; i < shape->m_count; i++) {
 			vertices[i] = body->GetWorldPoint(shape->m_vertices[i]);
@@ -365,6 +368,21 @@ Object* Object::GetObject() {
 	return this;
 }
 
+void Object::RemoveFromParent() {
+	for (int e = 0; e < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size(); e++) {
+
+		Object* CurrentOBJ = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[e];
+
+		for (int i = 0; i < CurrentOBJ->Childrens.size(); i++) {
+			if (this == CurrentOBJ->Childrens[i]) {
+				std::vector<Object*>::iterator it = CurrentOBJ->Childrens.begin() + i;
+				CurrentOBJ->Childrens.erase(it);
+				std::cout << "Se ah removido del padre" << endl;
+			}
+		}
+	}
+}
+
 
 void Object::CallLua(string ScriptToRun) {
 	std::string codigo_lua = ScriptToRun;
@@ -513,5 +531,4 @@ void Object::CallLua(string ScriptToRun) {
 			ConsoleManager::GetInstance()->CreateLog("Lua error on compiled ");
 		}
 	}
-
 }

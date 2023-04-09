@@ -117,19 +117,35 @@ void Window::handleEvents() {
 		Window::LoadFile (event.drop.file);
 		break;
 
+	case SDL_KEYDOWN: {
+		const Uint8* keyboardState = SDL_GetKeyboardState(NULL);
+
+		if (keyboardState[SDL_SCANCODE_DELETE]) {
+			auto it = std::find(ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.begin(), ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.end(), imgui.SelectObject);
+
+			if (it != ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.end()) {
+				ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.erase(it);
+			}
+
+			std::cout << "Deleting object " << endl;
+
+			imgui.SelectObject = nullptr;
+		}
+		break; 
+	}
+
 	case SDL_WINDOWEVENT:
 		switch (event.window.event)
 		{
 		case SDL_WINDOWEVENT_SIZE_CHANGED:
-			// Manejar el cambio de tamaño de la ventana
 			SDL_RenderPresent(renderer);
 			break;
+
 		case SDL_WINDOWEVENT_MAXIMIZED:
-			// Manejar la maximización de la ventana
 			std::cout << ("Ventana maximizada") << endl;
 			break;
+
 		case SDL_WINDOWEVENT_MINIMIZED:
-			// Manejar la minimización de la ventana
 			std::cout << ("Ventana minimizada") << endl;
 			break;
 		}

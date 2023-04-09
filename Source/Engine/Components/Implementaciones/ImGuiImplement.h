@@ -21,6 +21,14 @@ using json = nlohmann::json;
 using namespace std;
 
 class ImGuiImplement {
+	struct Node
+	{
+		ImVec2 position;
+		ImVec2 size;
+		string title;
+	};
+
+
 public:
 	Window* wnd;
 	Object* SelectObject;
@@ -49,6 +57,7 @@ public:
 
 		ImGui::NewFrame();
 
+
 		DrawUI();
 
 
@@ -74,11 +83,11 @@ public:
 	bool BuildSettings;
 	bool AnimatorWindows;
 	ImVec2 MousePosition;
+	bool nodeWasClicked = false;
 
 private:
 
 	void DrawUI() {
-
 		ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
 		ImGui::GetStyle().Colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.3f, 0.3f, 0.3f, 1.0f);
 		ImGui::GetStyle().Colors[ImGuiCol_NavWindowingHighlight] = ImVec4(0.3f, 0.3f, 0.3f, 1.0f);
@@ -136,7 +145,6 @@ private:
 
 			ImGui::EndMainMenuBar();
 		}
-
 
 		if (AnimatorWindows) {
 			ImGui::SetNextWindowSize(ImVec2(1000, 700));
@@ -284,35 +292,135 @@ private:
 				for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size(); i++) {
 					ImGui::PushID(i);
 
-					if (!ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->isActive) {
-						string InactiveName = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->name + " (Inactive)";
 
-						if (ImGui::Button(InactiveName.c_str())) {
-							if (SelectObject == ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]) {
-								SelectObject = nullptr;
+					if (!ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->isActive) {
+						string InactiveName = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->name + "  (" + to_string (ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->Childrens.size()) + ")" + " (Inactive)";
+
+						if (!CheckInChildren(ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i])) {
+							if (ImGui::Selectable(InactiveName.c_str())) {
+								if (SelectObject != nullptr && SelectObject->ChangingChild && ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i] != SelectObject) {
+									if (!ChildrenExistCheck(SelectObject) && SelectObject->Childrens.size() <= 0) {
+										SelectObject->Parent = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i];
+										ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->Childrens.push_back(SelectObject);
+										SelectObject->ChangingChild = false;
+										std::cout << "Parent changed " << endl;
+									}
+									SelectObject->ChangingChild = false;
+								}
+
+								if (ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i] != SelectObject) {
+									if (SelectObject != nullptr) {
+										SelectObject->ChangingChild = false;
+									}
+									SelectObject = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i];
+								}
+								else {
+									if (SelectObject != nullptr) {
+										SelectObject->ChangingChild = false;
+									}
+
+									SelectObject = nullptr;
+								}
 							}
-							else {
-								SelectObject = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i];
+
+							if (SelectObject != nullptr && SelectObject->Parent == nullptr && SelectObject->Childrens.size() > 0 && SelectObject == ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]) {
+								for (int e = 0; e < SelectObject->Childrens.size(); e++) {
+									ImGui::PushID("ddds" + e);
+
+									string Name = " -> " + SelectObject->Childrens[e]->name;
+
+									if (ImGui::Selectable(Name.c_str())) {
+										SelectObject = SelectObject->Childrens[e];
+									}
+									ImGui::PopID();
+								}
+
+							}
+
+
+							if (SelectObject != nullptr && CheckIfParent(SelectObject) && SelectObject->Parent == ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]) {
+								for (int e = 0; e < SelectObject->Parent->Childrens.size(); e++) {
+									string Name = " -> " + SelectObject->Parent->Childrens[e]->name;
+
+									ImGui::PushID("e" + e);
+
+									if (SelectObject->Parent->Childrens.size() > 0 && SelectObject == SelectObject->Parent->Childrens[e]) {
+
+										if (ImGui::Selectable(Name.c_str())) {
+											SelectObject = SelectObject->Parent->Childrens[e];
+										}
+									}
+
+									ImGui::PopID();
+								}
 							}
 						}
 					}
 					else {
-						if (ImGui::Button(ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->name.c_str())) {
-							if (SelectObject == ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]) {
-								SelectObject = nullptr;
+
+						if (!CheckInChildren(ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i])) {
+							string G = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->name + "  (" + to_string(ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->Childrens.size()) + ")";
+
+							if (ImGui::Selectable(G.c_str() )) {
+								if (SelectObject != nullptr && SelectObject->ChangingChild && ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i] != SelectObject) {
+									if (!ChildrenExistCheck(SelectObject) && SelectObject->Childrens.size() <= 0) {
+										SelectObject->Parent = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i];
+										ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->Childrens.push_back(SelectObject);
+										SelectObject->ChangingChild = false;
+										std::cout << "Parent changed " << endl;
+									}
+									SelectObject->ChangingChild = false;
+								}
+
+								if (ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i] != SelectObject) {
+									if (SelectObject != nullptr) {
+										SelectObject->ChangingChild = false;
+									}
+									SelectObject = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i];
+								}
+								else {
+									if (SelectObject != nullptr) {
+										SelectObject->ChangingChild = false;
+									}
+
+									SelectObject = nullptr;
+								}
 							}
-							else {
-								SelectObject = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i];
+
+							if (SelectObject != nullptr && SelectObject->Parent == nullptr && SelectObject->Childrens.size() > 0 && SelectObject == ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]) {
+								for (int e = 0; e < SelectObject->Childrens.size(); e++) {
+									ImGui::PushID("ddds" + e);
+
+									string Name = " -> " + SelectObject->Childrens[e]->name;
+
+									if (ImGui::Selectable(Name.c_str())) {
+										SelectObject = SelectObject->Childrens[e];
+									}
+									ImGui::PopID();
+								}
+
 							}
+							
+
+							if (SelectObject != nullptr && CheckIfParent(SelectObject) && SelectObject->Parent == ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]) {
+								for (int e = 0; e < SelectObject->Parent->Childrens.size(); e++) {
+									string Name = " -> " + SelectObject->Parent->Childrens[e]->name;
+
+									ImGui::PushID("e" + e);
+
+									if (SelectObject->Parent->Childrens.size() > 0 && SelectObject == SelectObject->Parent->Childrens[e]) {
+
+										if (ImGui::Selectable(Name.c_str())) {
+											SelectObject = SelectObject->Parent->Childrens[e];
+										}
+									}
+
+									ImGui::PopID();
+								}
+							}
+
 						}
-					}
-					if (ImGui::Button("Delete")) {
-						ManagerScene::GetInstance()->GetCurrentScene()->DestroyObject(ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]);
-					}
-					ImGui::Spacing();
-					ImGui::Spacing();
-					ImGui::Spacing();
-					ImGui::Spacing();
+					}		
 					ImGui::PopID();
 				}
 				ImGui::TreePop();
@@ -377,6 +485,19 @@ private:
 					ImGui::Spacing();
 					ImGui::PushID(34233);
 
+					if (ImGui::Button ("Change Parent")) {
+						SelectObject->ChangingChild = true;
+ 					}
+
+					if (SelectObject->Parent != nullptr) {
+						if (ImGui::Button("Remove Parent")) {
+							SelectObject->ChangingChild = false;
+							SelectObject->Parent = nullptr;
+
+							SelectObject->RemoveFromParent();
+ 						}
+					}
+
 
 					ImGui::BeginGroup();
 					bool Estatico = SelectObject->IsStatic;
@@ -386,6 +507,11 @@ private:
 					bool IsActive = SelectObject->isActive;
 					ImGui::Checkbox("Active", &IsActive);
 					SelectObject->isActive = IsActive;
+
+
+					bool IsAnimation = SelectObject->IsAnimation;
+					ImGui::Checkbox("Is Animation", &IsAnimation);
+					SelectObject->IsAnimation = IsAnimation;
 					ImGui::EndGroup();
 
 					//NOMBRE
@@ -402,7 +528,7 @@ private:
 					ImGui::DragFloat2("Position: ", GetPosSD, 0.01f);
 
 					if (SelectObject->pos.x != GetPosSD[0] || SelectObject->pos.y != GetPosSD[1]) {
-						//SelectObject->UpdateCollisions();
+						SelectObject->UpdateCollisions();
 					}
 
 					SelectObject->SetPosition(GetPosSD[0], GetPosSD[1]);
@@ -422,8 +548,6 @@ private:
 						SelectObject->UpdateCollisions();
 					}
 					SelectObject->ScaleY = ScaleY;
-
-
 
 
 					float AngleM = SelectObject->Angle;
@@ -462,9 +586,17 @@ private:
 
 					ImGui::PushID(3423);
 					ImGui::Text("Collisions");
+
+
 					bool UseCollisions = SelectObject->useGravity;
 					ImGui::Checkbox("Gravity: ", &UseCollisions);
 					SelectObject->useGravity = UseCollisions;
+					ImGui::Spacing();
+
+
+					bool ControlBodyAngle = SelectObject->ControlAngleBody;
+					ImGui::Checkbox("Body Angle: ", &ControlBodyAngle);
+					SelectObject->ControlAngleBody = ControlBodyAngle;
 					ImGui::Spacing();
 
 
@@ -837,7 +969,7 @@ private:
 					ImGui::InputText("Negate Axis: VALUE -", NegateKeyAxis, ImGuiInputTextFlags_AutoSelectAll);
 					InputSystem::GetInstance()->inputs[i].NegateAxis = (string)NegateKeyAxis;
 
-					if (ImGui::Button ("Delete")) {
+					if (ImGui::Button("Delete")) {
 						auto it = InputSystem::GetInstance()->inputs.begin();
 						std::advance(it, i);
 						InputSystem::GetInstance()->inputs.erase(it);
@@ -900,5 +1032,61 @@ private:
 		ImGui::PopStyleColor();
 		ImGui::PopStyleColor();
 		ImGui::PopStyleColor();
+	}
+
+
+	bool ChildrenExistCheck(Object* obj) {
+		std::vector<Object*> objs = SelectObject->Childrens;
+
+		for (int i = 0; i < objs.size(); i++) {
+			if (objs[i] == obj) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+	bool CheckIfParent (Object* obj) {
+		for (int e = 0; e < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size(); e++) {
+
+			Object* CurrentOBJ = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[e];
+
+			if (obj != nullptr && obj->Parent != nullptr) {
+				if (obj->Parent == CurrentOBJ) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	Object* FindObject (Object* obj) {
+
+		for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size(); i++) {
+			for (int e = 0; e < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->Childrens.size(); e++) {
+				if (ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->Childrens[e] == obj) {
+					return ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->Childrens[e];
+				}
+			}
+		}
+		return nullptr;
+	}
+
+
+	bool CheckInChildren (Object* obj) {
+		for (int e = 0; e < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size(); e++) {
+
+			Object* CurrentOBJ = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[e];
+
+			for (int i = 0; i < CurrentOBJ->Childrens.size(); i++) {
+				if (obj == CurrentOBJ->Childrens[i]) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 };

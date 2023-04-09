@@ -44,32 +44,74 @@ void SaveData::Save() {
         json Objects = json::array();
         json ObjectsAudio = json::array();
         json AxisKey = json::array();
+        json ObjectsChildren = json::array();
 
         for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size(); i++) {
+            ObjectsChildren.clear();
             json ObjectsValues;
             Object& obj = *ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i];
 
-            ObjectsValues["ObjectName"] = obj.GetName();
-            ObjectsValues["PosX"] = obj.pos.x;
-            ObjectsValues["PosY"] = obj.pos.y;
+            if (obj.Parent == nullptr) {
+                ObjectsValues["ObjectName"] = obj.GetName();
+                ObjectsValues["PosX"] = obj.pos.x;
+                ObjectsValues["PosY"] = obj.pos.y;
 
-            ObjectsValues["ScaleX"] = obj.ScaleX;
-            ObjectsValues["ScaleY"] = obj.ScaleY;
+                ObjectsValues["ScaleX"] = obj.ScaleX;
+                ObjectsValues["ScaleY"] = obj.ScaleY;
 
-            ObjectsValues["ScaleBoxX"] = obj.ScaleBoxX;
-            ObjectsValues["ScaleBoxY"] = obj.ScaleBoxY;
+                ObjectsValues["ScaleBoxX"] = obj.ScaleBoxX;
+                ObjectsValues["ScaleBoxY"] = obj.ScaleBoxY;
 
-            ObjectsValues["SpritePath"] = obj.TexturePath;
-            ObjectsValues["ColisionActive"] = obj.useGravity;
+                ObjectsValues["SpritePath"] = obj.TexturePath;
+                ObjectsValues["ColisionActive"] = obj.useGravity;
 
-            ObjectsValues["Density"] = obj.density;
-            ObjectsValues["Friction"] = obj.friction;
+                ObjectsValues["Density"] = obj.density;
+                ObjectsValues["Friction"] = obj.friction;
 
-            ObjectsValues["Scripting"] = obj.Script;
+                ObjectsValues["AngleControlBody"] = obj.ControlAngleBody;
 
-            Objects.push_back(ObjectsValues);
+                ObjectsValues["Scripting"] = obj.Script;
+
+                if (obj.Childrens.size() > 0) {
+                    for (int e = 0; e < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->Childrens.size(); e++) {
+                        json ChildrenData;
+                        Object& objChild = *ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->Childrens[e];
+
+                        ChildrenData["ObjectName"] = objChild.GetName();
+                        ChildrenData["PosX"] = objChild.pos.x;
+                        ChildrenData["PosY"] = objChild.pos.y;
+
+                        ChildrenData["ScaleX"] = objChild.ScaleX;
+                        ChildrenData["ScaleY"] = objChild.ScaleY;
+
+                        ChildrenData["ScaleBoxX"] = objChild.ScaleBoxX;
+                        ChildrenData["ScaleBoxY"] = objChild.ScaleBoxY;
+
+                        ChildrenData["SpritePath"] = objChild.TexturePath;
+                        ChildrenData["ColisionActive"] = objChild.useGravity;
+
+                        ChildrenData["Density"] = objChild.density;
+                        ChildrenData["Friction"] = objChild.friction;
+
+                        ChildrenData["AngleControlBody"] = objChild.ControlAngleBody;
+
+                        ChildrenData["Scripting"] = objChild.Script;
+
+                        ObjectsChildren.push_back(ChildrenData);
+                    }
+                }
+
+
+
+                std::cout << "Hijos guardados: " << ObjectsChildren.size();
+
+                if (ObjectsChildren.size() > 0) {
+                    ObjectsValues["ChildObjects"] = ObjectsChildren;
+                }
+
+                Objects.push_back(ObjectsValues);
+            }
         }
-
 
         for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->Audio.size(); i++) {
             json AudioValue;
@@ -205,7 +247,6 @@ void SaveData::Load (string PathScene) {
 
 
         for (int i = 0; i < ObjectsArray.size(); i++) {
-
             Object* OBJ = new Object();
             OBJ->Start();
             OBJ->pos.x = (float)ObjectsArray[i]["PosX"];
@@ -226,7 +267,41 @@ void SaveData::Load (string PathScene) {
             OBJ->friction = (float)ObjectsArray[i]["Friction"];
 
             OBJ->TexturePath = (string)ObjectsArray[i]["SpritePath"];
-            std::cout << "Loaded Text Path: " << OBJ->TexturePath << endl;
+            OBJ->ControlAngleBody = (bool)ObjectsArray[i]["AngleControlBody"];
+
+
+            nlohmann::json ObjectsChildren = ObjectsArray[i]["ChildObjects"];
+
+
+            if (ObjectsChildren.size() > 0) {
+                for (int e = 0; e < ObjectsChildren.size(); e++) {
+                    Object* OBJa = new Object();
+                    OBJa->Parent = OBJ;
+                    OBJa->Start();
+                    OBJa->pos.x = (float)ObjectsArray[e]["PosX"];
+                    OBJa->pos.y = (float)ObjectsArray[e]["PosY"];
+                    OBJa->Script = (string)ObjectsArray[e]["Scripting"];
+
+                    OBJa->SetName(ObjectsArray[e]["ObjectName"]);
+
+
+                    OBJa->ScaleX = (float)ObjectsArray[e]["ScaleX"];
+                    OBJa->ScaleY = (float)ObjectsArray[e]["ScaleY"];
+
+                    OBJa->ScaleBoxX = (float)ObjectsArray[e]["ScaleBoxX"];
+                    OBJa->ScaleBoxY = (float)ObjectsArray[e]["ScaleBoxY"];
+
+                    OBJa->useGravity = (bool)ObjectsArray[e]["ColisionActive"];
+                    OBJa->density = (float)ObjectsArray[e]["Density"];
+                    OBJa->friction = (float)ObjectsArray[e]["Friction"];
+
+                    OBJa->TexturePath = (string)ObjectsArray[e]["SpritePath"];
+                    OBJa->ControlAngleBody = (bool)ObjectsArray[e]["AngleControlBody"];
+                    OBJ->Childrens.push_back (OBJa);
+                    ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.push_back(OBJa);
+                }
+            }
+
             OBJ->SetNewTexture();
             ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.push_back(OBJ);
         }

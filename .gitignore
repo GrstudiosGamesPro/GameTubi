@@ -2,3 +2,4 @@ Build/
 *.pbd
 .vs/
 .GameBuild/
+x64/Debug/GameTubi_Engine.ilk

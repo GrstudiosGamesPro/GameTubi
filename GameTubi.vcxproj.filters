@@ -64,6 +64,9 @@
     <Filter Include="Engine\Components\ImGui\Gizmos">
       <UniqueIdentifier>{aa3850ba-8072-4bdf-8dfd-82b6799d6f91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Editor Play">
+      <UniqueIdentifier>{d4f9530c-5263-4ddd-beac-f3b7d0d98e0e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameTubi.cpp">

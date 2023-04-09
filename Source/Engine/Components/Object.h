@@ -54,6 +54,17 @@ public:
 	bool DenieCreateAudioSource;
 	bool DenieCreateObjectManager;
 	bool DenieCompileLua;
+	bool ControlAngleBody = false;
+	bool ChangingChild = false;
+
+	//Animation options
+	bool IsAnimation = false;
+	int frames = 0;
+	int speed = 100;
+
+
+	Object* Parent;
+	vector<Object*> Childrens = vector<Object*>();
 
 	string ObjectID = "____________________________";
 
@@ -98,7 +109,7 @@ public:
 	void CreateFunctionsLua(sol::state& lua, Object& obj);
 	bool AlreadyFunctionsRegister;
 	bool m_IsStatic();
-
+	void RemoveFromParent();
 
 	~Object();
 };

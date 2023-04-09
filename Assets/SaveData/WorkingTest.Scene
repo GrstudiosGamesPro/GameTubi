@@ -1,8 +1,0 @@
-{
-    "AudioSources": [],
-    "BGFullScreen": true,
-    "BackgroundPath": "Assets/Sprites/Background.png",
-    "CompileScene": false,
-    "Objetos": [],
-    "SceneName": "WorkingTest"
-}
