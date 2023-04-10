@@ -102,9 +102,6 @@ void SaveData::Save() {
                 }
 
 
-
-                std::cout << "Hijos guardados: " << ObjectsChildren.size();
-
                 if (ObjectsChildren.size() > 0) {
                     ObjectsValues["ChildObjects"] = ObjectsChildren;
                 }
@@ -230,7 +227,6 @@ void SaveData::Load (string PathScene) {
     }
 
     std::ifstream file (PathScene);
-    std::cout << "Loading Path: " << PathScene;
 
     if (file) {
         json data;
@@ -268,35 +264,37 @@ void SaveData::Load (string PathScene) {
 
             OBJ->TexturePath = (string)ObjectsArray[i]["SpritePath"];
             OBJ->ControlAngleBody = (bool)ObjectsArray[i]["AngleControlBody"];
-
+            OBJ->SetNewTexture();
 
             nlohmann::json ObjectsChildren = ObjectsArray[i]["ChildObjects"];
+
 
 
             if (ObjectsChildren.size() > 0) {
                 for (int e = 0; e < ObjectsChildren.size(); e++) {
                     Object* OBJa = new Object();
-                    OBJa->Parent = OBJ;
                     OBJa->Start();
-                    OBJa->pos.x = (float)ObjectsArray[e]["PosX"];
-                    OBJa->pos.y = (float)ObjectsArray[e]["PosY"];
-                    OBJa->Script = (string)ObjectsArray[e]["Scripting"];
+                    OBJa->Parent = OBJ;
+                    OBJa->pos.x = (float)ObjectsChildren[e]["PosX"];
+                    OBJa->pos.y = (float)ObjectsChildren[e]["PosY"];
+                    OBJa->Script = (string)ObjectsChildren[e]["Scripting"];
 
-                    OBJa->SetName(ObjectsArray[e]["ObjectName"]);
+                    OBJa->SetName((string)ObjectsChildren[e]["ObjectName"]);
 
 
-                    OBJa->ScaleX = (float)ObjectsArray[e]["ScaleX"];
-                    OBJa->ScaleY = (float)ObjectsArray[e]["ScaleY"];
+                    OBJa->ScaleX = (float)ObjectsChildren[e]["ScaleX"];
+                    OBJa->ScaleY = (float)ObjectsChildren[e]["ScaleY"];
 
-                    OBJa->ScaleBoxX = (float)ObjectsArray[e]["ScaleBoxX"];
-                    OBJa->ScaleBoxY = (float)ObjectsArray[e]["ScaleBoxY"];
+                    OBJa->ScaleBoxX = (float)ObjectsChildren[e]["ScaleBoxX"];
+                    OBJa->ScaleBoxY = (float)ObjectsChildren[e]["ScaleBoxY"];
 
-                    OBJa->useGravity = (bool)ObjectsArray[e]["ColisionActive"];
-                    OBJa->density = (float)ObjectsArray[e]["Density"];
-                    OBJa->friction = (float)ObjectsArray[e]["Friction"];
+                    OBJa->useGravity = (bool)ObjectsChildren[e]["ColisionActive"];
+                    OBJa->density = (float)ObjectsChildren[e]["Density"];
+                    OBJa->friction = (float)ObjectsChildren[e]["Friction"];
 
-                    OBJa->TexturePath = (string)ObjectsArray[e]["SpritePath"];
-                    OBJa->ControlAngleBody = (bool)ObjectsArray[e]["AngleControlBody"];
+                    OBJa->TexturePath = (string)ObjectsChildren[e]["SpritePath"];
+                    OBJa->ControlAngleBody = (bool)ObjectsChildren[e]["AngleControlBody"];
+                    OBJa->SetNewTexture();
                     OBJ->Childrens.push_back (OBJa);
                     ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.push_back(OBJa);
                 }

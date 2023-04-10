@@ -61,6 +61,7 @@ public:
 	bool IsAnimation = false;
 	int frames = 0;
 	int speed = 100;
+	bool UseMusic;
 
 
 	Object* Parent;

@@ -1,15 +1,18 @@
+#pragma once
 #include "Object.h"
 #include "box2d.h"
 #include "SceneManager/ManagerScene.h"
 #include "SaveSystem/SaveData.h"
 #include "Object/ObjectManager.h"
 #include "Console/ConsoleManager.h"
+#include "Mathf/GMathf.h"
+
 #include <any>
 
 static ObjectManager* OBJManager;
 
 Object::Object () {
-	std::cout << "Objeto creado" << endl;
+
 }
 
  
@@ -33,8 +36,8 @@ void Object::Start() {
 	}
 
 	if (!DenieCreateAudioSource) {
-		source = new AudioSource();
-		source->Start();
+		//source = new AudioSource();
+		//source->Start();
 	}
 
 	body->SetType(b2_staticBody);
@@ -386,6 +389,8 @@ void Object::RemoveFromParent() {
 
 void Object::CallLua(string ScriptToRun) {
 	std::string codigo_lua = ScriptToRun;
+
+
 	if (!DenieCompileLua) {
 		if (!LuaCompiled) {
 			lua.set_function("printF", [](sol::variadic_args args) {
@@ -479,19 +484,39 @@ void Object::CallLua(string ScriptToRun) {
 			lua["Object"]["new"] = []() { return ManagerScene::GetInstance()->GetCurrentScene()->SetupNewObject(); };
 			lua["Object"]["FindObjectPerName"] = [](string FindName) {return OBJManager->FindObjectPerName(FindName); };
 
-			if (!DenieCreateAudioSource) {
 				sol::usertype<AudioSource> miTipo = lua.new_usertype<AudioSource>("AudioSource",
 					"Play", &AudioSource::Play,
 					"Stop", &AudioSource::Stop,
 					"SetVolumen", &AudioSource::SetVolume,
 					"GetVolumen", &AudioSource::GetVolumen,
 					"PlayPerName", &AudioSource::PlayClipPerName,
-					"SetPosition", &AudioSource::SetPosition
+					"SetPosition", &AudioSource::SetPosition,
+					"AudioPath", &AudioSource::AudioPath,
+					"Name", &AudioSource::Name,
+					"Position", &AudioSource::SetPosition
 				);
 
 				lua["AudioSource"]["FindSourcePerName"] = [](string FindName) {return OBJManager->FindAudioSourcePerName(FindName); };
-				lua["AudioSource"] = source;
-			}
+				//lua["AudioSource"] = source;
+
+			lua.new_usertype<GMathf>("GMathf");
+			lua["GMathf"]["ClampFloat"] = [](float value, float min, float max) { return  GMathf::ClampFloat(value, min, max);  };
+			lua["GMathf"]["ClampInt"] = [](int value, int min, int max) { return  GMathf::ClampFloat(value, min, max); };
+			lua["GMathf"]["Clamp01"] = [](float value) { return  GMathf::Clamp01(value); };
+			lua["GMathf"]["Random"] = [](float min, float max) { return  GMathf::RandomFloat (min, max); };
+			lua["GMathf"]["Abs"] = [](float Value) { return  GMathf::ABS(Value); };
+			lua["GMathf"]["Aproximity"] = [](float a, float b, float tolerance) { return  GMathf::Aproximity(a, b, tolerance); };
+			lua["GMathf"]["Asin"] = [](float Value) { return  GMathf::ASIN(Value); };
+			lua["GMathf"]["Atan"] = [](float Value) { return  GMathf::Atan(Value); };
+			lua["GMathf"]["Atan2"] = [](float x, float y) { return  GMathf::Atan2(x, y); };
+			lua["GMathf"]["Ceil"] = [](float Value) { return  GMathf::Ceil(Value); };
+			lua["GMathf"]["ClosestPowerOfTwo"] = [](float Value) { return  GMathf::ClosestPowerOfTwo(Value); };
+			lua["GMathf"]["Sqrt"] = [](float Value) { return  GMathf::SQRT(Value); };
+			lua["GMathf"]["SmoothDamp"] = [](float current, float target, float currentVelocity, float smoothTime, float maxSpeed, float deltaTime) { return  GMathf::SmoothDamp (current, target, currentVelocity, smoothTime, maxSpeed, deltaTime); };
+			lua["GMathf"]["SmoothDampAngle"] = [](float current, float target, float currentVelocity, float smoothTime, float maxSpeed, float deltaTime) { return  GMathf::SmoothDampAngle(current, target, currentVelocity, smoothTime, maxSpeed, deltaTime); };			lua["GMathf"]["SmoothDampAngle"] = [](float current, float target, float currentVelocity, float smoothTime, float maxSpeed, float deltaTime) { return  GMathf::SmoothDampAngle(current, target, currentVelocity, smoothTime, maxSpeed, deltaTime); };
+			lua["GMathf"]["PI"] = []() { return  GMathf::PI(); };
+			lua["GMathf"]["SmoothStep"] = [](double start, double end, double value) { return  GMathf::SmoothStep (start, end, value); };
+			lua["GMathf"]["Tan"] = [](double degrees) { return  GMathf::Tan(degrees); };
 
 
 

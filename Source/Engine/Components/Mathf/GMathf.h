@@ -128,7 +128,7 @@ public:
 	}
 
 
-	static float SmoothDamp(float current, float target, float& currentVelocity, float smoothTime, float maxSpeed, float deltaTime) {
+	static float SmoothDamp(float current, float target, float currentVelocity, float smoothTime, float maxSpeed, float deltaTime) {
 		float smoothTimeClamped = std::max(0.0001f, smoothTime);
 		float omega = 2.0f / smoothTimeClamped;
 		float x = omega * deltaTime;
@@ -146,7 +146,7 @@ public:
 		return nextValue;
 	}
 
-	static float SmoothDampAngle(float current, float target, float& currentVelocity, float smoothTime, float maxSpeed, float deltaTime) {
+	static float SmoothDampAngle(float current, float target, float currentVelocity, float smoothTime, float maxSpeed, float deltaTime) {
 		float twoPi = 2 * GMathf::PI();
 		float currentNormalized = std::fmod(current, twoPi);
 		float targetNormalized = std::fmod(target, twoPi);
@@ -173,7 +173,7 @@ public:
 		return 3.14159;
 	};
 
-	double SmoothStep(double start, double end, double value) {
+	static double SmoothStep(double start, double end, double value) {
 		value = std::clamp(value, 0.0, 1.0);
 		double smoothedValue = value * value * (3 - 2 * value);
 		return std::lerp(start, end, smoothedValue);

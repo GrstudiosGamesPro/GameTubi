@@ -153,7 +153,9 @@
     <ClCompile Include="Source\Engine\Components\ImGui\AssetsImGui.cpp">
       <Filter>Engine\Components\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Components\ParticlesSystem\Particle.cpp" />
+    <ClCompile Include="Source\Engine\Components\ParticlesSystem\Particle.cpp">
+      <Filter>Engine\Components\ParticlesSystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Engine\Window.h">
@@ -243,6 +245,8 @@
     <ClInclude Include="Source\Engine\Components\ImGui\AssetsImGui.h">
       <Filter>Engine\Components\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Components\ParticlesSystem\Particle.h" />
+    <ClInclude Include="Source\Engine\Components\ParticlesSystem\Particle.h">
+      <Filter>Engine\Components\ParticlesSystem</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
