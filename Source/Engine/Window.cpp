@@ -151,6 +151,7 @@ void Window::handleEvents() {
 		}
 		break;
 
+
 	case SDL_MOUSEBUTTONDOWN:
 		for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size(); i++) {
 			int mouseX, mouseY;
@@ -158,9 +159,12 @@ void Window::handleEvents() {
 
 				Object* obj = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i];
 
-				SDL_QueryTexture(obj->text, NULL, NULL, &obj->GetRectSRC()->w, &obj->GetRectSRC()->h);
+				int W = obj->width * obj->ScaleX;
+				int H = obj->height * obj->ScaleY;
 
-				SDL_Rect texRect = { obj->GetRectDEST()->x, obj->GetRectDEST()->y, obj->GetRectSRC()->w, obj->GetRectSRC()->h };
+				SDL_QueryTexture(obj->text, NULL, NULL, &W, &H);
+
+				SDL_Rect texRect = { obj->destRect.x, obj->destRect.y, obj->destRect.w, obj->destRect.h };
 
 				SDL_Point clickPoint = { mouseX, mouseY };
 				if (SDL_PointInRect(&clickPoint, &texRect)) {
@@ -173,16 +177,18 @@ void Window::handleEvents() {
 				}
 			}
 		}
-
+		
 		for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->Particles.size(); i++) {
 			int mouseX, mouseY;
 			if (SDL_GetMouseState(&mouseX, &mouseY) & SDL_GetMouseState(&mouseX, &mouseY) && event.button.button == SDL_BUTTON_LEFT) {
 
 				ParticlesSystem* obj = ManagerScene::GetInstance()->GetCurrentScene()->Particles[i];
 
-				SDL_QueryTexture(obj->drawer->texture, NULL, NULL, &obj->drawer->dest_rects.w, &obj->drawer->dest_rects.h);
+				int W = 32;
+				int H = 32;
 
-				SDL_Rect texRect = { obj->drawer->PosX, obj->drawer->PosY, obj->drawer->dest_rects.w, obj->drawer->dest_rects.h };
+				SDL_QueryTexture(obj->drawer->texture, NULL, NULL, &W, &H);
+				SDL_Rect texRect = obj->drawer->dest_rects;
 
 				SDL_Point clickPoint = { mouseX, mouseY };
 				if (SDL_PointInRect(&clickPoint, &texRect)) {
@@ -201,10 +207,15 @@ void Window::handleEvents() {
 			if (SDL_GetMouseState(&mouseX, &mouseY) & SDL_GetMouseState(&mouseX, &mouseY) && event.button.button == SDL_BUTTON_LEFT) {
 
 				AudioSource* obj = ManagerScene::GetInstance()->GetCurrentScene()->Audio[i];
+				float PosX = obj->Position.x * 32;
+				float PosY = obj->Position.y * 32;
 
-				SDL_QueryTexture(obj->drawer->texture, NULL, NULL, &obj->drawer->dest_rects.w, &obj->drawer->dest_rects.h);
+				int W = 32;
+				int H = 32;
 
-				SDL_Rect texRect = { obj->drawer->PosX, obj->drawer->PosY, obj->drawer->dest_rects.w, obj->drawer->dest_rects.h };
+				SDL_QueryTexture(obj->drawer->texture, NULL, NULL, &W, &H);
+
+				SDL_Rect texRect = obj->drawer->dest_rects;
 
 				SDL_Point clickPoint = { mouseX, mouseY };
 				if (SDL_PointInRect(&clickPoint, &texRect)) {
@@ -218,6 +229,7 @@ void Window::handleEvents() {
 			}
 		}
 		break;
+
 
 	default:
 		break;

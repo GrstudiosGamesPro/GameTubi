@@ -67,6 +67,9 @@
     <Filter Include="Engine\Editor Play">
       <UniqueIdentifier>{d4f9530c-5263-4ddd-beac-f3b7d0d98e0e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Components\Physics">
+      <UniqueIdentifier>{8b048fd2-d8c1-4914-a9ae-e01f31575c36}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameTubi.cpp">
@@ -155,6 +158,9 @@
     </ClCompile>
     <ClCompile Include="Source\Engine\Components\ParticlesSystem\Particle.cpp">
       <Filter>Engine\Components\ParticlesSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Components\Physics\TriggerData.cpp">
+      <Filter>Engine\Components\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -247,6 +253,9 @@
     </ClInclude>
     <ClInclude Include="Source\Engine\Components\ParticlesSystem\Particle.h">
       <Filter>Engine\Components\ParticlesSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\Physics\TriggerData.h">
+      <Filter>Engine\Components\Physics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -105,6 +105,10 @@ void Object::Update() {
 			}
 		}
 
+		if (IsTrigger) {
+
+		}
+
 		if (LuaCompiled) {
 			lua["Tick"]();
 		}
@@ -147,6 +151,29 @@ void Object::CreateBody() {
 	}
 }
 
+void Object::UpdateBody() {
+	b2PolygonShape* dynamicBox = new b2PolygonShape;
+	int texWidth = width;
+	int texHeight = height;
+	b2Vec2 localCenter(0.0f, 0.0f);
+	localCenter.Set(0, 0);
+	float scaleX = (float)ScaleBoxX;
+	float scaleY = (float)ScaleBoxY;
+	float boxWidth = (float)texWidth * scaleX / (float)width / 2.0f;
+	float boxHeight = (float)texHeight * scaleY / (float)height / 2.0f;
+	dynamicBox->SetAsBox(float(width) * boxWidth / width, float(height) * boxHeight / height, localCenter, 0);
+
+	b2FixtureDef fxd;
+	fxd.shape = dynamicBox;
+	fxd.density = 1.0f;
+	fxd.friction = 0.3f;
+	fxd.isSensor = true;
+
+	body->DestroyFixture (body->GetFixtureList());
+	body->GetFixtureList()->SetSensor (IsTrigger);
+	body->CreateFixture (&fxd);
+}
+
 
 void Object::UpdateCollisions() {
 	float textureCenterX = width / 2.0f * ScaleBoxX;
@@ -156,20 +183,20 @@ void Object::UpdateCollisions() {
 
 	int texWidth = width;
 	int texHeight = height;
+	body->DestroyFixture(body->GetFixtureList());
 
-	// Factor de escala
+	b2FixtureDef* fx = new b2FixtureDef();
 	float scaleX = (float)ScaleBoxX;
 	float scaleY = (float)ScaleBoxY;
-	fixtureDef->density = density;
-	fixtureDef->friction = friction;
-	// Tamaño de la caja de colisión
+	fx->density = density;
+	fx->friction = friction;
+
 	float boxWidth = (float)texWidth * scaleX / (float)width / 2.0f;
 	float boxHeight = (float)texHeight * scaleY / (float)height / 2.0f;
-
-	body->DestroyFixture(body->GetFixtureList());
 	dynamicBox->SetAsBox (float(width) * boxWidth / width, float(height) * boxHeight / height, localCenter, 0);
-	fixtureDef->shape = dynamicBox;
-	body->CreateFixture(fixtureDef);	
+	fx->shape = dynamicBox;
+	fixtureDef = fx;
+	body->CreateFixture(fx);
 }
 
 
@@ -369,6 +396,15 @@ void Object::AddForce (float x, float y) {
 
 Object* Object::GetObject() {
 	return this;
+}
+
+
+void Object::OnTriggerStart (Object* other) {
+	std::cout << "Entrando en la colision " << other->name << endl; 
+}
+
+void Object::OnTriggerEnd (Object* other) {
+	std::cout << "Saliendo de la colision" << endl;
 }
 
 void Object::RemoveFromParent() {

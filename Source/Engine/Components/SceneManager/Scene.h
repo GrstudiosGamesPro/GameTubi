@@ -7,6 +7,7 @@
 #include "../SaveSystem/SaveData.h"
 #include "../AudioSource/AudioSource.h"
 #include "../ParticlesSystem/ParticlesSystem.h"
+#include "../Physics/TriggerData.h"
 
 using namespace std;
 
@@ -45,6 +46,8 @@ public:
 		GravityWorld = new b2World(gravity);
 
 		if (GravityWorld != nullptr) {
+			TriggerData* data = new TriggerData();
+			GravityWorld->SetContactListener (data);
 			std::cout << "Gravity created " << endl;
 		}
 	}

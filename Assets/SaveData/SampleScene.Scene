@@ -356,7 +356,7 @@
             "ParticleTexturePath": "Assets/Sprites/ParticleExample.png",
             "ParticleTimeSpawn": 1000.0,
             "PosX": 25.139999389648438,
-            "PosY": 4.340000152587891,
+            "PosY": -1.840000033378601,
             "Speed": 0.009999999776482582
         }
     ],

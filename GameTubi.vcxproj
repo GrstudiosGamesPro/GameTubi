@@ -247,6 +247,7 @@
     <ClCompile Include="Source\Engine\Components\Object\ObjectManager.cpp" />
     <ClCompile Include="Source\Engine\Components\ParticlesSystem\Particle.cpp" />
     <ClCompile Include="Source\Engine\Components\ParticlesSystem\ParticlesSystem.cpp" />
+    <ClCompile Include="Source\Engine\Components\Physics\TriggerData.cpp" />
     <ClCompile Include="Source\Engine\Components\SaveSystem\SaveData.cpp" />
     <ClCompile Include="Source\Engine\Components\SceneManager\ManagerScene.cpp" />
     <ClCompile Include="Source\Engine\Components\SceneManager\Scene.cpp" />
@@ -279,6 +280,7 @@
     <ClInclude Include="Source\Engine\Components\Object\ObjectManager.h" />
     <ClInclude Include="Source\Engine\Components\ParticlesSystem\Particle.h" />
     <ClInclude Include="Source\Engine\Components\ParticlesSystem\ParticlesSystem.h" />
+    <ClInclude Include="Source\Engine\Components\Physics\TriggerData.h" />
     <ClInclude Include="Source\Engine\Components\SaveSystem\SaveData.h" />
     <ClInclude Include="Source\Engine\Components\SceneManager\ManagerScene.h" />
     <ClInclude Include="Source\Engine\Components\SceneManager\Scene.h" />

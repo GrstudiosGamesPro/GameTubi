@@ -25,7 +25,6 @@ public:
 	}
 
 	void Draw (float posX, float posY) {
-
 		float centerX = posX * 32;
 		float centerY = posY * 32;
 

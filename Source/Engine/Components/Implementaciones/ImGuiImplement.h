@@ -508,6 +508,7 @@ private:
 					ImGui::Checkbox("Active", &IsActive);
 					SelectObject->isActive = IsActive;
 
+					
 
 					bool IsAnimation = SelectObject->IsAnimation;
 					ImGui::Checkbox("Is Animation", &IsAnimation);
@@ -538,6 +539,7 @@ private:
 					ImGui::DragFloat("Scale X: ", &ScaleX, 0.01f);
 					if (SelectObject->ScaleX != ScaleX) {
 						SelectObject->UpdateCollisions();
+						SelectObject->UpdateBody();
 					}
 
 					SelectObject->ScaleX = ScaleX;
@@ -546,6 +548,7 @@ private:
 					ImGui::DragFloat("Scale Y: ", &ScaleY, 0.01f);
 					if (SelectObject->ScaleY != ScaleY) {
 						SelectObject->UpdateCollisions();
+						SelectObject->UpdateBody();
 					}
 					SelectObject->ScaleY = ScaleY;
 
@@ -590,8 +593,23 @@ private:
 
 					bool UseCollisions = SelectObject->useGravity;
 					ImGui::Checkbox("Gravity: ", &UseCollisions);
-					SelectObject->useGravity = UseCollisions;
+					if (SelectObject->useGravity != UseCollisions) {
+						SelectObject->useGravity = UseCollisions;
+						SelectObject->UpdateBody();
+					}
+
 					ImGui::Spacing();
+
+					bool IsTrigger = SelectObject->IsTrigger;
+					ImGui::Checkbox("Is Trigger", &IsTrigger);
+
+					if (SelectObject->IsTrigger != IsTrigger) {
+						SelectObject->IsTrigger = IsTrigger;
+						std::cout << "Trigger Value: " << SelectObject->IsTrigger << endl;
+
+						SelectObject->UpdateBody();
+
+					}
 
 
 					bool ControlBodyAngle = SelectObject->ControlAngleBody;
@@ -604,6 +622,7 @@ private:
 					ImGui::DragFloat("Scale X: ", &ScaleBoxX, 0.01f);
 					if (SelectObject->ScaleX != ScaleBoxX) {
 						SelectObject->UpdateCollisions();
+						SelectObject->UpdateBody();
 					}
 
 					SelectObject->ScaleBoxX = ScaleBoxX;
@@ -612,6 +631,7 @@ private:
 					ImGui::DragFloat("Scale Y: ", &ScaleBoxY, 0.01f);
 					if (SelectObject->ScaleBoxY != ScaleBoxY) {
 						SelectObject->UpdateCollisions();
+						SelectObject->UpdateBody();
 					}
 					SelectObject->ScaleBoxY = ScaleBoxY;
 

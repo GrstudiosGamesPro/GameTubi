@@ -19,11 +19,11 @@ class Object
 {
 private:
 	static SDL_Event events;
-	SDL_Rect srcRect, destRect;
 	bool m_luaOK = false;
 	float NewPosX, NewPosY;
 
 public:
+	SDL_Rect srcRect, destRect;
 	SDL_Texture* text;
 	b2Body* body;
 	b2PolygonShape* dynamicBox;
@@ -46,6 +46,8 @@ public:
 	int scale = 1;
 	float Angle = 0;
 	bool isActive = true;
+	bool IsTrigger = false;
+	bool UsePhysics;
 	bool useGravity = false;
 	float density = 1.0f;
 	float friction = 0.3f;
@@ -75,7 +77,6 @@ public:
 	void Update();
 
 	void Draw();
-	Vector2 GetPosition();
 	void SetPosition (float x, float y);
 	void SetName   (string name);
 	void SetNewTexture();
@@ -85,32 +86,37 @@ public:
 	void Cleanup();
 	void Save ();
 	void Load ();
-	Object GetSelf();
 	void EndObject();
-
-	SDL_Texture* GetTexture();
-	string GetName();
-
-	SDL_Rect* GetRectSRC();
-	SDL_Rect* GetRectDEST();
+	void UpdateBody();
 	void SetNewScale (float x, float y);
-	Vector2 GetScale ();
 	void SetActive (bool t);
-
 	void SetScaleBox(float x, float y);
-	Vector2 GetScaleBox ();
 	void SetDensityBox  (float x);
-	float GetDensityBox ();
-
 	void SetFrictionBox(float x);
-	float GetFrictionBox();
-	void AddForce (float x, float y);
-	Object* GetObject();
-	void CallLua (string scr);
+	void AddForce(float x, float y);
+	void CallLua(string scr);
 	void CreateFunctionsLua(sol::state& lua, Object& obj);
+	void RemoveFromParent();
+	void OnTriggerStart (Object* Other);
+	void OnTriggerEnd (Object* Other);
+
 	bool AlreadyFunctionsRegister;
 	bool m_IsStatic();
-	void RemoveFromParent();
+
+
+	float GetDensityBox();
+	float GetFrictionBox();
+
+	Object GetSelf();
+	Vector2 GetPosition();
+	SDL_Texture* GetTexture();
+	string GetName();
+	SDL_Rect* GetRectSRC();
+	SDL_Rect* GetRectDEST();
+	Vector2 GetScale ();
+	Vector2 GetScaleBox ();
+	Object* GetObject();
+
 
 	~Object();
 };
