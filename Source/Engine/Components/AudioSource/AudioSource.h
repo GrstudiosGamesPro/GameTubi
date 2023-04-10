@@ -10,12 +10,12 @@ using namespace std;
 class AudioSource
 {
 	ISoundEngine* engine = createIrrKlangDevice();
-	GizmoDrawer* drawer = new GizmoDrawer();
 
 public:
 	Vector2 Position;
 	string Name = "Audio Source";
 	string AudioPath;
+	GizmoDrawer* drawer = new GizmoDrawer();
 
 	void Start() {
 		if (drawer != nullptr) {

@@ -151,6 +151,74 @@ void Window::handleEvents() {
 		}
 		break;
 
+	case SDL_MOUSEBUTTONDOWN:
+		for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size(); i++) {
+			int mouseX, mouseY;
+			if (SDL_GetMouseState(&mouseX, &mouseY) && event.button.button == SDL_BUTTON_LEFT) {
+
+				Object* obj = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i];
+
+				SDL_QueryTexture(obj->text, NULL, NULL, &obj->GetRectSRC()->w, &obj->GetRectSRC()->h);
+
+				SDL_Rect texRect = { obj->GetRectDEST()->x, obj->GetRectDEST()->y, obj->GetRectSRC()->w, obj->GetRectSRC()->h };
+
+				SDL_Point clickPoint = { mouseX, mouseY };
+				if (SDL_PointInRect(&clickPoint, &texRect)) {
+					if (imgui.SelectObject != obj) {
+						imgui.SelectObject = obj;
+					}
+					else {
+						imgui.SelectObject = nullptr;
+					}
+				}
+			}
+		}
+
+		for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->Particles.size(); i++) {
+			int mouseX, mouseY;
+			if (SDL_GetMouseState(&mouseX, &mouseY) & SDL_GetMouseState(&mouseX, &mouseY) && event.button.button == SDL_BUTTON_LEFT) {
+
+				ParticlesSystem* obj = ManagerScene::GetInstance()->GetCurrentScene()->Particles[i];
+
+				SDL_QueryTexture(obj->drawer->texture, NULL, NULL, &obj->drawer->dest_rects.w, &obj->drawer->dest_rects.h);
+
+				SDL_Rect texRect = { obj->drawer->PosX, obj->drawer->PosY, obj->drawer->dest_rects.w, obj->drawer->dest_rects.h };
+
+				SDL_Point clickPoint = { mouseX, mouseY };
+				if (SDL_PointInRect(&clickPoint, &texRect)) {
+					if (imgui.CurrentParticleSelect != obj) {
+						imgui.CurrentParticleSelect = obj;
+					}
+					else {
+						imgui.CurrentParticleSelect = nullptr;
+					}
+				}
+			}
+		}
+
+		for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->Audio.size(); i++) {
+			int mouseX, mouseY;
+			if (SDL_GetMouseState(&mouseX, &mouseY) & SDL_GetMouseState(&mouseX, &mouseY) && event.button.button == SDL_BUTTON_LEFT) {
+
+				AudioSource* obj = ManagerScene::GetInstance()->GetCurrentScene()->Audio[i];
+
+				SDL_QueryTexture(obj->drawer->texture, NULL, NULL, &obj->drawer->dest_rects.w, &obj->drawer->dest_rects.h);
+
+				SDL_Rect texRect = { obj->drawer->PosX, obj->drawer->PosY, obj->drawer->dest_rects.w, obj->drawer->dest_rects.h };
+
+				SDL_Point clickPoint = { mouseX, mouseY };
+				if (SDL_PointInRect(&clickPoint, &texRect)) {
+					if (imgui.CurrentAudioSourceSelect != obj) {
+						imgui.CurrentAudioSourceSelect = obj;
+					}
+					else {
+						imgui.CurrentAudioSourceSelect = nullptr;
+					}
+				}
+			}
+		}
+		break;
+
 	default:
 		break;
 	}
@@ -420,6 +488,7 @@ void Window::OnRender() {
 			imgui.ViewPortMenu = false;
 		}
 	}
+
 #pragma endregion
 
 	SDL_SetRenderDrawColor(renderer, 25, 25, 25, 255);

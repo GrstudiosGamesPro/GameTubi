@@ -11,6 +11,10 @@ class GizmoDrawer
 public:
 	string TexturePath;
 	SDL_Texture* texture;
+	SDL_Rect dest_rects;
+
+	float PosX;
+	float PosY;
 
 	void Start (string TextureName) {
 		string tt = "Assets/Gizmos/" + TextureName + ".png";
@@ -27,9 +31,12 @@ public:
 
 		float textureX = centerX - 32 / 2 - Window::camera.x;
 		float textureY = centerY - 32 / 2 - Window::camera.y;
+		PosX = textureX;
+		PosY = textureY;
 
 		SDL_SetTextureAlphaMod(texture, 230);
 		SDL_Rect dest_rect = { textureX, textureY, 32, 32 };
+		dest_rects = dest_rect;
 		SDL_RenderCopy(Window::renderer, texture, NULL, &dest_rect);
 	}
 

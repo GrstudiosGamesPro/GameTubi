@@ -9,9 +9,9 @@ using namespace std;
 
 class ParticlesSystem
 {
-	GizmoDrawer* drawer = new GizmoDrawer();
 
 public:
+	GizmoDrawer* drawer = new GizmoDrawer();
 	//Variables Guardables
 	string Name;
 	int LifeTime = 2;
