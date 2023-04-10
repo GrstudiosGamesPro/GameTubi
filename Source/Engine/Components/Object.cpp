@@ -404,7 +404,7 @@ void Object::OnTriggerStart (Object* other) {
 }
 
 void Object::OnTriggerEnd (Object* other) {
-	std::cout << "Saliendo de la colision" << endl;
+	std::cout << "Saliendo de la colision" << other->name << endl;
 }
 
 void Object::RemoveFromParent() {
