@@ -18,8 +18,8 @@ class Scene
 public:
 	SDL_Surface* background;
 	SDL_Texture* backgroundTexture;
-
-	std::string TexturePath = "Assets/Sprites/Background.png";
+	//Assets/Sprites/Background.png
+	std::string TexturePath = "";
 
 	std::vector<Object*> ObjectsInScene;
 	std::vector<AudioSource*> Audio;
@@ -47,7 +47,7 @@ public:
 
 		if (GravityWorld != nullptr) {
 			TriggerData* data = new TriggerData();
-			GravityWorld->SetContactListener (data);
+			GravityWorld->SetContactListener(data);
 			std::cout << "Gravity created " << endl;
 		}
 	}
@@ -61,7 +61,6 @@ public:
 		}
 	}
 
-
 	void DestroyObject(Object* ObjectToDestroy) {
 		if (ObjectToDestroy != nullptr) {
 			auto it = std::find_if(ObjectsInScene.begin(), ObjectsInScene.end(), std::bind(std::equal_to<Object*>(), std::placeholders::_1, ObjectToDestroy));
@@ -73,17 +72,17 @@ public:
 	}
 
 
-	Object* SetupNewObject () {
+	Object* SetupNewObject() {
 		Object* newOBJ = new Object();
 		newOBJ->TexturePath = "Assets/Sprites/idle.gif";
 		newOBJ->Start();
-	    newOBJ->SetNewTexture();
-		ObjectsInScene.push_back (newOBJ);
+		newOBJ->SetNewTexture();
+		ObjectsInScene.push_back(newOBJ);
 
 		return newOBJ;
 	}
 
-	ParticlesSystem* SetupNewParticleSystem (ParticlesSystem* Particle = nullptr) {
+	ParticlesSystem* SetupNewParticleSystem(ParticlesSystem* Particle = nullptr) {
 		if (Particle == nullptr) {
 			ParticlesSystem* newPart = new ParticlesSystem();
 			newPart->Name = "Particle System";
@@ -100,17 +99,19 @@ public:
 		AudioSource* NewAudio = new AudioSource();
 		NewAudio->Name = "Audio Source";
 		NewAudio->Start();
-		Audio.push_back (NewAudio);
+		Audio.push_back(NewAudio);
 		return NewAudio;
 	}
 
-	void DeleteBody (b2Body* body) {
-		GravityWorld->DestroyBody (body);
+	void DeleteBody(b2Body* body) {
+		GravityWorld->DestroyBody(body);
 	}
 
 	void UnLoadAllBodys() {
-		b2Body* nextBody = GravityWorld->GetBodyList();
-		GravityWorld->DestroyBody(nextBody);
+		if (GravityWorld != nullptr) {
+			b2Body* nextBody = GravityWorld->GetBodyList();
+			GravityWorld->DestroyBody(nextBody);
+		}
 	}
 
 	void SaveScene () {
@@ -124,9 +125,15 @@ public:
 	}
 
 	void SetNewBackground () {
+
+		if (backgroundTexture != nullptr) {
+			SDL_DestroyTexture (backgroundTexture);
+		}
+
 		background = IMG_Load(TexturePath.c_str());
 		backgroundTexture = SDL_CreateTextureFromSurface(Window::renderer, background);
 		SDL_FreeSurface(background);
 		std::cout << "Background Changed " << endl;
 	}
+
 };

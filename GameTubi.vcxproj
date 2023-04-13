@@ -237,6 +237,7 @@
     <ClCompile Include="Source\Engine\Components\AudioSource\AudioSource.cpp" />
     <ClCompile Include="Source\Engine\Components\Console\ConsoleManager.cpp" />
     <ClCompile Include="Source\Engine\Components\ECS\ECS.cpp" />
+    <ClCompile Include="Source\Engine\Components\EditorPlay\PlayMode.cpp" />
     <ClCompile Include="Source\Engine\Components\Gizmos\GizmoDrawer.cpp" />
     <ClCompile Include="Source\Engine\Components\ImGui\AssetsImGui.cpp" />
     <ClCompile Include="Source\Engine\Components\InputSystem\InputSystem.cpp" />
@@ -269,6 +270,7 @@
     <ClInclude Include="Source\Engine\Components\AudioSource\AudioSource.h" />
     <ClInclude Include="Source\Engine\Components\Console\ConsoleManager.h" />
     <ClInclude Include="Source\Engine\Components\ECS\ECS.h" />
+    <ClInclude Include="Source\Engine\Components\EditorPlay\PlayMode.h" />
     <ClInclude Include="Source\Engine\Components\Gizmos\GizmoDrawer.h" />
     <ClInclude Include="Source\Engine\Components\ImGui\AssetsImGui.h" />
     <ClInclude Include="Source\Engine\Components\Implementaciones\ImGuiImplement.h" />

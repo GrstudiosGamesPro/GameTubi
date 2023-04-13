@@ -34,9 +34,10 @@ public:
 	bool LuaCompiled;
 	Vector2 pos;
 	string name = "Game Object";
+	string Tag = "Default";
+
 	std::string TexturePath;
 	std::string Script = "function Start ()\n\n--EXECUTE ON START THE GAME\n\n\nend\n\n\n\n\n\n\n\nfunction Tick ()\n\n--THIS EXECUTE IN LOOP \n\n\nend";
-	string tag;
 	int height = 32;
 	int width = 32;
 	float ScaleX = 1;
@@ -58,6 +59,8 @@ public:
 	bool DenieCompileLua;
 	bool ControlAngleBody = false;
 	bool ChangingChild = false;
+	bool Triggered;
+	bool RunLua;
 
 	//Animation options
 	bool IsAnimation = false;
@@ -84,8 +87,6 @@ public:
 	void UpdateCollisions();
 	void CreateBody();
 	void Cleanup();
-	void Save ();
-	void Load ();
 	void EndObject();
 	void UpdateBody();
 	void SetNewScale (float x, float y);
@@ -95,7 +96,6 @@ public:
 	void SetFrictionBox(float x);
 	void AddForce(float x, float y);
 	void CallLua(string scr);
-	void CreateFunctionsLua(sol::state& lua, Object& obj);
 	void RemoveFromParent();
 	void OnTriggerStart (Object* Other);
 	void OnTriggerEnd (Object* Other);
@@ -107,7 +107,6 @@ public:
 	float GetDensityBox();
 	float GetFrictionBox();
 
-	Object GetSelf();
 	Vector2 GetPosition();
 	SDL_Texture* GetTexture();
 	string GetName();

@@ -120,7 +120,7 @@ void Window::handleEvents() {
 	case SDL_KEYDOWN: {
 		const Uint8* keyboardState = SDL_GetKeyboardState(NULL);
 
-		if (keyboardState[SDL_SCANCODE_DELETE]) {
+		if (keyboardState[SDL_SCANCODE_DELETE] && !imgui.CodeEditor) {
 			auto it = std::find(ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.begin(), ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.end(), imgui.SelectObject);
 
 			if (it != ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.end()) {

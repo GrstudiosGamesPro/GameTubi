@@ -162,6 +162,9 @@
     <ClCompile Include="Source\Engine\Components\Physics\TriggerData.cpp">
       <Filter>Engine\Components\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\Components\EditorPlay\PlayMode.cpp">
+      <Filter>Engine\Editor Play</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Engine\Window.h">
@@ -256,6 +259,9 @@
     </ClInclude>
     <ClInclude Include="Source\Engine\Components\Physics\TriggerData.h">
       <Filter>Engine\Components\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\EditorPlay\PlayMode.h">
+      <Filter>Engine\Editor Play</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

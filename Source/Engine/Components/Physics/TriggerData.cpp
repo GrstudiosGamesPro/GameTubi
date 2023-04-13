@@ -57,7 +57,7 @@ void TriggerData::EndContact	(b2Contact* contact)
 					Object* GetOBJB = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[e];
 
 					if (GetOBJB->body == bodyB) {
-						GetOBJ->OnTriggerStart(GetOBJB);
+						GetOBJ->OnTriggerEnd(GetOBJB);
 					}
 				}
 			}
@@ -70,7 +70,7 @@ void TriggerData::EndContact	(b2Contact* contact)
 					Object* GetOBJA = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[e];
 
 					if (GetOBJA->body == bodyA) {
-						GetOBJ->OnTriggerStart(GetOBJA);
+						GetOBJ->OnTriggerEnd(GetOBJA);
 					}
 				}
 			}

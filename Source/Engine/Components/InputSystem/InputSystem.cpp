@@ -55,6 +55,7 @@ bool InputSystem::OnKeyUp(string KeyName) {
 }
 
 bool InputSystem::OnKeyDown(string KeyName) {
+	bool IsPressedReady = false;
 	if (KeyEvent != nullptr && KeyEvent->type == SDL_KEYDOWN) {
 		for (Inputs g : inputs) {
 			if (g.Name == KeyName) {
@@ -62,6 +63,7 @@ bool InputSystem::OnKeyDown(string KeyName) {
 					return true;
 				}
 				else {
+					std::cout << "Solando el input " << KeyName << endl;
 					return false;
 				}
 			}

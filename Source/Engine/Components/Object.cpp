@@ -7,6 +7,7 @@
 #include "Console/ConsoleManager.h"
 #include "Mathf/GMathf.h"
 
+#include <cstdlib>
 #include <any>
 
 static ObjectManager* OBJManager;
@@ -55,6 +56,10 @@ void Object::Start() {
 
 void Object::Update() {
 	if (isActive) {
+		if (LuaCompiled) {
+			lua["Tick"]();
+		}
+
 		b2Vec2 center = body->GetWorldCenter();
 
 		int textureWidth = width;
@@ -109,10 +114,6 @@ void Object::Update() {
 
 		}
 
-		if (LuaCompiled) {
-			lua["Tick"]();
-		}
-
 		if (IsAnimation) {
 			//srcRect.x = srcRect.w * static_cast<int> ((SDL_GetTicks() / speed) % frames);
 		}
@@ -148,6 +149,8 @@ void Object::CreateBody() {
 		Object::UpdateCollisions();
 		fixtureDef->shape = dynamicBox;
 		body->CreateFixture(fixtureDef);
+		Object::UpdateBody();
+		body->SetTransform(b2Vec2((float)pos.x, (float)pos.y), 0);
 	}
 }
 
@@ -251,8 +254,6 @@ void Object::Draw() {
 			SDL_RenderDrawLine(Window::renderer, pixelVertices[i * 2], pixelVertices[i * 2 + 1], pixelVertices[j * 2], pixelVertices[j * 2 + 1]);
 		}
 
-
-
 		/*
 		float textureCenterX = width / 2.0f * ScaleX;
 		float textureCenterY = height / 2.0f * ScaleY;
@@ -313,13 +314,7 @@ void Object::SetNewTexture() {
 
 
 Object::~Object() {
-	delete (&body);
-	delete (lua);
-	delete (this);
-
-	ManagerScene::GetInstance()->GetCurrentScene()->DeleteBody(this->body);
-
-	SDL_DestroyTexture(text);
+	SDL_DestroyTexture (text);
 }
 
 SDL_Texture* Object::GetTexture() {
@@ -400,11 +395,21 @@ Object* Object::GetObject() {
 
 
 void Object::OnTriggerStart (Object* other) {
-	std::cout << "Entrando en la colision " << other->name << endl; 
+	if (!Triggered) {
+		if (LuaCompiled) {
+			lua["TriggerStart"] (other);
+		}
+		Triggered = true;
+	}
 }
 
 void Object::OnTriggerEnd (Object* other) {
-	std::cout << "Saliendo de la colision" << other->name << endl;
+	if (Triggered) {
+		if (LuaCompiled) {
+			lua["TriggerEnd"] (other);
+		}
+		Triggered = false;
+	}
 }
 
 void Object::RemoveFromParent() {
@@ -424,101 +429,103 @@ void Object::RemoveFromParent() {
 
 
 void Object::CallLua(string ScriptToRun) {
-	std::string codigo_lua = ScriptToRun;
+	if (RunLua) {
+		std::string codigo_lua = ScriptToRun;
 
 
-	if (!DenieCompileLua) {
-		if (!LuaCompiled) {
-			lua.set_function("printF", [](sol::variadic_args args) {
-				std::cout << "";
-				for (auto arg : args) {
-					std::cout << arg.as<float>() << " ";
+		if (!DenieCompileLua) {
+			if (!LuaCompiled) {
+				lua.set_function("printF", [](sol::variadic_args args) {
+					std::cout << "";
+					for (auto arg : args) {
+						std::cout << arg.as<float>() << " ";
+					}
+					std::cout << std::endl;
+					});
+
+				lua.set_function("printI", [](sol::variadic_args args) {
+					std::cout << "";
+					for (auto arg : args) {
+						std::cout << arg.as<int>() << " ";
+					}
+					std::cout << std::endl;
+					});
+
+				lua.set_function("printSTR", [](sol::variadic_args args) {
+					std::cout << "";
+					for (auto arg : args) {
+						std::cout << arg.as<string>() << " ";
+					}
+					std::cout << std::endl;
+					});
+
+				lua.set_function("printB", [](sol::variadic_args args) {
+					std::cout << "";
+					for (auto arg : args) {
+						std::cout << arg.as<bool>() << " ";
+					}
+					std::cout << std::endl;
+					});
+
+				lua.set_function("print", [](sol::variadic_args args) {
+					std::cout << "";
+					for (auto arg : args) {
+						ConsoleManager::GetInstance()->CreateLog(arg.as <string>());
+					}
+					std::cout << std::endl;
+					});
+
+
+				lua.new_usertype<Vector2>("Vector2", sol::constructors<Vector2(float, float)>(),
+					"x", &Vector2::x,
+					"y", &Vector2::y);
+
+
+				lua["Vector2"]["new"] = [](float x, float y) {
+					return Vector2(x, y);
+				};
+
+				lua["tostring"] = [](any obj) {
+					if (obj.type() == typeid(string)) {
+						return std::any_cast<string> (obj);
+					}
+
+					if (obj.type() == typeid(int)) {
+						return to_string(std::any_cast<int> (obj));
+					}
+
+					if (obj.type() == typeid(float)) {
+						return to_string(std::any_cast<float> (obj));
+					}
+				};
+
+
+				lua.new_usertype<Object>("Object",
+					"SetPosition", &Object::SetPosition,
+					"GetPosition", &Object::GetPosition,
+					"Name", &Object::name,
+					"GetName", &Object::GetName,
+					"GetScale", &Object::GetScale,
+					"SetNewScale", &Object::SetNewScale,
+					"SetActive", &Object::SetActive,
+					"SetScaleBox", &Object::SetScaleBox,
+					"GetScaleBox", &Object::GetScaleBox,
+					"SetDensityBox", &Object::SetDensityBox,
+					"GetDensityBox", &Object::GetDensityBox,
+					"SetFrictionBox", &Object::SetFrictionBox,
+					"GetFrictionBox", &Object::GetFrictionBox,
+					"AddForce", &Object::AddForce,
+					"UseGravity", &Object::useGravity,
+					"Tag", &Object::Tag
+				);
+
+				if (ManagerScene::GetInstance() != nullptr) {
+					lua.new_usertype<ManagerScene>("Scene");
+					lua["Scene"]["LoadScene"] = [](string SceneName) { ManagerScene::GetInstance()->GetCurrentScene()->LoadScene(SceneName);  };
 				}
-				std::cout << std::endl;
-				});
 
-			lua.set_function("printI", [](sol::variadic_args args) {
-				std::cout << "";
-				for (auto arg : args) {
-					std::cout << arg.as<int>() << " ";
-				}
-				std::cout << std::endl;
-				});
-
-			lua.set_function("printSTR", [](sol::variadic_args args) {
-				std::cout << "";
-				for (auto arg : args) {
-					std::cout << arg.as<string>() << " ";
-				}
-				std::cout << std::endl;
-				});
-
-			lua.set_function("printB", [](sol::variadic_args args) {
-				std::cout << "";
-				for (auto arg : args) {
-					std::cout << arg.as<bool>() << " ";
-				}
-				std::cout << std::endl;
-				});
-
-			lua.set_function("print", [](sol::variadic_args args) {
-				std::cout << "";
-				for (auto arg : args) {
-					ConsoleManager::GetInstance()->CreateLog(arg.as <string>());
-				}
-				std::cout << std::endl;
-				});
-
-
-			lua.new_usertype<Vector2>("Vector2", sol::constructors<Vector2(float, float)>(),
-				"x", &Vector2::x,
-				"y", &Vector2::y);
-
-
-			lua["Vector2"]["new"] = [](float x, float y) {
-				return Vector2(x, y);
-			};
-
-			lua["tostring"] = [](any obj) {
-				if (obj.type() == typeid(string)) {
-					return std::any_cast<string> (obj);
-				}
-
-				if (obj.type() == typeid(int)) {
-					return to_string(std::any_cast<int> (obj));
-				}
-
-				if (obj.type() == typeid(float)) {
-					return to_string(std::any_cast<float> (obj));
-				}
-			};
-
-
-			lua.new_usertype<Object>("Object",
-				"SetPosition", &Object::SetPosition,
-				"GetPosition", &Object::GetPosition,
-				"Name", &Object::name,
-				"GetName", &Object::GetName,
-				"GetScale", &Object::GetScale,
-				"SetNewScale", &Object::SetNewScale,
-				"SetActive", &Object::SetActive,
-				"SetScaleBox", &Object::SetScaleBox,
-				"GetScaleBox", &Object::GetScaleBox,
-				"SetDensityBox", &Object::SetDensityBox,
-				"GetDensityBox", &Object::GetDensityBox,
-				"SetFrictionBox", &Object::SetFrictionBox,
-				"GetFrictionBox", &Object::GetFrictionBox,
-				"AddForce", &Object::AddForce,
-				"UseGravity", &Object::useGravity
-			);
-
-			if (ManagerScene::GetInstance() != nullptr) {
-				lua.new_usertype<ManagerScene>("Scene");
-				lua["Scene"]["LoadScene"] = [](string SceneName) { ManagerScene::GetInstance()->GetCurrentScene()->LoadScene(SceneName);  };
-			}
-
-			lua["Object"]["new"] = []() { return ManagerScene::GetInstance()->GetCurrentScene()->SetupNewObject(); };
-			lua["Object"]["FindObjectPerName"] = [](string FindName) {return OBJManager->FindObjectPerName(FindName); };
+				lua["Object"]["new"] = []() { return ManagerScene::GetInstance()->GetCurrentScene()->SetupNewObject(); };
+				lua["Object"]["FindObjectPerName"] = [](string FindName) {return OBJManager->FindObjectPerName(FindName); };
 
 				sol::usertype<AudioSource> miTipo = lua.new_usertype<AudioSource>("AudioSource",
 					"Play", &AudioSource::Play,
@@ -533,63 +540,82 @@ void Object::CallLua(string ScriptToRun) {
 				);
 
 				lua["AudioSource"]["FindSourcePerName"] = [](string FindName) {return OBJManager->FindAudioSourcePerName(FindName); };
-				//lua["AudioSource"] = source;
-
-			lua.new_usertype<GMathf>("GMathf");
-			lua["GMathf"]["ClampFloat"] = [](float value, float min, float max) { return  GMathf::ClampFloat(value, min, max);  };
-			lua["GMathf"]["ClampInt"] = [](int value, int min, int max) { return  GMathf::ClampFloat(value, min, max); };
-			lua["GMathf"]["Clamp01"] = [](float value) { return  GMathf::Clamp01(value); };
-			lua["GMathf"]["Random"] = [](float min, float max) { return  GMathf::RandomFloat (min, max); };
-			lua["GMathf"]["Abs"] = [](float Value) { return  GMathf::ABS(Value); };
-			lua["GMathf"]["Aproximity"] = [](float a, float b, float tolerance) { return  GMathf::Aproximity(a, b, tolerance); };
-			lua["GMathf"]["Asin"] = [](float Value) { return  GMathf::ASIN(Value); };
-			lua["GMathf"]["Atan"] = [](float Value) { return  GMathf::Atan(Value); };
-			lua["GMathf"]["Atan2"] = [](float x, float y) { return  GMathf::Atan2(x, y); };
-			lua["GMathf"]["Ceil"] = [](float Value) { return  GMathf::Ceil(Value); };
-			lua["GMathf"]["ClosestPowerOfTwo"] = [](float Value) { return  GMathf::ClosestPowerOfTwo(Value); };
-			lua["GMathf"]["Sqrt"] = [](float Value) { return  GMathf::SQRT(Value); };
-			lua["GMathf"]["SmoothDamp"] = [](float current, float target, float currentVelocity, float smoothTime, float maxSpeed, float deltaTime) { return  GMathf::SmoothDamp (current, target, currentVelocity, smoothTime, maxSpeed, deltaTime); };
-			lua["GMathf"]["SmoothDampAngle"] = [](float current, float target, float currentVelocity, float smoothTime, float maxSpeed, float deltaTime) { return  GMathf::SmoothDampAngle(current, target, currentVelocity, smoothTime, maxSpeed, deltaTime); };			lua["GMathf"]["SmoothDampAngle"] = [](float current, float target, float currentVelocity, float smoothTime, float maxSpeed, float deltaTime) { return  GMathf::SmoothDampAngle(current, target, currentVelocity, smoothTime, maxSpeed, deltaTime); };
-			lua["GMathf"]["PI"] = []() { return  GMathf::PI(); };
-			lua["GMathf"]["SmoothStep"] = [](double start, double end, double value) { return  GMathf::SmoothStep (start, end, value); };
-			lua["GMathf"]["Tan"] = [](double degrees) { return  GMathf::Tan(degrees); };
+				lua["AudioSource"]["new"] = []() { return ManagerScene::GetInstance()->GetCurrentScene()->SetupNewAudio(); };
 
 
+				lua.new_usertype<GMathf>("GMathf");
+				lua["GMathf"]["ClampFloat"] = [](float value, float min, float max) { return  GMathf::ClampFloat(value, min, max);  };
+				lua["GMathf"]["ClampInt"] = [](int value, int min, int max) { return  GMathf::ClampFloat(value, min, max); };
+				lua["GMathf"]["Clamp01"] = [](float value) { return  GMathf::Clamp01(value); };
+				lua["GMathf"]["Random"] = [](float min, float max) { return  GMathf::RandomFloat(min, max); };
+				lua["GMathf"]["Abs"] = [](float Value) { return  GMathf::ABS(Value); };
+				lua["GMathf"]["Aproximity"] = [](float a, float b, float tolerance) { return  GMathf::Aproximity(a, b, tolerance); };
+				lua["GMathf"]["Asin"] = [](float Value) { return  GMathf::ASIN(Value); };
+				lua["GMathf"]["Atan"] = [](float Value) { return  GMathf::Atan(Value); };
+				lua["GMathf"]["Atan2"] = [](float x, float y) { return  GMathf::Atan2(x, y); };
+				lua["GMathf"]["Ceil"] = [](float Value) { return  GMathf::Ceil(Value); };
+				lua["GMathf"]["ClosestPowerOfTwo"] = [](float Value) { return  GMathf::ClosestPowerOfTwo(Value); };
+				lua["GMathf"]["Sqrt"] = [](float Value) { return  GMathf::SQRT(Value); };
+				lua["GMathf"]["SmoothDamp"] = [](float current, float target, float currentVelocity, float smoothTime, float maxSpeed, float deltaTime) { return  GMathf::SmoothDamp(current, target, currentVelocity, smoothTime, maxSpeed, deltaTime); };
+				lua["GMathf"]["SmoothDampAngle"] = [](float current, float target, float currentVelocity, float smoothTime, float maxSpeed, float deltaTime) { return  GMathf::SmoothDampAngle(current, target, currentVelocity, smoothTime, maxSpeed, deltaTime); };			lua["GMathf"]["SmoothDampAngle"] = [](float current, float target, float currentVelocity, float smoothTime, float maxSpeed, float deltaTime) { return  GMathf::SmoothDampAngle(current, target, currentVelocity, smoothTime, maxSpeed, deltaTime); };
+				lua["GMathf"]["PI"] = []() { return  GMathf::PI(); };
+				lua["GMathf"]["SmoothStep"] = [](double start, double end, double value) { return  GMathf::SmoothStep(start, end, value); };
+				lua["GMathf"]["Tan"] = [](double degrees) { return  GMathf::Tan(degrees); };
 
-			if (InputSystem::GetInstance() != nullptr) {
-				lua.set_function("OnKeyDown", [](const string& keyName) -> bool {
-					return InputSystem::GetInstance()->OnKeyDown(keyName);
-					});
+				lua.new_usertype<ParticlesSystem>("Particle",
+					"SetPosition", &ParticlesSystem::Name,
+					"LifeTime", &ParticlesSystem::LifeTime,
+					"ParticlePath", &ParticlesSystem::ParticlePath,
+					"MinRotationDir", &ParticlesSystem::MinxRotationDir,
+					"MaxRotationDir", &ParticlesSystem::MaxRotationDir,
+					"RotationXOffset", &ParticlesSystem::RotationXOffset,
+					"RotationYOffset", &ParticlesSystem::RotationYOffset,
+					"Speed", &ParticlesSystem::Speed,
+					"SpawnTime", &ParticlesSystem::SpawnTime,
+					"MaxParticle", &ParticlesSystem::MaxParticles);
+
+				lua["Particle"]["new"] = []() { return ManagerScene::GetInstance()->GetCurrentScene()->SetupNewParticleSystem(); };
+
+
+				if (InputSystem::GetInstance() != nullptr) {
+					lua.set_function("OnKeyDown", [](const string& keyName) -> bool {
+						return InputSystem::GetInstance()->OnKeyDown(keyName);
+						});
+
+					lua.set_function("OnKeyUp", [](const string& keyName) -> bool {
+						return InputSystem::GetInstance()->OnKeyUp(keyName);
+						});
+				}
 			}
-		}
 
-		int result = luaL_loadstring(lua.lua_state(), codigo_lua.c_str());
-		if (result == LUA_OK) {
-			if (!LuaCompiled) {
-				Object* OBJ = GetObject();
-				lua["self"] = sol::make_object(lua.lua_state(), OBJ);
-			}
+			int result = luaL_loadstring(lua.lua_state(), codigo_lua.c_str());
+			if (result == LUA_OK) {
+				if (!LuaCompiled) {
+					Object* OBJ = GetObject();
+					lua["self"] = sol::make_object(lua.lua_state(), OBJ);
+				}
 
-			result = lua_pcall(lua.lua_state(), 0, LUA_MULTRET, 0);
-			if (result != LUA_OK) {
-				std::string error = lua_tostring(lua.lua_state(), -1);
-				ConsoleManager::GetInstance()->CreateLog(error);
-				std::cout << "Error: " << error << std::endl;
-				lua_pop(lua.lua_state(), 1);
-				LuaCompiled = false;
+				result = lua_pcall(lua.lua_state(), 0, LUA_MULTRET, 0);
+				if (result != LUA_OK) {
+					std::string error = lua_tostring(lua.lua_state(), -1);
+					ConsoleManager::GetInstance()->CreateLog(error);
+					std::cout << "Error: " << error << std::endl;
+					lua_pop(lua.lua_state(), 1);
+					LuaCompiled = false;
+				}
+				else {
+					LuaCompiled = true;
+					std::cout << "Lua compiled " << endl;
+				}
 			}
 			else {
-				LuaCompiled = true;
-				std::cout << "Lua compiled " << endl;
-			}
-		}
-		else {
-			std::string error = lua_tostring(lua.lua_state(), -1);
-			std::cout << "Error: " << error << std::endl;
-			ConsoleManager::GetInstance()->CreateLog(error);
-			lua_pop(lua.lua_state(), 1);
+				std::string error = lua_tostring(lua.lua_state(), -1);
+				std::cout << "Error: " << error << std::endl;
+				ConsoleManager::GetInstance()->CreateLog(error);
+				lua_pop(lua.lua_state(), 1);
 
-			ConsoleManager::GetInstance()->CreateLog("Lua error on compiled ");
+				ConsoleManager::GetInstance()->CreateLog("Lua error on compiled ");
+			}
 		}
 	}
 }

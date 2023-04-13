@@ -23,5 +23,6 @@ public:
 
     void Save();
     void SaveEngineData();
+    void LoadEngineData();
     void Load (string PathScene);
 };

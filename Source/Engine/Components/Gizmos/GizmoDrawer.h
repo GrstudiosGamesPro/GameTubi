@@ -40,6 +40,7 @@ public:
 	}
 
 	~GizmoDrawer() {
+		delete texture;
 		SDL_DestroyTexture(texture);
 	}
 };

@@ -1,3 +1,18 @@
 {
-    "Inputs": []
+    "Inputs": [
+        {
+            "Axis": "1",
+            "AxisName": "Walk",
+            "Key": "D",
+            "NegateAxis": "-1",
+            "NegateKey": "A"
+        },
+        {
+            "Axis": "1",
+            "AxisName": "Jump",
+            "Key": "Space",
+            "NegateAxis": "-1",
+            "NegateKey": ""
+        }
+    ]
 }

@@ -51,10 +51,12 @@ void SaveData::Save() {
             json ObjectsValues;
             Object& obj = *ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i];
 
-            if (obj.Parent == nullptr) {
                 ObjectsValues["ObjectName"] = obj.GetName();
-                ObjectsValues["PosX"] = obj.pos.x;
-                ObjectsValues["PosY"] = obj.pos.y;
+                ObjectsValues["PosX"] = obj.GetPosition().x;
+                ObjectsValues["PosY"] = obj.GetPosition().y;
+                ObjectsValues["IsStatic"] = obj.IsStatic;
+                ObjectsValues["IsTrigger"] = obj.IsTrigger;
+
 
                 ObjectsValues["ScaleX"] = obj.ScaleX;
                 ObjectsValues["ScaleY"] = obj.ScaleY;
@@ -71,6 +73,8 @@ void SaveData::Save() {
                 ObjectsValues["AngleControlBody"] = obj.ControlAngleBody;
 
                 ObjectsValues["Scripting"] = obj.Script;
+                ObjectsValues["RunLua"] = obj.RunLua;
+                ObjectsValues["Tag"] = obj.Tag;
 
                 if (obj.Childrens.size() > 0) {
                     for (int e = 0; e < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->Childrens.size(); e++) {
@@ -78,8 +82,11 @@ void SaveData::Save() {
                         Object& objChild = *ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->Childrens[e];
 
                         ChildrenData["ObjectName"] = objChild.GetName();
-                        ChildrenData["PosX"] = objChild.pos.x;
-                        ChildrenData["PosY"] = objChild.pos.y;
+                        ChildrenData["IsStatic"] = objChild.IsStatic;
+                        ChildrenData["IsTrigger"] = objChild.IsTrigger;
+
+                        ChildrenData["PosX"] = objChild.GetPosition().x;
+                        ChildrenData["PosY"] = objChild.GetPosition().y;
 
                         ChildrenData["ScaleX"] = objChild.ScaleX;
                         ChildrenData["ScaleY"] = objChild.ScaleY;
@@ -94,8 +101,11 @@ void SaveData::Save() {
                         ChildrenData["Friction"] = objChild.friction;
 
                         ChildrenData["AngleControlBody"] = objChild.ControlAngleBody;
-
+                        
                         ChildrenData["Scripting"] = objChild.Script;
+                        ChildrenData["RunLua"] = objChild.RunLua;
+                        ChildrenData["Tag"] = objChild.Tag;
+
 
                         ObjectsChildren.push_back(ChildrenData);
                     }
@@ -107,7 +117,7 @@ void SaveData::Save() {
                 }
 
                 Objects.push_back(ObjectsValues);
-            }
+            
         }
 
         for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->Audio.size(); i++) {
@@ -171,7 +181,9 @@ void SaveData::Save() {
             cerr << "Error: file could not be opened" << endl;
             exit(1);
         }
+        std::cout << "Data saved" << endl;
     }
+
 
     SaveEngineData();
 }
@@ -207,26 +219,63 @@ void SaveData::SaveEngineData() {
     }
 }
 
+void SaveData::LoadEngineData() {
+    if (InputSystem::GetInstance() != nullptr) {
+        std::ifstream file("Assets/ProyectSettings/ProyectSettings.gmt");
 
-void SaveData::Load (string PathScene) {
-    if (ManagerScene::GetInstance()->GetCurrentScene()->GravityWorld != nullptr && ManagerScene::GetInstance()->GetCurrentScene()->GravityWorld->GetBodyCount() > 0) {
-        ManagerScene::GetInstance()->GetCurrentScene()->GravityWorld = nullptr;
-        //ManagerScene::GetInstance()->GetCurrentScene()->UnLoadAllBodys();
+        if (file) {
+            json data;
+            file >> data;
+            nlohmann::json Inputs = data["Inputs"];
 
-        for (int i = ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size() - 1; i >= 0; i--) {
-            //ManagerScene::GetInstance()->GetCurrentScene()->GravityWorld->DestroyBody (ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->body);
-            ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.erase(ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.begin() + i);
-        }
-        ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.clear();
-        ManagerScene::GetInstance()->GetCurrentScene()->CreateGravity();
+            for (int i = 0; i < Inputs.size(); i++) {
+                InputSystem::Inputs* NewInput = new InputSystem::Inputs();
 
-        for (int i = ManagerScene::GetInstance()->GetCurrentScene()->Audio.size() - 1; i >= 0; i--) {
-            ManagerScene::GetInstance()->GetCurrentScene()->Audio[i]->Stop();
-            ManagerScene::GetInstance()->GetCurrentScene()->Audio.erase (ManagerScene::GetInstance()->GetCurrentScene()->Audio.begin() + i);
+                NewInput->Name = Inputs[i]["AxisName"];
+                NewInput->NegateKey = Inputs[i]["NegateKey"];
+                NewInput->Axis = Inputs[i]["Axis"];
+                NewInput->NegateAxis = Inputs[i]["NegateAxis"];
+                NewInput->Key = Inputs[i]["Key"];
+                InputSystem::GetInstance()->inputs.push_back (*NewInput);
+            }
+
+            file.close();
         }
     }
+}
+
+
+void SaveData::Load (string PathScene) {
+    if (ManagerScene::GetInstance()->GetCurrentScene()->GravityWorld == nullptr) {
+        ManagerScene::GetInstance()->GetCurrentScene()->CreateGravity();
+        std::cout << "Creando gravedad" << endl;
+    }
+
+    if (ManagerScene::GetInstance()->GetCurrentScene()->GravityWorld != nullptr) {
+        for (auto objT : ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene) {
+            ManagerScene::GetInstance()->GetCurrentScene()->DestroyObject (objT);
+            delete objT;
+        }
+
+        for (ParticlesSystem* d : ManagerScene::GetInstance()->GetCurrentScene()->Particles) {
+            d->ClearParticles();
+        }
+
+        if (ManagerScene::GetInstance()->GetCurrentScene()->GravityWorld->GetBodyCount() > 0) {
+            ManagerScene::GetInstance()->GetCurrentScene()->UnLoadAllBodys();
+        }
+
+        ManagerScene::GetInstance()->GetCurrentScene()->Particles.clear();
+        ManagerScene::GetInstance()->GetCurrentScene()->Audio.clear();
+
+        SDL_DestroyTexture (ManagerScene::GetInstance()->GetCurrentScene()->backgroundTexture);
+    }
+
 
     std::ifstream file (PathScene);
+
+
+
 
     if (file) {
         json data;
@@ -244,9 +293,9 @@ void SaveData::Load (string PathScene) {
 
         for (int i = 0; i < ObjectsArray.size(); i++) {
             Object* OBJ = new Object();
-            OBJ->Start();
             OBJ->pos.x = (float)ObjectsArray[i]["PosX"];
             OBJ->pos.y = (float)ObjectsArray[i]["PosY"];
+            OBJ->Start();
             OBJ->Script = (string)ObjectsArray[i]["Scripting"];
 
             OBJ->SetName(ObjectsArray[i]["ObjectName"]);
@@ -262,8 +311,13 @@ void SaveData::Load (string PathScene) {
             OBJ->density = (float)ObjectsArray[i]["Density"];
             OBJ->friction = (float)ObjectsArray[i]["Friction"];
 
+            OBJ->IsStatic = (bool)ObjectsArray[i]["IsStatic"];
+            OBJ->IsTrigger = (bool)ObjectsArray[i]["IsTrigger"];
+
             OBJ->TexturePath = (string)ObjectsArray[i]["SpritePath"];
             OBJ->ControlAngleBody = (bool)ObjectsArray[i]["AngleControlBody"];
+            OBJ->RunLua = (bool)ObjectsArray[i]["RunLua"];
+            OBJ->Tag = (string)ObjectsArray[i]["Tag"];
             OBJ->SetNewTexture();
 
             nlohmann::json ObjectsChildren = ObjectsArray[i]["ChildObjects"];
@@ -273,10 +327,12 @@ void SaveData::Load (string PathScene) {
             if (ObjectsChildren.size() > 0) {
                 for (int e = 0; e < ObjectsChildren.size(); e++) {
                     Object* OBJa = new Object();
-                    OBJa->Start();
-                    OBJa->Parent = OBJ;
+                    OBJa->IsStatic = (bool)ObjectsChildren[e]["IsStatic"];
+                    OBJa->IsTrigger = (bool)ObjectsChildren[e]["IsTrigger"];
                     OBJa->pos.x = (float)ObjectsChildren[e]["PosX"];
                     OBJa->pos.y = (float)ObjectsChildren[e]["PosY"];
+                    OBJa->Start();
+                    OBJa->Parent = OBJ;
                     OBJa->Script = (string)ObjectsChildren[e]["Scripting"];
 
                     OBJa->SetName((string)ObjectsChildren[e]["ObjectName"]);
@@ -292,9 +348,14 @@ void SaveData::Load (string PathScene) {
                     OBJa->density = (float)ObjectsChildren[e]["Density"];
                     OBJa->friction = (float)ObjectsChildren[e]["Friction"];
 
+
                     OBJa->TexturePath = (string)ObjectsChildren[e]["SpritePath"];
                     OBJa->ControlAngleBody = (bool)ObjectsChildren[e]["AngleControlBody"];
                     OBJa->SetNewTexture();
+                    OBJa->Tag = (string)ObjectsChildren[e]["Tag"];
+
+                    OBJa->RunLua = (bool)ObjectsChildren[i]["RunLua"];
+
                     OBJ->Childrens.push_back (OBJa);
                     ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.push_back(OBJa);
                 }
@@ -314,6 +375,8 @@ void SaveData::Load (string PathScene) {
             ManagerScene::GetInstance()->GetCurrentScene()->Audio.push_back (newSource);
         }
 
+        std::cout << "Particulas totales: " << ManagerScene::GetInstance()->GetCurrentScene()->Particles.size() << endl;
+
         for (int i = 0; i < ParticlesArray.size(); i++) {
             ParticlesSystem* newSource = new ParticlesSystem();
             newSource->Name = (string)ParticlesArray[i]["Name"];
@@ -328,6 +391,7 @@ void SaveData::Load (string PathScene) {
             newSource->MaxRotationDir = (float)ParticlesArray[i]["MaxRotation"];
             newSource->MinxRotationDir = (float)ParticlesArray[i]["MinRotation"];
             newSource->MaxParticles = (int)ParticlesArray[i]["MaxParticles"];
+            newSource->Start();
 
             ManagerScene::GetInstance()->GetCurrentScene()->Particles.push_back (newSource);
             //ManagerScene::GetInstance()->GetCurrentScene()->SetupNewParticleSystem (newSource);

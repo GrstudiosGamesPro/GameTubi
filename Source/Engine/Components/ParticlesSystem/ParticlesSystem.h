@@ -24,7 +24,7 @@ public:
 	float SpawnTime = 10;
 	Vector2 Position;
 	int MaxParticles = 100;
-
+	bool Stop = false;
 
 	//Variables No Guardables
 	float DefaultTimeSpawn;
@@ -44,45 +44,49 @@ public:
 	}
 
 	void Draw() {
-		drawer->Draw(Position.x, Position.y);
+		if (!Stop) {
 
-		
-		SDL_SetRenderDrawColor(Window::renderer, 255, 0, 0, 255);
-
-		int GizmosPosX = Position.x * 32;
-		int GizmosPosY = Position.y * 32;
-
-		int segments = 100;
-		float angleStep = 360.0f / (float)segments;
-		float currentAngle = 0.0f;
-
-		int x1, y1, x2, y2;
-
-		for (int i = Particles.size(); i < MaxParticles; i++) {
-			if (DefaultTimeSpawn <= 0) {
-				SpawnParticle();
-				DefaultTimeSpawn = SpawnTime;
+			if (drawer != nullptr) {
+				drawer->Draw(Position.x, Position.y);
 			}
-			else {
-				DefaultTimeSpawn -= 1;
-			}
-		}
 
-		for (int i = 0; i < Particles.size(); i++)
-		{
-			Particles[i]->Speed = Speed;
-			Particles[i]->RotationXOffset = RotationXOffset;
-			Particles[i]->RotationYOffset = RotationYOffset;
-			Particles[i]->Draw();
-		
-			if (Particles[i]->DefaultTime <= 0) {
-				auto it = Particles.begin();
-				std::advance(it, i);
-				delete* (&Particles[i]);
-				Particles.erase(it);
+			SDL_SetRenderDrawColor(Window::renderer, 255, 0, 0, 255);
+
+			int GizmosPosX = Position.x * 32;
+			int GizmosPosY = Position.y * 32;
+
+			int segments = 100;
+			float angleStep = 360.0f / (float)segments;
+			float currentAngle = 0.0f;
+
+			int x1, y1, x2, y2;
+
+			for (int i = Particles.size(); i < MaxParticles; i++) {
+				if (DefaultTimeSpawn <= 0) {
+					SpawnParticle();
+					DefaultTimeSpawn = SpawnTime;
+				}
+				else {
+					DefaultTimeSpawn -= 1;
+				}
 			}
-			else {
-				Particles[i]->DefaultTime -= 1;
+
+			for (int i = 0; i < Particles.size(); i++)
+			{
+				Particles[i]->Speed = Speed;
+				Particles[i]->RotationXOffset = RotationXOffset;
+				Particles[i]->RotationYOffset = RotationYOffset;
+				Particles[i]->Draw();
+
+				if (Particles[i]->DefaultTime <= 0) {
+					auto it = Particles.begin();
+					std::advance(it, i);
+					delete* (&Particles[i]);
+					Particles.erase(it);
+				}
+				else {
+					Particles[i]->DefaultTime -= 1;
+				}
 			}
 		}
 	}
@@ -106,12 +110,29 @@ public:
 		Particles.push_back(ParticleText);
 	}
 
-	~ParticlesSystem() {
+	void ClearParticles() {
 		for (Particle* particle : Particles) {
 			delete particle;
 		}
+
+		for (int i = Particles.size() - 1; i >= 0; i--) {
+			Particles.erase(Particles.begin() + i);
+		}
+
+		Particles.clear();
+	}
+
+	~ParticlesSystem() {
+		for (Particle* particle : Particles) {
+			SDL_DestroyTexture (particle->texture);
+			delete particle;
+		}
+
+		for (int i = Particles.size() - 1; i >= 0; i--) {
+			Particles.erase(Particles.begin() + i);
+			std::cout << "Total objetos" << endl;
+		}
+
 		Particles.clear();
 	}
 };
-
-

@@ -1,24 +1,48 @@
 {
     "AudioSources": [],
     "BGFullScreen": true,
-    "BackgroundPath": "Assets/Sprites/BG4.jpg",
+    "BackgroundPath": "Assets/Sprites/BG.png",
     "CompileScene": true,
-    "Objetos": [],
-    "Particles": [
+    "Objetos": [
         {
-            "LifeTime": 2,
-            "MaxParticles": 10,
-            "MaxRotation": 267.0,
-            "MinRotation": -267.0,
-            "Name": "Particle System",
-            "OffsetX": 0.0,
-            "OffsetY": 360.0,
-            "ParticleTexturePath": "Assets/Sprites/ParticleExample.png",
-            "ParticleTimeSpawn": 200.0,
-            "PosX": 8.720000267028809,
-            "PosY": 9.100000381469727,
-            "Speed": 0.01600000075995922
+            "AngleControlBody": false,
+            "ColisionActive": false,
+            "Density": 1.0,
+            "Friction": 0.30000001192092896,
+            "IsStatic": false,
+            "IsTrigger": false,
+            "ObjectName": "Player",
+            "PosX": 26.927000045776367,
+            "PosY": 24.958999633789063,
+            "RunLua": false,
+            "ScaleBoxX": 1.0,
+            "ScaleBoxY": 1.0,
+            "ScaleX": 1.0,
+            "ScaleY": 1.0,
+            "Scripting": "local WalkForce = 0.1;\nlocal JumpForce = 200;\n\nfunction Tick ()\n  if OnKeyDown(\"Walk\") then\n   self:AddForce (WalkForce, 0)\n  end\nend",
+            "SpritePath": "Assets/Sprites/idle.gif",
+            "Tag": "Default"
+        },
+        {
+            "AngleControlBody": false,
+            "ColisionActive": true,
+            "Density": 1.0,
+            "Friction": 0.30000001192092896,
+            "IsStatic": true,
+            "IsTrigger": false,
+            "ObjectName": "Floor",
+            "PosX": 25.0,
+            "PosY": 30.0,
+            "RunLua": false,
+            "ScaleBoxX": 100.0,
+            "ScaleBoxY": 1.0,
+            "ScaleX": 100.0,
+            "ScaleY": 1.0,
+            "Scripting": "function Start ()\n\n--EXECUTE ON START THE GAME\n\n\nend\n\n\n\n\n\n\n\nfunction Tick ()\n\n--THIS EXECUTE IN LOOP \n\n\nend",
+            "SpritePath": "Assets/Sprites/idle.gif",
+            "Tag": "Player"
         }
     ],
+    "Particles": [],
     "SceneName": "SampleScene"
 }

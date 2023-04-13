@@ -4,10 +4,7 @@
 #include "imgui_impl_sdlrenderer.h"
 #include "../SceneManager/ManagerScene.h"
 #include "../../Window.h"
-#include <iostream>
 #include "../Console/ConsoleManager.h"
-#include <cstring>
-#include <tchar.h>
 #include "../Object.h"
 #include "../InputSystem/InputSystem.h"
 #include "../../WindowsCompiler/WindowsCompiler.h"
@@ -15,6 +12,10 @@
 #include "../ParticlesSystem/ParticlesSystem.h"
 #include "../Animator/AnimatorSprite.h"
 #include "nlohmann/json.hpp"
+#include "../EditorPlay/PlayMode.h"
+#include <iostream>
+#include <cstring>
+#include <tchar.h>
 
 using json = nlohmann::json;
 
@@ -37,6 +38,11 @@ public:
 	AnimatorSprite* animator = new AnimatorSprite();
 	SDL_Texture* CurrentParticleTexture;
 
+	SDL_Texture* Play;
+	SDL_Texture* Stop;
+	SDL_Texture* Doc;
+	SDL_Texture* BGPreview;
+
 	void SetupOnStart(SDL_Window* window, SDL_Renderer* renderer) {
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -47,6 +53,10 @@ public:
 		ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
 		ImGui_ImplSDLRenderer_Init(renderer);
 
+		Play = TextureManager::LoadTexture("Assets/Gizmos/Play.png");
+		Stop = TextureManager::LoadTexture("Assets/Gizmos/Stop.png");
+		Doc = TextureManager::LoadTexture("Assets/Gizmos/Doc.png");
+		BGPreview = TextureManager::LoadTexture("Assets/Sprites/Background.png");
 	}
 
 	void RenderUI(SDL_Event event) {
@@ -100,15 +110,22 @@ private:
 		ImGui::PushStyleColor   (ImGuiCol_FrameBg, ImVec4(0.3f, 0.3f, 0.3f, 1.0f));
 		ImGui::PushStyleColor	(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
 
-		if (ImGui::BeginMainMenuBar()) {
 
+
+		ImGui::SetNextWindowSizeConstraints(ImVec2(400, 20), ImVec2(FLT_MAX, 30));
+		if (ImGui::BeginMainMenuBar()) {
 			if (ImGui::BeginMenu("File")) {
 				if (ImGui::MenuItem("New Scene")) {
 					ManagerScene::GetInstance()->GetCurrentScene()->LoadScene("NewScene");
 				}
 
 				if (ImGui::MenuItem("Save")) {
-					ManagerScene::GetInstance()->GetCurrentScene()->SaveScene();
+					if (!PlayMode::GetInstance()->IsPlaying) {
+						ManagerScene::GetInstance()->GetCurrentScene()->SaveScene();
+					}
+					else {
+						ConsoleManager::GetInstance()->CreateLog ("You can't save in play mode");
+					}
 				}
 
 				ImGui::EndMenu();
@@ -141,6 +158,33 @@ private:
 				}
 
 				ImGui::EndMenu();
+			}
+
+			ImGui::SameLine((ImGui::GetWindowWidth() - ImGui::CalcTextSize("Play").x - 16.0f) / 2.0f);
+
+			if (!PlayMode::GetInstance()->IsPlaying) {
+				if (ImGui::ImageButton(Play, ImVec2(10, 10))) {
+					PlayMode::GetInstance()->Start();
+					PlayMode::GetInstance()->IsPlaying = true;
+				}
+			}
+			ImGui::SameLine((ImGui::GetWindowWidth() - ImGui::CalcTextSize("Play").x - 16.0f) / 2.0f);
+
+			if (PlayMode::GetInstance()->IsPlaying) {
+				if (ImGui::ImageButton (Stop, ImVec2 (10, 10))) {
+					PlayMode::GetInstance()->Stop();
+					PlayMode::GetInstance()->IsPlaying = false;
+				}
+			}
+			
+
+			float fps = ImGui::GetIO().Framerate;
+			ImGui::SameLine(ImGui::GetWindowWidth() - ImGui::CalcTextSize(std::to_string(fps).c_str()).x - 16.0f);
+			ImGui::Text("%.1f FPS", fps);
+
+			ImGui::SameLine((ImGui::GetWindowWidth() - ImGui::CalcTextSize("Info").x - 100.0f));
+			if (ImGui::ImageButton(Doc, ImVec2(10, 10))) {
+				system ("start https://diamond32-tutoriales.gitbook.io/gametubidoc");
 			}
 
 			ImGui::EndMainMenuBar();
@@ -485,9 +529,9 @@ private:
 					ImGui::Spacing();
 					ImGui::PushID(34233);
 
-					if (ImGui::Button ("Change Parent")) {
+					if (ImGui::Button("Change Parent")) {
 						SelectObject->ChangingChild = true;
- 					}
+					}
 
 					if (SelectObject->Parent != nullptr) {
 						if (ImGui::Button("Remove Parent")) {
@@ -495,7 +539,7 @@ private:
 							SelectObject->Parent = nullptr;
 
 							SelectObject->RemoveFromParent();
- 						}
+						}
 					}
 
 
@@ -508,153 +552,170 @@ private:
 					ImGui::Checkbox("Active", &IsActive);
 					SelectObject->isActive = IsActive;
 
-					
+
 
 					bool IsAnimation = SelectObject->IsAnimation;
 					ImGui::Checkbox("Is Animation", &IsAnimation);
 					SelectObject->IsAnimation = IsAnimation;
+
+					bool RunLua = SelectObject->RunLua;
+					ImGui::Checkbox("Scripting", &RunLua);
+					SelectObject->RunLua = RunLua;
 					ImGui::EndGroup();
-
-					//NOMBRE
-					char name[128];
-					strcpy_s(name, SelectObject->GetName().c_str());
-					ImGui::InputText("Name: ", name, ImGuiInputTextFlags_AutoSelectAll);
-					SelectObject->SetName((std::string)name);
-
-					float GetPosSD[2]{
-						SelectObject->GetPosition().x,
-						SelectObject->GetPosition().y,
-					};
-
-					ImGui::DragFloat2("Position: ", GetPosSD, 0.01f);
-
-					if (SelectObject->pos.x != GetPosSD[0] || SelectObject->pos.y != GetPosSD[1]) {
-						SelectObject->UpdateCollisions();
-					}
-
-					SelectObject->SetPosition(GetPosSD[0], GetPosSD[1]);
-
-
-					float ScaleX = SelectObject->ScaleX;
-					ImGui::DragFloat("Scale X: ", &ScaleX, 0.01f);
-					if (SelectObject->ScaleX != ScaleX) {
-						SelectObject->UpdateCollisions();
-						SelectObject->UpdateBody();
-					}
-
-					SelectObject->ScaleX = ScaleX;
-
-					float ScaleY = SelectObject->ScaleY;
-					ImGui::DragFloat("Scale Y: ", &ScaleY, 0.01f);
-					if (SelectObject->ScaleY != ScaleY) {
-						SelectObject->UpdateCollisions();
-						SelectObject->UpdateBody();
-					}
-					SelectObject->ScaleY = ScaleY;
-
-
-					float AngleM = SelectObject->Angle;
-					ImGui::DragFloat("Angle: ", &AngleM);
-					SelectObject->Angle = AngleM;
-
-					ImGui::Spacing();
-					ImGui::Spacing();
-					ImGui::Spacing();
-					ImGui::Spacing();
-					ImGui::Spacing();
-
-					char TexturePath[100];
-					strcpy_s(TexturePath, SelectObject->TexturePath.c_str());
-					ImGui::InputText("Texture: ", TexturePath, 100, ImGuiInputTextFlags_AutoSelectAll);
-					SelectObject->TexturePath = TexturePath;
-
-					ImGui::PushID(241);
-					ImGui::Image(SelectObject->text, ImVec2(128, 128));
-					ImGui::PopID();
-					
-
-
-
-					if (ImGui::Button("Save Sprites")) {
-						SelectObject->SetNewTexture();
-					}
-
 					ImGui::PopID();
 
-					ImGui::Spacing();
-					ImGui::Spacing();
-					ImGui::Spacing();
-					ImGui::Spacing();
-					ImGui::Spacing();
-
-					ImGui::PushID(3423);
-					ImGui::Text("Collisions");
 
 
-					bool UseCollisions = SelectObject->useGravity;
-					ImGui::Checkbox("Gravity: ", &UseCollisions);
-					if (SelectObject->useGravity != UseCollisions) {
-						SelectObject->useGravity = UseCollisions;
-						SelectObject->UpdateBody();
-					}
-
-					ImGui::Spacing();
-
-					bool IsTrigger = SelectObject->IsTrigger;
-					ImGui::Checkbox("Is Trigger", &IsTrigger);
-
-					if (SelectObject->IsTrigger != IsTrigger) {
-						SelectObject->IsTrigger = IsTrigger;
-						std::cout << "Trigger Value: " << SelectObject->IsTrigger << endl;
-
-						SelectObject->UpdateBody();
-
-					}
-
-
-					bool ControlBodyAngle = SelectObject->ControlAngleBody;
-					ImGui::Checkbox("Body Angle: ", &ControlBodyAngle);
-					SelectObject->ControlAngleBody = ControlBodyAngle;
-					ImGui::Spacing();
-
-
-					float ScaleBoxX = SelectObject->ScaleBoxX;
-					ImGui::DragFloat("Scale X: ", &ScaleBoxX, 0.01f);
-					if (SelectObject->ScaleX != ScaleBoxX) {
-						SelectObject->UpdateCollisions();
-						SelectObject->UpdateBody();
-					}
-
-					SelectObject->ScaleBoxX = ScaleBoxX;
-
-					float ScaleBoxY = SelectObject->ScaleBoxY;
-					ImGui::DragFloat("Scale Y: ", &ScaleBoxY, 0.01f);
-					if (SelectObject->ScaleBoxY != ScaleBoxY) {
-						SelectObject->UpdateCollisions();
-						SelectObject->UpdateBody();
-					}
-					SelectObject->ScaleBoxY = ScaleBoxY;
-
-
-					float Density = SelectObject->density;
-					ImGui::DragFloat("Density: ", &Density, 0.01f);
-					SelectObject->density = Density;
-
-					float Friction = SelectObject->friction;
-					ImGui::DragFloat("Friction: ", &Friction, 0.01f);
-					SelectObject->friction = Friction;
-					ImGui::PopID();
-
-					ImGui::Spacing();
-					ImGui::Spacing();
-					ImGui::Spacing();
-					ImGui::Spacing();
-					ImGui::Spacing();
-
-					if (ImGui::Button("Script Editor")) {
-						CodeEditor = true;
+					if (SelectObject->RunLua) {
+						if (ImGui::Button("Script Editor")) {
+							CodeEditor = true;
+						}
 					}
 				}
+
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+
+				//NOMBRE
+				char name[128];
+				strcpy_s(name, SelectObject->GetName().c_str());
+				ImGui::InputText("Name: ", name, ImGuiInputTextFlags_AutoSelectAll);
+				SelectObject->SetName((std::string)name);
+
+				char tag[128];
+				strcpy_s(tag, SelectObject->Tag.c_str());
+				ImGui::InputText("Tag: ", tag, ImGuiInputTextFlags_AutoSelectAll);
+				SelectObject->Tag = (string)tag;
+
+				float GetPosSD[2]{
+					SelectObject->GetPosition().x,
+					SelectObject->GetPosition().y,
+				};
+
+				ImGui::DragFloat2("Position: ", GetPosSD, 0.01f);
+
+				if (SelectObject->pos.x != GetPosSD[0] || SelectObject->pos.y != GetPosSD[1]) {
+					SelectObject->UpdateCollisions();
+				}
+
+				SelectObject->SetPosition(GetPosSD[0], GetPosSD[1]);
+
+
+				float ScaleX = SelectObject->ScaleX;
+				ImGui::DragFloat("Scale X: ", &ScaleX, 0.01f);
+				if (SelectObject->ScaleX != ScaleX) {
+					SelectObject->UpdateCollisions();
+					//SelectObject->UpdateBody();
+				}
+
+				SelectObject->ScaleX = ScaleX;
+
+				float ScaleY = SelectObject->ScaleY;
+				ImGui::DragFloat("Scale Y: ", &ScaleY, 0.01f);
+				if (SelectObject->ScaleY != ScaleY) {
+					SelectObject->UpdateCollisions();
+					//SelectObject->UpdateBody();
+				}
+				SelectObject->ScaleY = ScaleY;
+
+
+				float AngleM = SelectObject->Angle;
+				ImGui::DragFloat("Angle: ", &AngleM);
+				SelectObject->Angle = AngleM;
+
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+
+				char TexturePath[100];
+				strcpy_s(TexturePath, SelectObject->TexturePath.c_str());
+				ImGui::InputText("Texture: ", TexturePath, 100, ImGuiInputTextFlags_AutoSelectAll);
+				SelectObject->TexturePath = TexturePath;
+
+				ImGui::PushID(241);
+				ImGui::Image(SelectObject->text, ImVec2(128, 128));
+				ImGui::PopID();
+
+
+
+
+				if (ImGui::Button("Save Sprites")) {
+					SelectObject->SetNewTexture();
+				}
+
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+
+				ImGui::PushID(3423);
+				ImGui::Text("Collisions");
+				ImGui::PopID();
+
+				bool UseCollisions = SelectObject->useGravity;
+				ImGui::Checkbox("Gravity: ", &UseCollisions);
+				if (SelectObject->useGravity != UseCollisions) {
+					SelectObject->useGravity = UseCollisions;
+					SelectObject->UpdateBody();
+				}
+
+				ImGui::Spacing();
+
+				bool IsTrigger = SelectObject->IsTrigger;
+				ImGui::Checkbox("Is Trigger", &IsTrigger);
+
+				if (SelectObject->IsTrigger != IsTrigger) {
+					SelectObject->IsTrigger = IsTrigger;
+					std::cout << "Trigger Value: " << SelectObject->IsTrigger << endl;
+
+					SelectObject->UpdateBody();
+
+				}
+
+
+				bool ControlBodyAngle = SelectObject->ControlAngleBody;
+				ImGui::Checkbox("Body Angle: ", &ControlBodyAngle);
+				SelectObject->ControlAngleBody = ControlBodyAngle;
+				ImGui::Spacing();
+
+
+				float ScaleBoxX = SelectObject->ScaleBoxX;
+				ImGui::DragFloat("Scale X: ", &ScaleBoxX, 0.01f);
+				if (SelectObject->ScaleX != ScaleBoxX) {
+					SelectObject->UpdateCollisions();
+					SelectObject->UpdateBody();
+				}
+
+				SelectObject->ScaleBoxX = ScaleBoxX;
+
+				float ScaleBoxY = SelectObject->ScaleBoxY;
+				ImGui::DragFloat("Scale Y: ", &ScaleBoxY, 0.01f);
+				if (SelectObject->ScaleBoxY != ScaleBoxY) {
+					SelectObject->UpdateCollisions();
+					SelectObject->UpdateBody();
+				}
+				SelectObject->ScaleBoxY = ScaleBoxY;
+
+
+				float Density = SelectObject->density;
+				ImGui::DragFloat("Density: ", &Density, 0.01f);
+				SelectObject->density = Density;
+
+				float Friction = SelectObject->friction;
+				ImGui::DragFloat("Friction: ", &Friction, 0.01f);
+				SelectObject->friction = Friction;
+
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+
+
 				ImGui::End();
 			}
 		}
@@ -816,7 +877,7 @@ private:
 				strcpy_s(TexturePath, ManagerScene::GetInstance()->GetCurrentScene()->TexturePath.c_str());
 				ImGui::InputText("Background: ", TexturePath, 100, ImGuiInputTextFlags_AutoSelectAll);
 
-				ImGui::Image(TextureManager::LoadTexture(TexturePath), ImVec2(128, 128));
+				ImGui::Image(BGPreview, ImVec2(128, 128));
 				ManagerScene::GetInstance()->GetCurrentScene()->TexturePath = (std::string)TexturePath;
 
 				bool UseFullBG = ManagerScene::GetInstance()->GetCurrentScene()->UseFullScreen;
@@ -828,6 +889,8 @@ private:
 				if (ImGui::Button("Save Sprites")) {
 					ManagerScene::GetInstance()->GetCurrentScene()->TexturePath = TexturePath;
 					ManagerScene::GetInstance()->GetCurrentScene()->SetNewBackground();
+					SDL_DestroyTexture (BGPreview);
+					BGPreview = TextureManager::LoadTexture (TexturePath);
 				}
 
 				float GravityScaleGet[2]{
@@ -913,25 +976,33 @@ private:
 			if (ImGui::Begin("Script Editor", NULL, ImGuiWindowFlags_NoResize | ImGuiInputTextFlags_EnterReturnsTrue)) {
 
 				if (SelectObject != nullptr) {
-
-					ImGui::Text(SelectObject->name.c_str());
+					string ScriptingName = "Scripting object: " + SelectObject->name;
+					ImGui::Text(ScriptingName.c_str());
 					if (ImGui::Button("Close")) {
 						CodeEditor = false;
 					}
+
 					ImGui::Text("Press (CTRL + Enter) for jump line");
 
+					ImGui::Spacing();
+					ImGui::Spacing();
+					ImGui::Spacing();
+					ImGui::Spacing();
+
 					ImVec2 Size;
-					Size.x = 800;
-					Size.y = 600;
+					Size.x = 700;
+					Size.y = 500;
 
 					strcpy_s(str_hold, SelectObject->Script.c_str());
 
 					ImGui::InputTextMultiline(" ", str_hold, 999999, Size, flags);
 					SelectObject->Script = (string)str_hold;
+					/*
 					if (ImGui::Button("Compile")) {
 						
 						SelectObject->CompileLua();
 					}
+					*/
 				}
 
 				ImGui::End();
@@ -964,45 +1035,42 @@ private:
 
 				for (int i = 0; i < InputSystem::GetInstance()->inputs.size(); i++) {
 					ImGui::PushID(i);
-					char _Name[128];
-					strcpy_s(_Name, InputSystem::GetInstance()->inputs[i].Name.c_str());
-					ImGui::InputText("Name: ", _Name, ImGuiInputTextFlags_AutoSelectAll);
-					InputSystem::GetInstance()->inputs[i].Name = (string)_Name;
 
-					char KeyName[128];
-					strcpy_s(KeyName, InputSystem::GetInstance()->inputs[i].Key.c_str());
-					ImGui::InputText("Key: ", KeyName, ImGuiInputTextFlags_AutoSelectAll);
-					InputSystem::GetInstance()->inputs[i].Key = (string)KeyName;
+					string name = InputSystem::GetInstance()->inputs[i].Name;
 
-					char KeyNegateName[128];
-					strcpy_s(KeyNegateName, InputSystem::GetInstance()->inputs[i].NegateKey.c_str());
-					ImGui::InputText("Negate Key: ", KeyNegateName, ImGuiInputTextFlags_AutoSelectAll);
-					InputSystem::GetInstance()->inputs[i].NegateKey = (string)KeyNegateName;
+					if (ImGui::TreeNode (name.c_str())) {
+						char _Name[128];
+						strcpy_s(_Name, InputSystem::GetInstance()->inputs[i].Name.c_str());
+						ImGui::InputText("Name: ", _Name, ImGuiInputTextFlags_AutoSelectAll);
+						InputSystem::GetInstance()->inputs[i].Name = (string)_Name;
 
-					char KeyAxis[128];
-					strcpy_s(KeyAxis, InputSystem::GetInstance()->inputs[i].Axis.c_str());
-					ImGui::InputText("Axis: VALUE +", KeyAxis, ImGuiInputTextFlags_AutoSelectAll);
-					InputSystem::GetInstance()->inputs[i].Axis = (string)KeyAxis;
+						char KeyName[128];
+						strcpy_s(KeyName, InputSystem::GetInstance()->inputs[i].Key.c_str());
+						ImGui::InputText("Key: ", KeyName, ImGuiInputTextFlags_AutoSelectAll);
+						InputSystem::GetInstance()->inputs[i].Key = (string)KeyName;
 
-					char NegateKeyAxis[128];
-					strcpy_s(NegateKeyAxis, InputSystem::GetInstance()->inputs[i].NegateAxis.c_str());
-					ImGui::InputText("Negate Axis: VALUE -", NegateKeyAxis, ImGuiInputTextFlags_AutoSelectAll);
-					InputSystem::GetInstance()->inputs[i].NegateAxis = (string)NegateKeyAxis;
+						char KeyNegateName[128];
+						strcpy_s(KeyNegateName, InputSystem::GetInstance()->inputs[i].NegateKey.c_str());
+						ImGui::InputText("Negate Key: ", KeyNegateName, ImGuiInputTextFlags_AutoSelectAll);
+						InputSystem::GetInstance()->inputs[i].NegateKey = (string)KeyNegateName;
 
-					if (ImGui::Button("Delete")) {
-						auto it = InputSystem::GetInstance()->inputs.begin();
-						std::advance(it, i);
-						InputSystem::GetInstance()->inputs.erase(it);
+						char KeyAxis[128];
+						strcpy_s(KeyAxis, InputSystem::GetInstance()->inputs[i].Axis.c_str());
+						ImGui::InputText("Axis: VALUE +", KeyAxis, ImGuiInputTextFlags_AutoSelectAll);
+						InputSystem::GetInstance()->inputs[i].Axis = (string)KeyAxis;
+
+						char NegateKeyAxis[128];
+						strcpy_s(NegateKeyAxis, InputSystem::GetInstance()->inputs[i].NegateAxis.c_str());
+						ImGui::InputText("Negate Axis: VALUE -", NegateKeyAxis, ImGuiInputTextFlags_AutoSelectAll);
+						InputSystem::GetInstance()->inputs[i].NegateAxis = (string)NegateKeyAxis;
+
+						if (ImGui::Button("Delete")) {
+							auto it = InputSystem::GetInstance()->inputs.begin();
+							std::advance(it, i);
+							InputSystem::GetInstance()->inputs.erase(it);
+						}
+						ImGui::TreePop();
 					}
-
-					ImGui::Spacing();
-					ImGui::Spacing();
-					ImGui::Spacing();
-					ImGui::Spacing();
-					ImGui::Spacing();
-					ImGui::Spacing();
-					ImGui::Spacing();
-					ImGui::Spacing();
 
 					ImGui::PopID();
 				}
@@ -1013,7 +1081,6 @@ private:
 
 		if (ImGui::Begin("Console")) {
 			if (ConsoleManager::GetInstance() != nullptr) {
-
 				for (int i = 0; i < ConsoleManager::GetInstance()->Logs->size(); i++) {
 					ImGui::PushID(i);
 					string nmd = ConsoleManager::GetInstance()->GetLog(i);

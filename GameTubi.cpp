@@ -5,6 +5,7 @@
 #include "Source/Engine/Components/UIBuilder/UIBuilder.h"
 #include "Source/Engine/Components/SaveSystem/SaveData.h"
 #include "Source/Engine/Components/Console/ConsoleManager.h"
+#include "Source/Engine/Components/EditorPlay/PlayMode.h"
 #include <iostream>
 
 
@@ -17,6 +18,9 @@ int main (int argc, char* argv[])
 	UIBuilder::create			();
 	SaveData::create			();
 	ConsoleManager::create		();
+	PlayMode::create			();
+
+	SaveData::GetInstance()->LoadEngineData();
 
 	const int FPS = 144;
 	const int frameDelay = 1000 / FPS;
@@ -46,6 +50,7 @@ int main (int argc, char* argv[])
 		ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->EndObject();
 	}
 
+	PlayMode::release				();
 	ConsoleManager::release			();
 	SaveData::release				();
 	UIBuilder::release				();

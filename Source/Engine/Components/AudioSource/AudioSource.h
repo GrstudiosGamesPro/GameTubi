@@ -61,6 +61,8 @@ public:
 
 
 	~AudioSource() {
+		engine->drop();
+
 		delete (drawer);
 		delete (engine);
 	}
