@@ -2,7 +2,7 @@
     "AudioSources": [],
     "BGFullScreen": false,
     "BackgroundPath": "",
-    "CompileScene": false,
+    "CompileScene": true,
     "Objetos": [],
     "Particles": [
         {
@@ -15,8 +15,8 @@
             "OffsetY": 360.0,
             "ParticleTexturePath": "Assets/Sprites/ParticleExample.png",
             "ParticleTimeSpawn": 10.0,
-            "PosX": 25.0,
-            "PosY": 25.0,
+            "PosX": 0.0,
+            "PosY": 0.0,
             "Speed": 0.009999999776482582
         }
     ],

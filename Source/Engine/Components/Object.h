@@ -116,6 +116,8 @@ public:
 	Vector2 GetScaleBox ();
 	Object* GetObject();
 
+	void Clear();
+
 
 	~Object();
 };

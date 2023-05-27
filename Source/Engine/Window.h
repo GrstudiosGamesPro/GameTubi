@@ -1,4 +1,5 @@
 #pragma once
+#define 
 #include "SDL.h"
 #include "SDL_image.h"
 #include <stdio.h>

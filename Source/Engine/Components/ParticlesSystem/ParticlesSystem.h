@@ -11,8 +11,8 @@ class ParticlesSystem
 {
 
 public:
-	GizmoDrawer* drawer = new GizmoDrawer();
-	//Variables Guardables
+	//GizmoDrawer* drawer = new GizmoDrawer();
+
 	string Name;
 	int LifeTime = 2;
 	string ParticlePath = "Assets/Sprites/ParticleExample.png";
@@ -26,7 +26,6 @@ public:
 	int MaxParticles = 100;
 	bool Stop = false;
 
-	//Variables No Guardables
 	float DefaultTimeSpawn;
 	int Diametro = LifeTime * 2;
 
@@ -34,9 +33,11 @@ public:
 	vector<Particle*> Particles = vector<Particle*>();
 
 	void Start() {
+		/*
 		if (drawer != nullptr) {
 			drawer->Start("Particle");
 		}
+		*/
 	}
 
 	void SetPosition(float PosX, float PosY) {
@@ -45,11 +46,11 @@ public:
 
 	void Draw() {
 		if (!Stop) {
-
+			/*
 			if (drawer != nullptr) {
 				drawer->Draw(Position.x, Position.y);
 			}
-
+			*/
 			SDL_SetRenderDrawColor(Window::renderer, 255, 0, 0, 255);
 
 			int GizmosPosX = Position.x * 32;
@@ -79,6 +80,7 @@ public:
 				Particles[i]->Draw();
 
 				if (Particles[i]->DefaultTime <= 0) {
+					Particles[i]->Clear();
 					auto it = Particles.begin();
 					std::advance(it, i);
 					delete* (&Particles[i]);
@@ -116,21 +118,26 @@ public:
 		}
 
 		for (int i = Particles.size() - 1; i >= 0; i--) {
-			Particles.erase(Particles.begin() + i);
+			Particles.erase (Particles.begin() + i);
+			delete Particles[i];
 		}
 
 		Particles.clear();
 	}
 
-	~ParticlesSystem() {
+	void Clear() {
+		//drawer->Clear();
+
 		for (Particle* particle : Particles) {
-			SDL_DestroyTexture (particle->texture);
+			particle->Clear();
+			
+			SDL_DestroyTexture(particle->texture);
 			delete particle;
 		}
 
 		for (int i = Particles.size() - 1; i >= 0; i--) {
 			Particles.erase(Particles.begin() + i);
-			std::cout << "Total objetos" << endl;
+			delete Particles[i];
 		}
 
 		Particles.clear();

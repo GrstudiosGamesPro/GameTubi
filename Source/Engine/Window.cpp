@@ -178,6 +178,7 @@ void Window::handleEvents() {
 			}
 		}
 		
+		/*
 		for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->Particles.size(); i++) {
 			int mouseX, mouseY;
 			if (SDL_GetMouseState(&mouseX, &mouseY) & SDL_GetMouseState(&mouseX, &mouseY) && event.button.button == SDL_BUTTON_LEFT) {
@@ -200,7 +201,7 @@ void Window::handleEvents() {
 					}
 				}
 			}
-		}
+		}*/
 
 		for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->Audio.size(); i++) {
 			int mouseX, mouseY;

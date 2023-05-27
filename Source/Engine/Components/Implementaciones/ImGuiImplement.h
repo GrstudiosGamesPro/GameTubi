@@ -34,7 +34,7 @@ public:
 	Window* wnd;
 	Object* SelectObject;
 	AudioSource* CurrentAudioSourceSelect;
-	ParticlesSystem* CurrentParticleSelect;
+	//ParticlesSystem* CurrentParticleSelect;
 	AnimatorSprite* animator = new AnimatorSprite();
 	SDL_Texture* CurrentParticleTexture;
 
@@ -162,6 +162,7 @@ private:
 
 			ImGui::SameLine((ImGui::GetWindowWidth() - ImGui::CalcTextSize("Play").x - 16.0f) / 2.0f);
 
+			/*
 			if (!PlayMode::GetInstance()->IsPlaying) {
 				if (ImGui::ImageButton(Play, ImVec2(10, 10))) {
 					PlayMode::GetInstance()->Start();
@@ -176,7 +177,7 @@ private:
 					PlayMode::GetInstance()->IsPlaying = false;
 				}
 			}
-			
+			*/
 
 			float fps = ImGui::GetIO().Framerate;
 			ImGui::SameLine(ImGui::GetWindowWidth() - ImGui::CalcTextSize(std::to_string(fps).c_str()).x - 16.0f);
@@ -490,7 +491,7 @@ private:
 				ImGui::TreePop();
 			}
 
-
+			/*
 			if (ImGui::TreeNode("Particles System")) {
 
 				for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->Particles.size(); i++) {
@@ -513,6 +514,7 @@ private:
 
 				ImGui::TreePop();
 			}
+			*/
 			ImGui::End();
 		}
 
@@ -721,7 +723,7 @@ private:
 		}
 
 
-
+		/*
 		if (CurrentParticleSelect != nullptr) {
 			if (ImGui::Begin("Particle Setting")) {
 				char name[128];
@@ -796,7 +798,7 @@ private:
 				ImGui::End();
 			}
 		}
-
+		*/
 
 		if (CurrentAudioSourceSelect != nullptr) {
 			if (ImGui::Begin("Audio Setting")) {
@@ -823,6 +825,7 @@ private:
 				ImGui::InputText("Audio Name", AudioName, ImGuiInputTextFlags_AutoSelectAll);
 				CurrentAudioSourceSelect->AudioPath = (string)AudioName;
 
+
 				if (ImGui::Button("Play Test")) {
 					CurrentAudioSourceSelect->Play();
 				}
@@ -830,6 +833,7 @@ private:
 				if (ImGui::Button("Stop Test")) {
 					CurrentAudioSourceSelect->Stop();
 				}
+
 				ImGui::End();
 			}
 		}

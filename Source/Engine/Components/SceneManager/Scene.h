@@ -63,14 +63,15 @@ public:
 
 	void DestroyObject(Object* ObjectToDestroy) {
 		if (ObjectToDestroy != nullptr) {
+			ObjectToDestroy->Clear();
 			auto it = std::find_if(ObjectsInScene.begin(), ObjectsInScene.end(), std::bind(std::equal_to<Object*>(), std::placeholders::_1, ObjectToDestroy));
 			if (it != ObjectsInScene.end()) {
+				delete ObjectToDestroy;
 				ObjectsInScene.erase(it);
 				//delete ObjectToDestroy;
 			}
 		}
 	}
-
 
 	Object* SetupNewObject() {
 		Object* newOBJ = new Object();

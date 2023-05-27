@@ -1,0 +1,29 @@
+﻿box2d.lib(b2_polygon_shape.obj) : error LNK2038: se detectaron diferencias para '_ITERATOR_DEBUG_LEVEL': el valor '2' no coincide con el valor '0' en GameTubi.obj
+box2d.lib(b2_polygon_shape.obj) : error LNK2038: se detectaron diferencias para 'RuntimeLibrary': el valor 'MDd_DynamicDebug' no coincide con el valor 'MD_DynamicRelease' en GameTubi.obj
+box2d.lib(b2_body.obj) : error LNK2038: se detectaron diferencias para '_ITERATOR_DEBUG_LEVEL': el valor '2' no coincide con el valor '0' en GameTubi.obj
+box2d.lib(b2_body.obj) : error LNK2038: se detectaron diferencias para 'RuntimeLibrary': el valor 'MDd_DynamicDebug' no coincide con el valor 'MD_DynamicRelease' en GameTubi.obj
+box2d.lib(b2_world.obj) : error LNK2038: se detectaron diferencias para '_ITERATOR_DEBUG_LEVEL': el valor '2' no coincide con el valor '0' en GameTubi.obj
+box2d.lib(b2_world.obj) : error LNK2038: se detectaron diferencias para 'RuntimeLibrary': el valor 'MDd_DynamicDebug' no coincide con el valor 'MD_DynamicRelease' en GameTubi.obj
+box2d.lib(b2_joint.obj) : error LNK2038: se detectaron diferencias para '_ITERATOR_DEBUG_LEVEL': el valor '2' no coincide con el valor '0' en GameTubi.obj
+box2d.lib(b2_joint.obj) : error LNK2038: se detectaron diferencias para 'RuntimeLibrary': el valor 'MDd_DynamicDebug' no coincide con el valor 'MD_DynamicRelease' en GameTubi.obj
+box2d.lib(b2_chain_circle_contact.obj) : error LNK2038: se detectaron diferencias para '_ITERATOR_DEBUG_LEVEL': el valor '2' no coincide con el valor '0' en GameTubi.obj
+box2d.lib(b2_chain_circle_contact.obj) : error LNK2038: se detectaron diferencias para 'RuntimeLibrary': el valor 'MDd_DynamicDebug' no coincide con el valor 'MD_DynamicRelease' en GameTubi.obj
+box2d.lib(b2_chain_polygon_contact.obj) : error LNK2038: se detectaron diferencias para '_ITERATOR_DEBUG_LEVEL': el valor '2' no coincide con el valor '0' en GameTubi.obj
+box2d.lib(b2_chain_polygon_contact.obj) : error LNK2038: se detectaron diferencias para 'RuntimeLibrary': el valor 'MDd_DynamicDebug' no coincide con el valor 'MD_DynamicRelease' en GameTubi.obj
+box2d.lib(b2_circle_contact.obj) : error LNK2038: se detectaron diferencias para '_ITERATOR_DEBUG_LEVEL': el valor '2' no coincide con el valor '0' en GameTubi.obj
+box2d.lib(b2_circle_contact.obj) : error LNK2038: se detectaron diferencias para 'RuntimeLibrary': el valor 'MDd_DynamicDebug' no coincide con el valor 'MD_DynamicRelease' en GameTubi.obj
+box2d.lib(b2_edge_circle_contact.obj) : error LNK2038: se detectaron diferencias para '_ITERATOR_DEBUG_LEVEL': el valor '2' no coincide con el valor '0' en GameTubi.obj
+box2d.lib(b2_edge_circle_contact.obj) : error LNK2038: se detectaron diferencias para 'RuntimeLibrary': el valor 'MDd_DynamicDebug' no coincide con el valor 'MD_DynamicRelease' en GameTubi.obj
+box2d.lib(b2_edge_polygon_contact.obj) : error LNK2038: se detectaron diferencias para '_ITERATOR_DEBUG_LEVEL': el valor '2' no coincide con el valor '0' en GameTubi.obj
+box2d.lib(b2_edge_polygon_contact.obj) : error LNK2038: se detectaron diferencias para 'RuntimeLibrary': el valor 'MDd_DynamicDebug' no coincide con el valor 'MD_DynamicRelease' en GameTubi.obj
+box2d.lib(b2_polygon_circle_contact.obj) : error LNK2038: se detectaron diferencias para '_ITERATOR_DEBUG_LEVEL': el valor '2' no coincide con el valor '0' en GameTubi.obj
+box2d.lib(b2_polygon_circle_contact.obj) : error LNK2038: se detectaron diferencias para 'RuntimeLibrary': el valor 'MDd_DynamicDebug' no coincide con el valor 'MD_DynamicRelease' en GameTubi.obj
+box2d.lib(b2_polygon_contact.obj) : error LNK2038: se detectaron diferencias para '_ITERATOR_DEBUG_LEVEL': el valor '2' no coincide con el valor '0' en GameTubi.obj
+box2d.lib(b2_polygon_contact.obj) : error LNK2038: se detectaron diferencias para 'RuntimeLibrary': el valor 'MDd_DynamicDebug' no coincide con el valor 'MD_DynamicRelease' en GameTubi.obj
+box2d.lib(b2_chain_shape.obj) : error LNK2038: se detectaron diferencias para '_ITERATOR_DEBUG_LEVEL': el valor '2' no coincide con el valor '0' en GameTubi.obj
+box2d.lib(b2_chain_shape.obj) : error LNK2038: se detectaron diferencias para 'RuntimeLibrary': el valor 'MDd_DynamicDebug' no coincide con el valor 'MD_DynamicRelease' en GameTubi.obj
+box2d.lib(b2_edge_shape.obj) : error LNK2038: se detectaron diferencias para '_ITERATOR_DEBUG_LEVEL': el valor '2' no coincide con el valor '0' en GameTubi.obj
+box2d.lib(b2_edge_shape.obj) : error LNK2038: se detectaron diferencias para 'RuntimeLibrary': el valor 'MDd_DynamicDebug' no coincide con el valor 'MD_DynamicRelease' en GameTubi.obj
+LINK : warning LNK4098: la biblioteca predeterminada'MSVCRTD' entra en conflicto con otras bibliotecas; use la biblioteca /NODEFAULTLIB:biblioteca
+LINK : warning LNK4098: la biblioteca predeterminada'LIBCMT' entra en conflicto con otras bibliotecas; use la biblioteca /NODEFAULTLIB:biblioteca
+D:\GameEngines\GameTubi\Build\GameTubi_Engine.exe : fatal error LNK1319: diferencias detectadas: 26

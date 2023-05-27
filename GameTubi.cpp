@@ -8,7 +8,6 @@
 #include "Source/Engine/Components/EditorPlay/PlayMode.h"
 #include <iostream>
 
-
 using namespace std;
 
 int main (int argc, char* argv[])
@@ -30,31 +29,33 @@ int main (int argc, char* argv[])
 
 	Window* CreateWindowsEngine = new Window();
 	UIBuilder* ui = new UIBuilder();
-
-	CreateWindowsEngine->StartWindow ("GameTubi Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1920, 1070, false);
+	
+	CreateWindowsEngine->StartWindow ("GameTubi Engine - 2D", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1920, 1070, false);
 
 	while (CreateWindowsEngine->running()) {
-		frameStart = SDL_GetTicks();
 		CreateWindowsEngine->OnUpdate();
+		Uint32 frameStart = SDL_GetTicks();
 
-		frameTime = SDL_GetTicks() - frameStart;
-
-		if (frameDelay > frameTime) {
-			SDL_Delay (frameDelay - frameTime);
-		}
-
+		CreateWindowsEngine->OnUpdate();
 		ui->Update();
+
+		Uint32 frameTime = SDL_GetTicks() - frameStart;
+
+		int adjustedDelay = frameDelay - frameTime;
+		if (adjustedDelay > 0) {
+			SDL_Delay(adjustedDelay);
+		}
 	}
 
 	for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene.size(); i++) {
 		ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene[i]->EndObject();
 	}
 
-	PlayMode::release				();
+	PlayMode::release					();
 	ConsoleManager::release			();
-	SaveData::release				();
-	UIBuilder::release				();
-	InputSystem::release			();
+	SaveData::release					();
+	UIBuilder::release					();
+	InputSystem::release				();
 	ManagerScene::release			();
 	CreateWindowsEngine->OnClean	();
 	return 0;

@@ -254,10 +254,10 @@ void SaveData::Load (string PathScene) {
     if (ManagerScene::GetInstance()->GetCurrentScene()->GravityWorld != nullptr) {
         for (auto objT : ManagerScene::GetInstance()->GetCurrentScene()->ObjectsInScene) {
             ManagerScene::GetInstance()->GetCurrentScene()->DestroyObject (objT);
-            delete objT;
         }
 
         for (ParticlesSystem* d : ManagerScene::GetInstance()->GetCurrentScene()->Particles) {
+            d->Stop = true;
             d->ClearParticles();
         }
 
@@ -265,17 +265,26 @@ void SaveData::Load (string PathScene) {
             ManagerScene::GetInstance()->GetCurrentScene()->UnLoadAllBodys();
         }
 
-        ManagerScene::GetInstance()->GetCurrentScene()->Particles.clear();
+        /*
+        for (int i = 0; i < ManagerScene::GetInstance()->GetCurrentScene()->Particles.size(); i++)
+        {
+            ManagerScene::GetInstance()->GetCurrentScene()->Particles[i]->Stop = true;
+            ManagerScene::GetInstance()->GetCurrentScene()->Particles[i]->Clear();
+            auto it = ManagerScene::GetInstance()->GetCurrentScene()->Particles.begin();
+            std::advance(it, i);
+            delete* (&ManagerScene::GetInstance()->GetCurrentScene()->Particles[i]);
+            ManagerScene::GetInstance()->GetCurrentScene()->Particles.erase(it);
+        }
+        */
+       // ManagerScene::GetInstance()->GetCurrentScene()->Particles.clear();
         ManagerScene::GetInstance()->GetCurrentScene()->Audio.clear();
 
+        delete ManagerScene::GetInstance()->GetCurrentScene()->backgroundTexture;
         SDL_DestroyTexture (ManagerScene::GetInstance()->GetCurrentScene()->backgroundTexture);
     }
 
 
     std::ifstream file (PathScene);
-
-
-
 
     if (file) {
         json data;

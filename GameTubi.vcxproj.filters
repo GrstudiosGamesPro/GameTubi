@@ -25,9 +25,6 @@
     <Filter Include="Engine\Components\ImGui">
       <UniqueIdentifier>{a8418b9a-c974-4112-baee-20ab5d4070cc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Components\InputSystem">
-      <UniqueIdentifier>{ed98fb9a-0ed7-44f4-8646-4eb93e2c6759}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Components\UIBuilder">
       <UniqueIdentifier>{68df85c8-c7ea-416c-9ba5-a673eeadd069}</UniqueIdentifier>
     </Filter>
@@ -69,6 +66,9 @@
     </Filter>
     <Filter Include="Engine\Components\Physics">
       <UniqueIdentifier>{8b048fd2-d8c1-4914-a9ae-e01f31575c36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Components\ImGui\InputSystem">
+      <UniqueIdentifier>{ed98fb9a-0ed7-44f4-8646-4eb93e2c6759}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -115,7 +115,7 @@
       <Filter>Engine\Components\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Components\InputSystem\InputSystem.cpp">
-      <Filter>Engine\Components\InputSystem</Filter>
+      <Filter>Engine\Components\ImGui\InputSystem</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Components\UIBuilder\UIBuilder.cpp">
       <Filter>Engine\Components\UIBuilder</Filter>
@@ -213,7 +213,7 @@
       <Filter>Engine\Components\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Components\InputSystem\InputSystem.h">
-      <Filter>Engine\Components\InputSystem</Filter>
+      <Filter>Engine\Components\ImGui\InputSystem</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Components\UIBuilder\UIBuilder.h">
       <Filter>Engine\Components\UIBuilder</Filter>

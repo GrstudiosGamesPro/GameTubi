@@ -314,7 +314,31 @@ void Object::SetNewTexture() {
 
 
 Object::~Object() {
-	SDL_DestroyTexture (text);
+
+}
+
+void Object::Clear() {
+	SDL_DestroyTexture(text);
+
+	if (LuaCompiled) {
+		delete lua;
+	}
+
+	if (fixtureDef != nullptr) {
+		delete fixtureDef;
+	}
+
+	if (dynamicBox != nullptr) {
+		delete dynamicBox;
+	}
+
+	if (source != nullptr) {
+		delete source;
+	}
+
+	if (text != nullptr) {
+		delete text;
+	}
 }
 
 SDL_Texture* Object::GetTexture() {

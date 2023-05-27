@@ -54,7 +54,7 @@ public:
 	}
 
 
-	~Particle () {
+	void Clear () {
 		SDL_DestroyTexture(texture);
 	}
 };

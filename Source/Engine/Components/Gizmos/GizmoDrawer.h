@@ -39,8 +39,7 @@ public:
 		SDL_RenderCopy(Window::renderer, texture, NULL, &dest_rect);
 	}
 
-	~GizmoDrawer() {
-		delete texture;
+	void Clear () {
 		SDL_DestroyTexture(texture);
 	}
 };
